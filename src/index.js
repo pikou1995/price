@@ -1,11 +1,7 @@
-import Vue from "vue";
-import App from "./app.vue";
-import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
+const { ReactDOM } = window
+import App from './app'
 
-Vue.use(Antd);
+const root = document.createElement('div')
+document.body.appendChild(root)
 
-const root = document.createElement("div");
-document.body.appendChild(root);
-
-new Vue(App).$mount(root);
+ReactDOM.render(<App />, root)
