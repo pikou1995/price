@@ -1,4 +1,5 @@
 const { React, antd } = window
+const { Button, Modal } = antd
 import Cables from './components/cables'
 import Price from './components/price'
 import Report from './components/report'
@@ -10,12 +11,19 @@ export default class App extends React.Component {
       id: 1,
       cables: [],
       priceConfig: {
-        core: {},
-        insulation: {},
+        core: { CU: 52000 },
+        mica: 0.2,
+        insulation: {
+          XLPE: 0.014
+        },
         insulationWeight: {},
-        sheath: {},
+        sheath: {
+          WDZ: 0.012
+        },
         sheathWeight: {},
-        exchangeRage: {},
+        exchangeRage: {
+          USD: 0.14
+        },
       },
     }
 
@@ -33,7 +41,7 @@ export default class App extends React.Component {
     const id = this.state.id + 1
     this.setState({
       id,
-      cables: [...this.state.cables, { id, coreType: 'CU' }],
+      cables: [...this.state.cables, { id, coreType: 'CU', mica: '0' }],
     })
   }
 
@@ -74,6 +82,17 @@ export default class App extends React.Component {
     })
   }
 
+  clearLocalStorage() {
+    Modal.confirm({
+      title: '确认清空缓存?',
+      content: '清空后此页面会刷新.',
+      onOk() {
+        localStorage.clear()
+        location.reload()
+      }
+    })
+  }
+
   componentDidUpdate() {
     localStorage.setItem('app', JSON.stringify(this.state))
   }
@@ -98,6 +117,8 @@ export default class App extends React.Component {
         ></Price>
         <h2>第三步: 计算结果</h2>
         <Report cables={state.cables} priceConfig={state.priceConfig}></Report>
+        <h2>调试工具</h2>
+        <Button type="danger" onClick={this.clearLocalStorage}>清空缓存</Button>
       </div>
     )
   }
