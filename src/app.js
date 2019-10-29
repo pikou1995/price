@@ -85,7 +85,7 @@ export default class App extends React.Component {
         <h2>第一步: 配置规格</h2>
         <Cables
           cables={state.cables}
-          setPriceConfig={this.setPriceConfig}
+          setCableConfig={this.setCableConfig}
           addCable={this.addCable}
           copyCable={this.copyCable}
           delCable={this.delCable}
