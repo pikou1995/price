@@ -1,4 +1,5 @@
 const { React, antd } = window
+const { Table } = antd
 import config from '../config'
 const { DENSITY } = config
 
@@ -6,61 +7,100 @@ function toFixed(p, num = 2) {
   return isNaN(p) ? '' : p.toFixed(num)
 }
 
-export default class Report extends React.Component {
-  corePrice = c => {
-    const { coreNum, coreArea, coreType } = c
-    const priceConfig = this.props.priceConfig
-    const p =
-      (coreNum * coreArea * DENSITY[coreType] * priceConfig.core[coreType]) /
-      1000000
-    return toFixed(p)
+function corePrice(c, priceConfig) {
+  const { coreNum, coreArea, coreType } = c
+  const p =
+    (coreNum * coreArea * DENSITY[coreType] * priceConfig.core[coreType]) /
+    1000000
+  return toFixed(p)
+}
+
+function insulationPrice(c, priceConfig) {
+  const { coreNum, coreArea, insulation } = c
+  const p =
+    coreNum *
+    priceConfig.insulationWeight[coreArea] *
+    priceConfig.insulation[insulation]
+  return toFixed(p)
+}
+
+function sheathPrice(c, priceConfig) {
+  const { coreNum, coreArea, sheath } = c
+  const p =
+    priceConfig.sheathWeight[`${coreNum}*${coreArea}`] *
+    priceConfig.sheath[sheath]
+  return toFixed(p)
+}
+
+function micaPrice(c, priceConfig) {
+  const { coreNum, mica } = c
+  const p = coreNum * mica * priceConfig.mica
+  return toFixed(p)
+}
+
+function calPrice(cable, priceConfig) {
+  if (!priceConfig.exchangeRage.USD) {
+    return { id: cable.id }
   }
 
-  insulationPrice = c => {
-    const { coreNum, coreArea, insulation } = c
-    const priceConfig = this.props.priceConfig
-    const p =
-      coreNum *
-      priceConfig.insulationWeight[coreArea] *
-      priceConfig.insulation[insulation]
-    return toFixed(p)
-  }
+  const coreP = corePrice(cable, priceConfig)
+  const micaP = micaPrice(cable, priceConfig)
+  const insulationP = insulationPrice(cable, priceConfig)
+  const sheathP = sheathPrice(cable, priceConfig)
+  const total = toFixed(+coreP + +micaP + +insulationP + +sheathP)
+  const totalUSD = toFixed(priceConfig.exchangeRage.USD * total)
 
-  sheathPrice = c => {
-    const { coreNum, coreArea, sheath } = c
-    const priceConfig = this.props.priceConfig
-    const p =
-      priceConfig.sheathWeight[`${coreNum}*${coreArea}`] *
-      priceConfig.sheath[sheath]
-    return toFixed(p)
+  return {
+    id: cable.id,
+    type: `${cable.coreNum}*${cable.coreArea}`,
+    corePrice: coreP,
+    micaPrice: micaP,
+    insulationPrice: insulationP,
+    sheathPrice: sheathP,
+    total,
+    totalUSD: totalUSD,
   }
+}
 
-  total = c => {
-    const p =
-      +this.corePrice(c) + +this.insulationPrice(c) + +this.sheathPrice(c)
-    return toFixed(p)
+const columns = [
+  {
+    title: '规格',
+    dataIndex: 'type',
+    key: 'type',
+  },
+  {
+    title: '金属价格',
+    dataIndex: 'corePrice',
+    key: 'corePrice',
+  },
+  {
+    title: '云母价格',
+    dataIndex: 'micaPrice',
+    key: 'micaPrice',
+  },
+  {
+    title: '绝缘价格',
+    dataIndex: 'insulationPrice',
+    key: 'insulationPrice',
+  },
+  {
+    title: '护套价格',
+    dataIndex: 'sheathPrice',
+    key: 'sheathPrice',
+  },
+  {
+    title: '总价RMB',
+    dataIndex: 'total',
+    key: 'total',
+  },
+  {
+    title: '总价USD',
+    dataIndex: 'totalUSD',
+    key: 'totalUSD',
   }
+]
 
-  totalUSD = c => {
-    const p = this.props.priceConfig.exchangeRage.USD * this.total(c)
-    return toFixed(p)
-  }
-
-  render() {
-    return this.props.cables.map(c => {
-      if (this.props.priceConfig.exchangeRage.USD) {
-        return (
-          <div key={c.id}>
-            <span>{`${c.coreNum}*${c.coreArea}:`}</span>
-            <span>{`${this.corePrice(c)}+${this.insulationPrice(
-              c
-            )}+${this.sheathPrice(c)}`}</span>
-            <span>{`=${this.total(c)}RMB=${this.totalUSD(c)}USD`}</span>
-          </div>
-        )
-      } else {
-        return null
-      }
-    })
-  }
+export default function Report({ priceConfig, cables }) {
+  const data = cables.map(cable => calPrice(cable, priceConfig))
+  return <Table columns={columns} dataSource={data} rowKey="id" pagination={false} />
 }
