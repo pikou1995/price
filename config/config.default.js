@@ -17,5 +17,20 @@ module.exports = appInfo => {
         db: 0,
       },
     },
+    defaultPriceConfig: {
+      core: { CU: 52000 },
+      mica: 0.2,
+      insulation: {
+        XLPE: 0.014,
+      },
+      insulationWeight: {},
+      sheath: {
+        WDZ: 0.012,
+      },
+      sheathWeight: {},
+      exchangeRage: {
+        USD: 0.14,
+      },
+    }
   }
 }

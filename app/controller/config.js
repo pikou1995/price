@@ -1,25 +1,9 @@
 const Controller = require('egg').Controller
 
-const DEFAULT_CONFIG = {
-  core: { CU: 52000 },
-  mica: 0.2,
-  insulation: {
-    XLPE: 0.014,
-  },
-  insulationWeight: {},
-  sheath: {
-    WDZ: 0.012,
-  },
-  sheathWeight: {},
-  exchangeRage: {
-    USD: 0.14,
-  },
-}
-
 class ConfigController extends Controller {
   async show() {
-    const { ctx, app } = this
-    ctx.body = (await app.redis.get('priceConfig')) || DEFAULT_CONFIG
+    const { ctx, app, config } = this
+    ctx.body = (await app.redis.get('priceConfig')) || config.defaultPriceConfig
   }
 
   async save() {

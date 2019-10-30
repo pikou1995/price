@@ -59,12 +59,12 @@ export default class Cable extends React.Component {
         </Select>
         &nbsp;
         <Select
-          placeholder="云母"
+          placeholder="云母带"
           style={{ width: 100, paddingBottom: 12 }}
           value={props.mica}
           onChange={this.onChange.bind(this, 'mica')}
         >
-          <Option value="0">无云母</Option>
+          <Option value="0">无云母带</Option>
           <Option value="1">一层云母</Option>
           <Option value="2">二层云母</Option>
         </Select>
