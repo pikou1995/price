@@ -10,21 +10,7 @@ export default class App extends React.Component {
     this.state = {
       id: 1,
       cables: [],
-      priceConfig: {
-        core: { CU: 52000 },
-        mica: 0.2,
-        insulation: {
-          XLPE: 0.014,
-        },
-        insulationWeight: {},
-        sheath: {
-          WDZ: 0.012,
-        },
-        sheathWeight: {},
-        exchangeRage: {
-          USD: 0.14,
-        },
-      },
+      priceConfig: {},
     }
 
     const prevState = localStorage.getItem('app')
