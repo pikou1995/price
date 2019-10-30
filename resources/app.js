@@ -1,4 +1,4 @@
-const { React, antd } = window
+const { React, antd, axios, _ } = window
 const { Button, Modal } = antd
 import Cables from './components/cables'
 import Price from './components/price'
@@ -14,15 +14,15 @@ export default class App extends React.Component {
         core: { CU: 52000 },
         mica: 0.2,
         insulation: {
-          XLPE: 0.014
+          XLPE: 0.014,
         },
         insulationWeight: {},
         sheath: {
-          WDZ: 0.012
+          WDZ: 0.012,
         },
         sheathWeight: {},
         exchangeRage: {
-          USD: 0.14
+          USD: 0.14,
         },
       },
     }
@@ -34,8 +34,20 @@ export default class App extends React.Component {
       } catch (e) {
         localStorage.removeItem('app')
       }
+    } else {
+      this.fetchPriceConfig()
     }
   }
+
+  fetchPriceConfig = () => {
+    axios.get('/api/config').then(res => {
+      this.setState({ priceConfig: res.data })
+    })
+  }
+
+  savePriceConfig = _.debounce(config => {
+    axios.put('/api/config', config)
+  }, 500)
 
   addCable = () => {
     const id = this.state.id + 1
@@ -71,25 +83,28 @@ export default class App extends React.Component {
   setPriceConfig = (c, k, e) => {
     const v = e.target.value
     const priceConfig = this.state.priceConfig
-    this.setState({
-      priceConfig: {
-        ...priceConfig,
-        [c]: {
-          ...priceConfig[c],
-          [k]: v,
+    this.setState(
+      {
+        priceConfig: {
+          ...priceConfig,
+          [c]: {
+            ...priceConfig[c],
+            [k]: v,
+          },
         },
       },
-    })
+      () => this.savePriceConfig(this.state.priceConfig)
+    )
   }
 
   clearLocalStorage() {
     Modal.confirm({
       title: '确认清空缓存?',
-      content: '清空后此页面会刷新.',
+      content: '此操作会丢弃此页面所有进度！',
       onOk() {
         localStorage.clear()
         location.reload()
-      }
+      },
     })
   }
 
@@ -118,7 +133,9 @@ export default class App extends React.Component {
         <h2>第三步: 计算结果</h2>
         <Report cables={state.cables} priceConfig={state.priceConfig}></Report>
         <h2>调试工具</h2>
-        <Button type="danger" onClick={this.clearLocalStorage}>清空缓存</Button>
+        <Button type="danger" onClick={this.clearLocalStorage}>
+          清空缓存
+        </Button>
       </div>
     )
   }
