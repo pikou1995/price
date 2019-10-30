@@ -45,7 +45,7 @@ export default class Cable extends React.Component {
           ))}
         </Select>
         &nbsp;
-          <Select
+        <Select
           placeholder="金属材料"
           style={{ width: 100 }}
           value={props.coreType}
@@ -58,16 +58,16 @@ export default class Cable extends React.Component {
           ))}
         </Select>
         &nbsp;
-        <Radio.Group
-          style={{ paddingBottom: 12 }}
-          buttonStyle="solid"
+        <Select
+          placeholder="云母"
+          style={{ width: 100, paddingBottom: 12 }}
           value={props.mica}
           onChange={this.onChange.bind(this, 'mica')}
         >
-          <Radio.Button value="0">无</Radio.Button>
-          <Radio.Button value="1">一层云母</Radio.Button>
-          <Radio.Button value="2">二层云母</Radio.Button>
-        </Radio.Group>
+          <Option value="0">无云母</Option>
+          <Option value="1">一层云母</Option>
+          <Option value="2">二层云母</Option>
+        </Select>
         &nbsp;
         <Select
           placeholder="绝缘材料"
