@@ -1,152 +1,49 @@
-const { React, antd, axios, _ } = window
-const { Button, Modal, Upload, Icon } = antd
-import Cables from './components/cables'
-import Price from './components/price'
-import Report from './components/report'
+const { ReactRouterDOM, antd } = window
+const {
+    BrowserRouter: Router,
+    Switch,
+    Route,
+    Link,
+} = ReactRouterDOM
+const { Menu, Icon } = antd
+import Calculator from './calculator'
+import History from './history'
+import Setting from './setting'
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      id: 1,
-      cables: [],
-      priceConfig: {
-        core: {},
-        mica: 0.2,
-        insulation: {},
-        insulationWeight: {},
-        sheath: {},
-        sheathWeight: {},
-        exchangeRage: {},
-        swaWeight: {},
-      },
-      priceConfigLoaded: false,
-    }
-
-    this.fetchPriceConfig()
-    const prevState = localStorage.getItem('app')
-    if (prevState) {
-      try {
-        this.state = JSON.parse(prevState)
-      } catch (e) {
-        localStorage.removeItem('app')
-      }
-    }
-  }
-
-  fetchPriceConfig = () => {
-    axios.get('/api/config').then(res => {
-      this.setState({
-        priceConfig: res.data,
-        priceConfigLoaded: true,
-      })
-    })
-  }
-
-  savePriceConfig = _.debounce(config => {
-    axios.put('/api/config', config)
-  }, 500)
-
-  addCable = () => {
-    const id = this.state.id + 1
-    this.setState({
-      id,
-      cables: [
-        ...this.state.cables,
-        { id, coreType: 'CU', mica: '0', swa: '0' },
-      ],
-    })
-  }
-
-  copyCable = targetId => {
-    const id = this.state.id + 1
-    const cable = this.state.cables.find(c => c.id === targetId)
-    this.setState({
-      id,
-      cables: [...this.state.cables, { ...cable, id: id }],
-    })
-  }
-
-  delCable = id => {
-    const cables = [...this.state.cables]
-    const i = cables.findIndex(c => c.id === id)
-    cables.splice(i, 1)
-    this.setState({ cables })
-  }
-
-  setCableConfig = e => {
-    const i = this.state.cables.findIndex(c => c.id === e.id)
-    const cables = [...this.state.cables]
-    cables.splice(i, 1, { ...cables[i], ...e })
-    this.setState({ cables }, this.genPriceFields)
-  }
-
-  setPriceConfig = (c, k, e) => {
-    const v = e.target.value
-    const priceConfig = this.state.priceConfig
-    this.setState(
-      {
-        priceConfig: {
-          ...priceConfig,
-          [c]: {
-            ...priceConfig[c],
-            [k]: v,
-          },
-        },
-      },
-      () => this.savePriceConfig(this.state.priceConfig)
-    )
-  }
-
-  clearLocalStorage() {
-    Modal.confirm({
-      title: '确认清空缓存?',
-      content: '此操作会丢弃此页面所有进度！',
-      onOk() {
-        localStorage.clear()
-        location.reload()
-      },
-    })
-  }
-
-  componentDidUpdate() {
-    const { id, cables } = this.state
-    localStorage.setItem('app', JSON.stringify({ id, cables }))
-  }
-
-  render() {
-    const state = this.state
-    if (!state.priceConfigLoaded) return null
-
+export default function App() {
     return (
-      <div style={{ padding: 15 }}>
-        {/* <Upload name="file" action="/api/file">
-          <Button>
-            <Icon type="upload" /> 上传excel文件
-          </Button>
-        </Upload> */}
-        <h2>第一步: 配置规格</h2>
-        <Cables
-          cables={state.cables}
-          setCableConfig={this.setCableConfig}
-          addCable={this.addCable}
-          copyCable={this.copyCable}
-          delCable={this.delCable}
-        ></Cables>
-        <h2>第二步: 配置价格</h2>
-        <Price
-          cables={state.cables}
-          priceConfig={state.priceConfig}
-          setPriceConfig={this.setPriceConfig}
-        ></Price>
-        <h2>第三步: 计算结果</h2>
-        <Report cables={state.cables} priceConfig={state.priceConfig}></Report>
-
-        <h2>调试工具</h2>
-        <Button type="danger" onClick={this.clearLocalStorage}>
-          清空缓存
-        </Button>
-      </div>
+        <Router>
+            <Menu mode="horizontal" defaultSelectedKeys={[location.pathname]}>
+                <Menu.Item key="/">
+                    <Link to="/">
+                        <Icon type="calculator" />
+                        计算器
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="/history">
+                    <Link to="/history">
+                        <Icon type="history" />
+                        历史记录
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="/setting">
+                    <Link to="/setting">
+                        <Icon type="setting" />
+                        配置
+                    </Link>
+                </Menu.Item>
+            </Menu>
+            <Switch>
+                <Route path="/history">
+                    <History />
+                </Route>
+                <Route path="/setting">
+                    <Setting />
+                </Route>
+                <Route path="/">
+                    <Calculator />
+                </Route>
+            </Switch>
+        </Router>
     )
-  }
 }
