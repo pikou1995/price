@@ -17,8 +17,15 @@ module.exports = appInfo => {
         db: 0,
       },
     },
+    multipart: {
+      mode: 'file',
+      fileExtensions: ['.xls', '.xlsx'],
+    },
     defaultPriceConfig: {
-      core: { CU: 52000 },
+      core: {
+        CU: 52000,
+        STEEL: 6000,
+      },
       mica: 0.2,
       insulation: {
         XLPE: 0.014,
@@ -31,6 +38,12 @@ module.exports = appInfo => {
       exchangeRage: {
         USD: 0.14,
       },
-    }
+      swaWeight: {
+        '0.9': 5,
+        '1.25': 10,
+        '1.6': 15,
+        '2': 25,
+      },
+    },
   }
 }
