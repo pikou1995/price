@@ -1,5 +1,5 @@
 const { React, antd } = window
-const { Table } = antd
+const { Table, Form, Switch } = antd
 import config from '../config'
 const { DENSITY } = config
 
@@ -69,6 +69,34 @@ const columns = [
     key: 'type',
   },
   {
+    title: '总价RMB',
+    dataIndex: 'total',
+    key: 'total',
+  },
+  {
+    title: 'RMB上浮10%/20%/30%/40%',
+    key: 'RMBUp',
+    render: ({ total }) =>
+      [1.1, 1.2, 1.3, 1.4].map(r => toFixed(r * total)).join('/'),
+  },
+]
+
+const USDColumns = [
+  {
+    title: '总价USD',
+    dataIndex: 'totalUSD',
+    key: 'totalUSD',
+  },
+  {
+    title: 'USD上浮10%/20%/30%/40%',
+    key: 'USDUp',
+    render: ({ totalUSD }) =>
+      [1.1, 1.2, 1.3, 1.4].map(r => toFixed(r * totalUSD)).join('/'),
+  },
+]
+
+const expandedColumns = [
+  {
     title: '金属价格',
     dataIndex: 'corePrice',
     key: 'corePrice',
@@ -88,19 +116,48 @@ const columns = [
     dataIndex: 'sheathPrice',
     key: 'sheathPrice',
   },
-  {
-    title: '总价RMB',
-    dataIndex: 'total',
-    key: 'total',
-  },
-  {
-    title: '总价USD',
-    dataIndex: 'totalUSD',
-    key: 'totalUSD',
-  }
 ]
 
-export default function Report({ priceConfig, cables }) {
-  const data = cables.map(cable => calPrice(cable, priceConfig))
-  return <Table columns={columns} dataSource={data} rowKey="id" pagination={false} />
+export default class Report extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showUSD: false,
+    }
+  }
+
+  handleToggle = prop => enable => {
+    this.setState({
+      [prop]: enable,
+    })
+  }
+
+  render() {
+    const { priceConfig, cables } = this.props
+    const data = cables.map(cable => calPrice(cable, priceConfig))
+    const { showUSD } = this.state
+    return (
+      <div>
+        <Form layout="inline">
+          <Form.Item label="计算USD">
+            <Switch checked={showUSD} onChange={this.handleToggle('showUSD')} />
+          </Form.Item>
+        </Form>
+        <Table
+          columns={[...columns, ...(showUSD ? USDColumns : [])]}
+          dataSource={data}
+          rowKey="id"
+          pagination={false}
+          expandedRowRender={c => (
+            <Table
+              columns={expandedColumns}
+              rowKey="id"
+              dataSource={[c]}
+              pagination={false}
+            ></Table>
+          )}
+        />
+      </div>
+    )
+  }
 }

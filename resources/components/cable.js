@@ -5,7 +5,7 @@ import config from '../config'
 const { CORE_TYPE, CORE_NUM, AREA, INSULATION, SHEATH } = config
 
 export default class Cable extends React.Component {
-  onChange = (k, v) => {
+  onChange = k => v => {
     if (v.target) {
       v = v.target.value
     }
@@ -21,9 +21,9 @@ export default class Cable extends React.Component {
       <div style={{ wordBreak: 'break-word' }}>
         <Select
           placeholder="芯数"
-          style={{ width: 100, paddingBottom: 12 }}
+          style={{ width: 80, paddingBottom: 12 }}
           value={props.coreNum}
-          onChange={this.onChange.bind(this, 'coreNum')}
+          onChange={this.onChange('coreNum')}
         >
           {CORE_NUM.map(c => (
             <Option value={c} key={c}>
@@ -34,9 +34,9 @@ export default class Cable extends React.Component {
         &nbsp;*&nbsp;
         <Select
           placeholder="平方"
-          style={{ width: 100 }}
+          style={{ width: 80 }}
           value={props.coreArea}
-          onChange={this.onChange.bind(this, 'coreArea')}
+          onChange={this.onChange('coreArea')}
         >
           {AREA.map(a => (
             <Option value={a} key={a}>
@@ -47,9 +47,9 @@ export default class Cable extends React.Component {
         &nbsp;
         <Select
           placeholder="金属材料"
-          style={{ width: 100 }}
+          style={{ width: 80 }}
           value={props.coreType}
-          onChange={this.onChange.bind(this, 'coreType')}
+          onChange={this.onChange('coreType')}
         >
           {Object.keys(CORE_TYPE).map(k => (
             <Option value={k} key={k}>
@@ -62,7 +62,7 @@ export default class Cable extends React.Component {
           placeholder="云母带"
           style={{ width: 100, paddingBottom: 12 }}
           value={props.mica}
-          onChange={this.onChange.bind(this, 'mica')}
+          onChange={this.onChange('mica')}
         >
           <Option value="0">无云母带</Option>
           <Option value="1">一层云母</Option>
@@ -71,9 +71,9 @@ export default class Cable extends React.Component {
         &nbsp;
         <Select
           placeholder="绝缘材料"
-          style={{ width: 120 }}
+          style={{ width: 110 }}
           value={props.insulation}
-          onChange={this.onChange.bind(this, 'insulation')}
+          onChange={this.onChange('insulation')}
         >
           {INSULATION.map(i => (
             <Option value={i} key={i}>
@@ -84,9 +84,9 @@ export default class Cable extends React.Component {
         &nbsp;
         <Select
           placeholder="外套材料"
-          style={{ width: 120 }}
+          style={{ width: 110 }}
           value={props.sheath}
-          onChange={this.onChange.bind(this, 'sheath')}
+          onChange={this.onChange('sheath')}
         >
           {SHEATH.map(s => (
             <Option value={s} key={s}>
