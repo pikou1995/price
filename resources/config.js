@@ -10,6 +10,8 @@ export default {
     CU: 8.9,
     OTHER: 1,
   },
+  SWA: [0.9, 1.25, 1.6, 2],
+  SWA_WASTE: 0.85,
   INSULATION: ['XLPE', 'PVC', '橡胶', 'PE'],
   SHEATH: ['WDZ', 'PVC'],
 }

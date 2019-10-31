@@ -1,7 +1,7 @@
 const { React, antd } = window
 const { Table, Form, Switch } = antd
 import config from '../config'
-const { DENSITY } = config
+const { DENSITY, SWA_WASTE } = config
 
 function toFixed(p, num = 2) {
   return isNaN(p) ? '' : p.toFixed(num)
@@ -9,9 +9,14 @@ function toFixed(p, num = 2) {
 
 function corePrice(c, priceConfig) {
   const { coreNum, coreArea, coreType } = c
-  const p =
-    (coreNum * coreArea * DENSITY[coreType] * priceConfig.core[coreType]) /
-    1000000
+  const weight = (coreNum * coreArea * DENSITY[coreType]) / 1e6
+  const p = weight * priceConfig.core[coreType]
+  return toFixed(p)
+}
+
+function micaPrice(c, priceConfig) {
+  const { coreNum, mica } = c
+  const p = coreNum * mica * priceConfig.mica
   return toFixed(p)
 }
 
@@ -24,17 +29,22 @@ function insulationPrice(c, priceConfig) {
   return toFixed(p)
 }
 
+function swaPrice(c, priceConfig) {
+  const { swa, diameter } = c
+  if (swa === '0') {
+    return '0'
+  }
+  const num = (diameter * Math.PI) / swa
+  const weight = (num * SWA_WASTE * priceConfig.swaWeight[swa]) / 1e6
+  const p = weight * priceConfig.core.STEEL
+  return toFixed(p)
+}
+
 function sheathPrice(c, priceConfig) {
   const { coreNum, coreArea, sheath } = c
   const p =
     priceConfig.sheathWeight[`${coreNum}*${coreArea}`] *
     priceConfig.sheath[sheath]
-  return toFixed(p)
-}
-
-function micaPrice(c, priceConfig) {
-  const { coreNum, mica } = c
-  const p = coreNum * mica * priceConfig.mica
   return toFixed(p)
 }
 
@@ -46,8 +56,9 @@ function calPrice(cable, priceConfig) {
   const coreP = corePrice(cable, priceConfig)
   const micaP = micaPrice(cable, priceConfig)
   const insulationP = insulationPrice(cable, priceConfig)
+  const swaP = swaPrice(cable, priceConfig)
   const sheathP = sheathPrice(cable, priceConfig)
-  const total = toFixed(+coreP + +micaP + +insulationP + +sheathP)
+  const total = toFixed(+coreP + +micaP + +insulationP + +swaP + +sheathP)
   const totalUSD = toFixed(priceConfig.exchangeRage.USD * total)
 
   return {
@@ -56,6 +67,7 @@ function calPrice(cable, priceConfig) {
     corePrice: coreP,
     micaPrice: micaP,
     insulationPrice: insulationP,
+    swaPrice: swaP,
     sheathPrice: sheathP,
     total,
     totalUSD: totalUSD,
@@ -110,6 +122,11 @@ const expandedColumns = [
     title: '绝缘价格',
     dataIndex: 'insulationPrice',
     key: 'insulationPrice',
+  },
+  {
+    title: '钢丝铠装',
+    dataIndex: 'swaPrice',
+    key: 'swaPrice',
   },
   {
     title: '护套价格',

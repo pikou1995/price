@@ -1,5 +1,5 @@
 const { React, antd, axios, _ } = window
-const { Button, Modal } = antd
+const { Button, Modal, Upload, Icon } = antd
 import Cables from './components/cables'
 import Price from './components/price'
 import Report from './components/report'
@@ -18,9 +18,12 @@ export default class App extends React.Component {
         sheath: {},
         sheathWeight: {},
         exchangeRage: {},
+        swaWeight: {},
       },
+      priceConfigLoaded: false,
     }
 
+    this.fetchPriceConfig()
     const prevState = localStorage.getItem('app')
     if (prevState) {
       try {
@@ -28,14 +31,15 @@ export default class App extends React.Component {
       } catch (e) {
         localStorage.removeItem('app')
       }
-    } else {
-      this.fetchPriceConfig()
     }
   }
 
   fetchPriceConfig = () => {
     axios.get('/api/config').then(res => {
-      this.setState({ priceConfig: res.data })
+      this.setState({
+        priceConfig: res.data,
+        priceConfigLoaded: true,
+      })
     })
   }
 
@@ -47,7 +51,10 @@ export default class App extends React.Component {
     const id = this.state.id + 1
     this.setState({
       id,
-      cables: [...this.state.cables, { id, coreType: 'CU', mica: '0' }],
+      cables: [
+        ...this.state.cables,
+        { id, coreType: 'CU', mica: '0', swa: '0' },
+      ],
     })
   }
 
@@ -103,13 +110,21 @@ export default class App extends React.Component {
   }
 
   componentDidUpdate() {
-    localStorage.setItem('app', JSON.stringify(this.state))
+    const { id, cables } = this.state
+    localStorage.setItem('app', JSON.stringify({ id, cables }))
   }
 
   render() {
     const state = this.state
+    if (!state.priceConfigLoaded) return null
+
     return (
       <div style={{ padding: 15 }}>
+        {/* <Upload name="file" action="/api/file">
+          <Button>
+            <Icon type="upload" /> 上传excel文件
+          </Button>
+        </Upload> */}
         <h2>第一步: 配置规格</h2>
         <Cables
           cables={state.cables}
@@ -126,6 +141,7 @@ export default class App extends React.Component {
         ></Price>
         <h2>第三步: 计算结果</h2>
         <Report cables={state.cables} priceConfig={state.priceConfig}></Report>
+
         <h2>调试工具</h2>
         <Button type="danger" onClick={this.clearLocalStorage}>
           清空缓存
