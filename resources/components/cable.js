@@ -1,8 +1,8 @@
 const { React, antd } = window
-const { Select, Button, Input, Popconfirm } = antd
+const { Select, Button, Input, Popconfirm, Checkbox } = antd
 const { Option } = Select
 import config from '../config'
-const { CORE_TYPE, CORE_NUM, AREA, INSULATION, SWA, SHEATH } = config
+const { CORE_TYPE, CORE_NUM, AREA, INSULATION, ISCR_NUM, SWA, SHEATH } = config
 
 export default class Cable extends React.Component {
   onChange = k => v => {
@@ -31,7 +31,7 @@ export default class Cable extends React.Component {
             </Option>
           ))}
         </Select>
-        *
+        {props.pair ? '*2*' : '*'}
         <Select
           placeholder="平方"
           style={{ width: 80, marginLeft: 3, marginRight: 3 }}
@@ -44,6 +44,14 @@ export default class Cable extends React.Component {
             </Option>
           ))}
         </Select>
+        <Checkbox
+          checked={props.pair}
+          onChange={e =>
+            props.setConfig({ id: props.id, pair: e.target.checked })
+          }
+        >
+          双绞线
+        </Checkbox>
         <Select
           placeholder="金属材料"
           style={{ width: 80, marginRight: 3 }}
@@ -78,6 +86,26 @@ export default class Cable extends React.Component {
             </Option>
           ))}
         </Select>
+        {props.pair && [
+          <Checkbox
+            key="iscr"
+            checked={props.iscr}
+            onChange={e =>
+              props.setConfig({ id: props.id, iscr: e.target.checked })
+            }
+          >
+            OSCR铝箔单屏
+          </Checkbox>,
+          <Checkbox
+            key="oscr"
+            checked={props.oscr}
+            onChange={e =>
+              props.setConfig({ id: props.id, oscr: e.target.checked })
+            }
+          >
+            OSCR铝箔总屏蔽
+          </Checkbox>,
+        ]}
         <Select
           placeholder="内护套"
           style={{ width: 110, marginRight: 3, paddingBottom: 12 }}

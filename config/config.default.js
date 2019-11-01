@@ -22,17 +22,22 @@ module.exports = appInfo => {
       fileExtensions: ['.xls', '.xlsx'],
     },
     defaultPriceConfig: {
-      core: {
-        CU: 52000,
-        TC: 50000,
-        STEEL: 6000,
-      },
-      mica: 0.2,
       material: {
+        CU: 0.05,
+        TC: 0.052,
+        STEEL: 0.006,
+        AL: 0.027,
+        mica: 0.2,
         XLPE: 0.014,
+        PVC: 0.007,
+        PE: 0.014,
         WDZ: 0.012,
+        EPDM: 0.03,
+        AB隔氧层料: 0.0104
       },
       insulationWeight: {},
+      iscrWeight: {},
+      oscrWeight: {},
       sheathWeight: {},
       innerSheathWeight: {},
       exchangeRage: {

@@ -1,36 +1,40 @@
 const { React, antd } = window
 const { Input, Form } = antd
+import { getCableKey } from '../utils'
 
 export default class Price extends React.Component {
   genPriceFields = () => {
-    const materials = new Set()
     const insulationWeights = new Set()
     const sheathWeights = new Set()
     const innerSheathWeights = new Set()
+    const iscrWeights = new Set()
+    const oscrWeights = new Set()
 
     this.props.cables.forEach(c => {
-      const { coreNum, coreArea, insulation, sheath, innerSheath } = c
-      if (!coreNum || !coreArea || !insulation || !sheath) {
+      const { coreNum, coreArea, innerSheath, pair, iscr, oscr } = c
+      if (!coreNum || !coreArea) {
         return
       }
-      // 材料种类
-      materials.add(insulation)
-      materials.add(sheath)
       // 绝缘重量
       insulationWeights.add(coreArea)
       // 外护套重量
-      const key = `${coreNum}*${coreArea}`
+      const key = getCableKey(c)
       sheathWeights.add(key)
 
       if (innerSheath && innerSheath !== '0') {
-        materials.add(innerSheath)
         innerSheathWeights.add(key)
+      }
+
+      if (pair) {
+        iscr && iscrWeights.add(key)
+        oscr && oscrWeights.add(key)
       }
     })
 
     return {
-      materials: [...materials],
       insulationWeights: [...insulationWeights],
+      iscrWeights: [...iscrWeights],
+      oscrWeights: [...oscrWeights],
       innerSheathWeights: [...innerSheathWeights],
       sheathWeights: [...sheathWeights],
     }
@@ -38,8 +42,9 @@ export default class Price extends React.Component {
 
   render() {
     const {
-      materials,
       insulationWeights,
+      iscrWeights,
+      oscrWeights,
       innerSheathWeights,
       sheathWeights,
     } = this.genPriceFields()
@@ -48,35 +53,6 @@ export default class Price extends React.Component {
 
     return (
       <Form layout="vertical">
-        <Form.Item label="请输入纯铜价格,例如:52000RMB/吨">
-          <Input
-            type="number"
-            prefix="￥"
-            suffix="RMB"
-            value={priceConfig.core.CU}
-            onChange={e => setPriceConfig('core', 'CU', e)}
-          />
-        </Form.Item>
-        <Form.Item label="请输入镀锡铜价格,例如:50000RMB/吨">
-          <Input
-            type="number"
-            prefix="￥"
-            suffix="RMB"
-            value={priceConfig.core.TC}
-            onChange={e => setPriceConfig('core', 'TC', e)}
-          />
-        </Form.Item>
-        {materials.map(i => {
-          return (
-            <Form.Item label={`请输入[${i}]材料单价`} key={i}>
-              <Input
-                type="number"
-                value={priceConfig.material[i]}
-                onChange={e => setPriceConfig('material', i, e)}
-              />
-            </Form.Item>
-          )
-        })}
         {insulationWeights.map(i => {
           return (
             <Form.Item label={`请输入[${i}]绝缘重量`} key={i}>
@@ -84,6 +60,28 @@ export default class Price extends React.Component {
                 type="number"
                 value={priceConfig.insulationWeight[i]}
                 onChange={e => setPriceConfig('insulationWeight', i, e)}
+              />
+            </Form.Item>
+          )
+        })}
+        {iscrWeights.map(i => {
+          return (
+            <Form.Item label={`请输入[${i}]ISCR铝箔单屏重量`} key={i}>
+              <Input
+                type="number"
+                value={priceConfig.iscrWeight[i]}
+                onChange={e => setPriceConfig('iscrWeight', i, e)}
+              />
+            </Form.Item>
+          )
+        })}
+        {oscrWeights.map(i => {
+          return (
+            <Form.Item label={`请输入[${i}]OSCR铝箔总屏蔽重量`} key={i}>
+              <Input
+                type="number"
+                value={priceConfig.oscrWeight[i]}
+                onChange={e => setPriceConfig('oscrWeight', i, e)}
               />
             </Form.Item>
           )

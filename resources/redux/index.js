@@ -46,7 +46,6 @@ export function setPriceConfig(priceConfig) {
 }
 
 export function updatePriceConfig(c, k, v) {
-  console.log(c, k, v)
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
 

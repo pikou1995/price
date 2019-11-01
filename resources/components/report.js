@@ -2,30 +2,57 @@ const { React, antd } = window
 const { Table, Form, Switch } = antd
 import config from '../config'
 const { DENSITY, SWA_WASTE } = config
+import { getCableKey } from '../utils'
 
 function toFixed(p, num = 2) {
   return isNaN(p) ? '' : p.toFixed(num)
 }
 
 function corePrice(c, priceConfig) {
-  const { coreNum, coreArea, coreType } = c
-  const weight = (coreNum * coreArea * DENSITY[coreType]) / 1e6
-  const p = weight * priceConfig.core[coreType]
-  return toFixed(p)
+  const { coreNum, coreArea, coreType, pair } = c
+  const weight = (coreNum * coreArea * DENSITY[coreType])
+  const p = weight * priceConfig.material[coreType]
+  return toFixed(pair ? p * 2 : p)
 }
 
 function micaPrice(c, priceConfig) {
   const { coreNum, mica } = c
-  const p = coreNum * mica * priceConfig.mica
+  if (mica === '0') {
+    return '0'
+  }
+  const p = coreNum * mica * priceConfig.material.mica
   return toFixed(p)
 }
 
 function insulationPrice(c, priceConfig) {
-  const { coreNum, coreArea, insulation } = c
+  const { coreNum, coreArea, insulation, pair } = c
   const p =
     coreNum *
     priceConfig.insulationWeight[coreArea] *
     priceConfig.material[insulation]
+  return toFixed(pair ? p * 2 : p)
+}
+
+function oscrPrice(c, priceConfig) {
+  const { pair, oscr } = c
+  if (!(pair && oscr)) {
+    return '0'
+  }
+
+  const key = getCableKey(c)
+  const p = priceConfig.material.AL * priceConfig.oscrWeight[key]
+  return toFixed(p)
+}
+
+function iscrPrice(c, priceConfig) {
+  const { coreNum, pair, iscr } = c
+
+  if (!(pair && iscr)) {
+    return '0'
+  }
+
+  const key = getCableKey(c)
+  const p = priceConfig.material.AL * priceConfig.iscrWeight[key] * coreNum
   return toFixed(p)
 }
 
@@ -35,27 +62,29 @@ function swaPrice(c, priceConfig) {
     return '0'
   }
   const num = (diameter * Math.PI) / swa
-  const weight = (num * SWA_WASTE * priceConfig.swaWeight[swa]) / 1e6
-  const p = weight * priceConfig.core.STEEL
+  const weight = (num * SWA_WASTE * priceConfig.swaWeight[swa])
+  const p = weight * priceConfig.material.STEEL
   return toFixed(p)
 }
 
 function innerSheathPrice(c, priceConfig) {
-  const { coreNum, coreArea, innerSheath } = c
+  const { innerSheath } = c
   if (!innerSheath || innerSheath === '0') {
     return 0
   }
 
+  const key = getCableKey(c)
   const p =
-    priceConfig.innerSheathWeight[`${coreNum}*${coreArea}`] *
+    priceConfig.innerSheathWeight[key] *
     priceConfig.material[innerSheath]
   return toFixed(p)
 }
 
 function sheathPrice(c, priceConfig) {
-  const { coreNum, coreArea, sheath } = c
+  const { sheath } = c
+  const key = getCableKey(c)
   const p =
-    priceConfig.sheathWeight[`${coreNum}*${coreArea}`] *
+    priceConfig.sheathWeight[key] *
     priceConfig.material[sheath]
   return toFixed(p)
 }
@@ -68,23 +97,36 @@ function calPrice(cable, priceConfig) {
   const coreP = corePrice(cable, priceConfig)
   const micaP = micaPrice(cable, priceConfig)
   const insulationP = insulationPrice(cable, priceConfig)
+  const iscrP = iscrPrice(cable, priceConfig)
+  const oscrP = oscrPrice(cable, priceConfig)
   const swaP = swaPrice(cable, priceConfig)
   const innerSheathP = innerSheathPrice(cable, priceConfig)
   const sheathP = sheathPrice(cable, priceConfig)
-  const total = toFixed(+coreP + +micaP + +insulationP + +innerSheathP + +swaP + +sheathP)
+  const price = {
+    corePrice: coreP,
+    micaPrice: micaP,
+    insulationPrice: insulationP,
+    iscrPrice: iscrP,
+    oscrPrice: oscrP,
+    innerSheathPrice: innerSheathP,
+    swaPrice: swaP,
+    sheathPrice: sheathP,
+  }
+
+  const total = toFixed(
+    Object.values(price).reduce(
+      (accumulator, currentValue) => accumulator + +currentValue, 0
+    )
+  )
+
   const totalUSD = toFixed(priceConfig.exchangeRage.USD * total)
 
   return {
     id: cable.id,
-    type: `${cable.coreNum}*${cable.coreArea}`,
-    corePrice: coreP,
-    micaPrice: micaP,
-    insulationPrice: insulationP,
-    innerSheathPrice: innerSheathP,
-    swaPrice: swaP,
-    sheathPrice: sheathP,
+    type: getCableKey(cable),
+    ...price,
     total,
-    totalUSD: totalUSD,
+    totalUSD,
   }
 }
 
@@ -100,10 +142,10 @@ const columns = [
     key: 'total',
   },
   {
-    title: 'RMB上浮10%/20%/30%/40%',
+    title: 'RMB上浮10%/15%/20%/25%/30%',
     key: 'RMBUp',
     render: ({ total }) =>
-      [1.1, 1.2, 1.3, 1.4].map(r => toFixed(r * total)).join('/'),
+      [1.1, 1.15, 1.2, 1.25, 1.3].map(r => toFixed(r * total)).join('/'),
   },
 ]
 
@@ -114,10 +156,10 @@ const USDColumns = [
     key: 'totalUSD',
   },
   {
-    title: 'USD上浮10%/20%/30%/40%',
+    title: 'USD上浮10%/15%/20%/25%/30%',
     key: 'USDUp',
     render: ({ totalUSD }) =>
-      [1.1, 1.2, 1.3, 1.4].map(r => toFixed(r * totalUSD)).join('/'),
+      [1.1, 1.15, 1.2, 1.25, 1.3].map(r => toFixed(r * totalUSD)).join('/'),
   },
 ]
 
@@ -136,6 +178,16 @@ const expandedColumns = [
     title: '绝缘价格',
     dataIndex: 'insulationPrice',
     key: 'insulationPrice',
+  },
+  {
+    title: 'ISCR铝箔单屏',
+    dataIndex: 'iscrPrice',
+    key: 'iscrPrice',
+  },
+  {
+    title: 'OSCR铝箔总屏蔽',
+    dataIndex: 'oscrPrice',
+    key: 'oscrPrice',
   },
   {
     title: '内护套价格',
