@@ -1,5 +1,5 @@
 const { React, antd } = window
-const { Select, Button, Input } = antd
+const { Select, Button, Input, Popconfirm } = antd
 const { Option } = Select
 import config from '../config'
 const { CORE_TYPE, CORE_NUM, AREA, INSULATION, SWA, SHEATH } = config
@@ -118,11 +118,12 @@ export default class Cable extends React.Component {
           style={{ marginRight: 3 }}
           onClick={() => props.copyCable(props.id)}
         />
-        <Button
-          type="danger"
-          icon="delete"
-          onClick={() => props.delCable(props.id)}
-        />
+        <Popconfirm
+          title="确认删除？"
+          onConfirm={() => props.delCable(props.id)}
+        >
+          <Button type="danger" icon="delete" />
+        </Popconfirm>
       </div>
     )
   }

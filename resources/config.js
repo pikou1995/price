@@ -15,3 +15,25 @@ export default {
   INSULATION: ['XLPE', 'PVC', '橡胶', 'PE'],
   SHEATH: ['WDZ', 'PVC'],
 }
+
+export const defaultState = {
+  id: 1,
+  cables: [],
+  priceConfig: {
+    core: {},
+    mica: 0.2,
+    insulation: {},
+    insulationWeight: {},
+    sheath: {},
+    sheathWeight: {},
+    exchangeRage: {},
+    swaWeight: {},
+  },
+  priceConfigLoaded: false,
+}
+
+export const defaultCable = {
+  coreType: 'CU',
+  mica: '0',
+  swa: '0',
+}
