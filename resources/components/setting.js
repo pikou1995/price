@@ -22,12 +22,13 @@ export default function Setting(props) {
   }
 
   const { material } = props.priceConfig
+  const keys = Object.keys(material).sort()
 
   return (
     <div style={{ padding: 15 }}>
       <h2>材料价格</h2>
       <Form layout="vertical">
-        {Object.keys(material).map(i => {
+        {keys.map(i => {
           return (
             <Form.Item label={`请输入[${trans[i] || i}]材料单价`} key={i}>
               <Input
