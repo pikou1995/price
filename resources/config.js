@@ -5,7 +5,7 @@ export default {
     // OTHER: '其他'
   },
   CORE_NUM: new Array(20).fill(null).map((_, i) => i + 1),
-  AREA: [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240],
+  AREA: [0.75, 1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240],
   // 单位 g/cm³
   DENSITY: {
     CU: 8.9,
@@ -17,14 +17,21 @@ export default {
   SHEATH: ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料'],
 }
 
+export const trans = {
+  CU: '纯铜',
+  TC: '镀锡铜',
+  STEEL: '钢丝',
+}
+
 export const defaultState = {
   id: 1,
   cables: [],
   priceConfig: {
     core: {},
-    mica: 0.2,
     material: {},
     insulationWeight: {},
+    iscrWeight: {},
+    oscrWeight: {},
     sheathWeight: {},
     innerSheathWeight: {},
     exchangeRage: {},
@@ -39,5 +46,5 @@ export const defaultCable = {
   coreType: 'CU',
   mica: '0',
   swa: '0',
-  innerSheath: '0'
+  innerSheath: '0',
 }

@@ -23,3 +23,7 @@ export function getInitialState() {
   }
   return defaultState
 }
+
+export function getCableKey({ coreNum, coreArea, pair }) {
+  return `${coreNum}*${pair ? '2*' : ''}${coreArea}`
+}

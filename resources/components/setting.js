@@ -1,5 +1,7 @@
 const { React, antd } = window
-const { Button, Modal, Upload, Icon } = antd
+const { Button, Modal, Upload, Icon, Input, Form } = antd
+import { fetchPriceConfig, updatePriceConfig } from '../redux'
+import { trans } from '../config'
 
 function clearLocalStorage() {
   Modal.confirm({
@@ -12,9 +14,31 @@ function clearLocalStorage() {
   })
 }
 
-export default function Setting() {
+export default function Setting(props) {
+  const { priceConfigLoaded, dispatch } = props
+  if (!priceConfigLoaded) {
+    props.dispatch(fetchPriceConfig())
+    return null
+  }
+
+  const { material } = props.priceConfig
+
   return (
     <div style={{ padding: 15 }}>
+      <h2>材料价格</h2>
+      <Form layout="vertical">
+        {Object.keys(material).map(i => {
+          return (
+            <Form.Item label={`请输入[${trans[i] || i}]材料单价`} key={i}>
+              <Input
+                type="number"
+                value={material[i]}
+                onChange={e => dispatch(updatePriceConfig('material', i, e.target.value))}
+              />
+            </Form.Item>
+          )
+        })}
+      </Form>
       {/* <Upload name="file" action="/api/file">
           <Button>
             <Icon type="upload" /> 上传excel文件
