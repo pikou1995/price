@@ -24,17 +24,17 @@ module.exports = appInfo => {
     defaultPriceConfig: {
       core: {
         CU: 52000,
+        TC: 50000,
         STEEL: 6000,
       },
       mica: 0.2,
-      insulation: {
+      material: {
         XLPE: 0.014,
-      },
-      insulationWeight: {},
-      sheath: {
         WDZ: 0.012,
       },
+      insulationWeight: {},
       sheathWeight: {},
+      innerSheathWeight: {},
       exchangeRage: {
         USD: 0.14,
       },
