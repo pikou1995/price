@@ -25,7 +25,7 @@ function insulationPrice(c, priceConfig) {
   const p =
     coreNum *
     priceConfig.insulationWeight[coreArea] *
-    priceConfig.insulation[insulation]
+    priceConfig.material[insulation]
   return toFixed(p)
 }
 
@@ -40,11 +40,23 @@ function swaPrice(c, priceConfig) {
   return toFixed(p)
 }
 
+function innerSheathPrice(c, priceConfig) {
+  const { coreNum, coreArea, innerSheath } = c
+  if (!innerSheath || innerSheath === '0') {
+    return 0
+  }
+
+  const p =
+    priceConfig.innerSheathWeight[`${coreNum}*${coreArea}`] *
+    priceConfig.material[innerSheath]
+  return toFixed(p)
+}
+
 function sheathPrice(c, priceConfig) {
   const { coreNum, coreArea, sheath } = c
   const p =
     priceConfig.sheathWeight[`${coreNum}*${coreArea}`] *
-    priceConfig.sheath[sheath]
+    priceConfig.material[sheath]
   return toFixed(p)
 }
 
@@ -57,8 +69,9 @@ function calPrice(cable, priceConfig) {
   const micaP = micaPrice(cable, priceConfig)
   const insulationP = insulationPrice(cable, priceConfig)
   const swaP = swaPrice(cable, priceConfig)
+  const innerSheathP = innerSheathPrice(cable, priceConfig)
   const sheathP = sheathPrice(cable, priceConfig)
-  const total = toFixed(+coreP + +micaP + +insulationP + +swaP + +sheathP)
+  const total = toFixed(+coreP + +micaP + +insulationP + +innerSheathP + +swaP + +sheathP)
   const totalUSD = toFixed(priceConfig.exchangeRage.USD * total)
 
   return {
@@ -67,6 +80,7 @@ function calPrice(cable, priceConfig) {
     corePrice: coreP,
     micaPrice: micaP,
     insulationPrice: insulationP,
+    innerSheathPrice: innerSheathP,
     swaPrice: swaP,
     sheathPrice: sheathP,
     total,
@@ -124,12 +138,17 @@ const expandedColumns = [
     key: 'insulationPrice',
   },
   {
+    title: '内护套价格',
+    dataIndex: 'innerSheathPrice',
+    key: 'innerSheathPrice',
+  },
+  {
     title: '钢丝铠装',
     dataIndex: 'swaPrice',
     key: 'swaPrice',
   },
   {
-    title: '护套价格',
+    title: '外护套价格',
     dataIndex: 'sheathPrice',
     key: 'sheathPrice',
   },

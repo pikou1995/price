@@ -3,62 +3,76 @@ const { Input, Form } = antd
 
 export default class Price extends React.Component {
   genPriceFields = () => {
-    const insulations = new Set()
+    const materials = new Set()
     const insulationWeights = new Set()
-    const sheaths = new Set()
     const sheathWeights = new Set()
+    const innerSheathWeights = new Set()
 
     this.props.cables.forEach(c => {
-      const { coreNum, coreArea, insulation, sheath } = c
+      const { coreNum, coreArea, insulation, sheath, innerSheath } = c
       if (!coreNum || !coreArea || !insulation || !sheath) {
         return
       }
-      // 绝缘种类
-      insulations.add(insulation)
+      // 材料种类
+      materials.add(insulation)
+      materials.add(sheath)
       // 绝缘重量
       insulationWeights.add(coreArea)
-      // 外套种类
-      sheaths.add(sheath)
-      // 外套重量
-      sheathWeights.add(`${coreNum}*${coreArea}`)
+      // 外护套重量
+      const key = `${coreNum}*${coreArea}`
+      sheathWeights.add(key)
+
+      if (innerSheath && innerSheath !== '0') {
+        materials.add(innerSheath)
+        innerSheathWeights.add(key)
+      }
     })
 
     return {
-      insulations: [...insulations],
+      materials: [...materials],
       insulationWeights: [...insulationWeights],
-      sheaths: [...sheaths],
+      innerSheathWeights: [...innerSheathWeights],
       sheathWeights: [...sheathWeights],
     }
   }
 
   render() {
     const {
-      insulations,
+      materials,
       insulationWeights,
-      sheaths,
+      innerSheathWeights,
       sheathWeights,
     } = this.genPriceFields()
 
-    const {setPriceConfig, priceConfig} = this.props
+    const { setPriceConfig, priceConfig } = this.props
 
     return (
       <Form layout="vertical">
-        <Form.Item label="请输入铜价格,例如:52000RMB/吨">
+        <Form.Item label="请输入纯铜价格,例如:52000RMB/吨">
           <Input
             type="number"
             prefix="￥"
             suffix="RMB"
             value={priceConfig.core.CU}
-            onChange={setPriceConfig.bind(this, 'core', 'CU')}
+            onChange={e => setPriceConfig('core', 'CU', e)}
           />
         </Form.Item>
-        {insulations.map(i => {
+        <Form.Item label="请输入镀锡铜价格,例如:50000RMB/吨">
+          <Input
+            type="number"
+            prefix="￥"
+            suffix="RMB"
+            value={priceConfig.core.TC}
+            onChange={e => setPriceConfig('core', 'TC', e)}
+          />
+        </Form.Item>
+        {materials.map(i => {
           return (
-            <Form.Item label={`请输入[${i}]绝缘单价`} key={i}>
+            <Form.Item label={`请输入[${i}]材料单价`} key={i}>
               <Input
                 type="number"
-                value={priceConfig.insulation[i]}
-                onChange={setPriceConfig.bind(this, 'insulation', i)}
+                value={priceConfig.material[i]}
+                onChange={e => setPriceConfig('material', i, e)}
               />
             </Form.Item>
           )
@@ -69,30 +83,29 @@ export default class Price extends React.Component {
               <Input
                 type="number"
                 value={priceConfig.insulationWeight[i]}
-                onChange={setPriceConfig.bind(this, 'insulationWeight', i)}
+                onChange={e => setPriceConfig('insulationWeight', i, e)}
               />
             </Form.Item>
           )
         })}
-
-        {sheaths.map(i => {
+        {innerSheathWeights.map(i => {
           return (
-            <Form.Item label={`请输入[${i}]护套单价`} key={i}>
+            <Form.Item label={`请输入[${i}]内护套重量`} key={i}>
               <Input
                 type="number"
-                value={priceConfig.sheath[i]}
-                onChange={setPriceConfig.bind(this, 'sheath', i)}
+                value={priceConfig.innerSheathWeight[i]}
+                onChange={e => setPriceConfig('innerSheathWeight', i, e)}
               />
             </Form.Item>
           )
         })}
         {sheathWeights.map(i => {
           return (
-            <Form.Item label={`请输入[${i}]护套重量`} key={i}>
+            <Form.Item label={`请输入[${i}]外护套重量`} key={i}>
               <Input
                 type="number"
                 value={priceConfig.sheathWeight[i]}
-                onChange={setPriceConfig.bind(this, 'sheathWeight', i)}
+                onChange={e => setPriceConfig('sheathWeight', i, e)}
               />
             </Form.Item>
           )
@@ -103,7 +116,7 @@ export default class Price extends React.Component {
             prefix="$"
             suffix="USD"
             value={priceConfig.exchangeRage.USD}
-            onChange={setPriceConfig.bind(this, 'exchangeRage', 'USD')}
+            onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
           />
         </Form.Item>
       </Form>

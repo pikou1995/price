@@ -79,6 +79,19 @@ export default class Cable extends React.Component {
           ))}
         </Select>
         <Select
+          placeholder="内护套"
+          style={{ width: 110, marginRight: 3, paddingBottom: 12 }}
+          value={props.innerSheath}
+          onChange={this.onChange('innerSheath')}
+        >
+          <Option value="0" key="0">无内护套</Option>
+          {SHEATH.map(i => (
+            <Option value={i} key={i}>
+              {i}
+            </Option>
+          ))}
+        </Select>
+        <Select
           placeholder="SWA"
           style={{ width: 100, marginRight: 3 }}
           value={props.swa}
@@ -101,7 +114,7 @@ export default class Cable extends React.Component {
           />
         )}
         <Select
-          placeholder="外套材料"
+          placeholder="外护套"
           style={{ width: 110, marginRight: 3 }}
           value={props.sheath}
           onChange={this.onChange('sheath')}

@@ -1,6 +1,7 @@
 export default {
   CORE_TYPE: {
     CU: '铜',
+    TC: '镀锡铜',
     // OTHER: '其他'
   },
   CORE_NUM: new Array(20).fill(null).map((_, i) => i + 1),
@@ -12,8 +13,8 @@ export default {
   },
   SWA: [0.9, 1.25, 1.6, 2],
   SWA_WASTE: 0.85,
-  INSULATION: ['XLPE', 'PVC', '橡胶', 'PE'],
-  SHEATH: ['WDZ', 'PVC'],
+  INSULATION: ['XLPE', 'PVC', 'PE', 'WDZ'],
+  SHEATH: ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料'],
 }
 
 export const defaultState = {
@@ -22,10 +23,10 @@ export const defaultState = {
   priceConfig: {
     core: {},
     mica: 0.2,
-    insulation: {},
+    material: {},
     insulationWeight: {},
-    sheath: {},
     sheathWeight: {},
+    innerSheathWeight: {},
     exchangeRage: {},
     swaWeight: {},
   },
@@ -38,4 +39,5 @@ export const defaultCable = {
   coreType: 'CU',
   mica: '0',
   swa: '0',
+  innerSheath: '0'
 }
