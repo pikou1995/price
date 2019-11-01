@@ -30,6 +30,8 @@ export const defaultState = {
     swaWeight: {},
   },
   priceConfigLoaded: false,
+  orderLoaded: false,
+  orders: [],
 }
 
 export const defaultCable = {

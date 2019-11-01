@@ -2,7 +2,8 @@ const { Redux, ReduxThunk, axios, _ } = window
 const { createStore, applyMiddleware } = Redux
 const thunkMiddleware = ReduxThunk.default
 import syncMiddleware from './sync-middleware'
-import { defaultState, defaultCable } from '../config'
+import { defaultCable } from '../config'
+import { getInitialState } from '../utils'
 
 /**
  * action types
@@ -14,6 +15,12 @@ export const DELETE_CABLE = 'DELETE_CABLE'
 
 export const SET_PRICE_CONFIG = 'SET_PRICE_CONFIG'
 export const UPDATE_PRICE_CONFIG = 'UPDATE_PRICE_CONFIG'
+export const SAVE_ORDER = 'SAVE_ORDER'
+
+export const SET_ORDERS = 'SET_ORDERS'
+export const SET_ORDER = 'SET_ORDER'
+export const CLEAR_ORDER = 'CLEAR_ORDER'
+export const DELETE_ORDER = 'DELETE_ORDER'
 
 /**
  * action creators
@@ -42,6 +49,29 @@ export function updatePriceConfig(c, k, v) {
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
 
+export function saveOrder(id) {
+  return { type: SAVE_ORDER, id }
+}
+
+export function setOrders(orders) {
+  return { type: SET_ORDERS, orders }
+}
+
+export function clearOrder() {
+  return { type: CLEAR_ORDER }
+}
+
+export function setOrder(order) {
+  return { type: SET_ORDER, order }
+}
+
+export function deleteOrder(id) {
+  return { type: DELETE_ORDER, id }
+}
+
+/**
+ * async action creators
+ */
 export function fetchPriceConfig() {
   return function(dispatch) {
     axios.get('/api/config').then(res => {
@@ -50,16 +80,28 @@ export function fetchPriceConfig() {
   }
 }
 
-function getInitialState() {
-  const prevState = localStorage.getItem('app')
-  if (prevState) {
-    try {
-      return JSON.parse(prevState)
-    } catch (e) {
-      localStorage.removeItem('app')
-    }
+export function fetchOrders() {
+  return function(dispatch) {
+    axios.get('/api/orders').then(res => {
+      dispatch(setOrders(res.data))
+    })
   }
-  return defaultState
+}
+
+export function fetchOrder(id) {
+  return function(dispatch) {
+    dispatch(clearOrder())
+    axios.get('/api/orders/' + id).then(res => {
+      dispatch(setOrder(res.data))
+    })
+  }
+}
+
+export function requestDeleleOrder(id) {
+  return function(dispatch) {
+    axios.delete('/api/orders/' + id)
+    dispatch(deleteOrder(id))
+  }
 }
 
 const initialState = getInitialState()
@@ -122,6 +164,24 @@ export function reducer(state = initialState, action) {
           },
         },
       }
+    case SET_ORDERS:
+      return { ...state, orders: action.orders }
+    case SET_ORDER:
+      return {
+        ...action.order,
+        orderLoaded: true,
+        priceConfigLoaded: true,
+        orders: state.orders,
+      }
+    case CLEAR_ORDER:
+      return {
+        orders: state.orders,
+      }
+    case DELETE_ORDER:
+      return {
+        ...state,
+        orders: state.orders.filter(o => o.id !== action.id),
+      }
     default:
       return state
   }
@@ -131,7 +191,5 @@ export const store = createStore(
   reducer,
   applyMiddleware(thunkMiddleware, syncMiddleware)
 )
-
-store.dispatch(fetchPriceConfig())
 
 export default store
