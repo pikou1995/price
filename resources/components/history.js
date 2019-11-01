@@ -4,8 +4,8 @@ const { Button, List, Popconfirm } = antd
 import { fetchOrders, fetchOrder, requestDeleleOrder } from '../redux'
 
 export default function History(props) {
-  const { orders = [], dispatch } = props
-  !orders.length && dispatch(fetchOrders())
+  const { ordersLoaded, dispatch, orders } = props
+  !ordersLoaded && dispatch(fetchOrders())
 
   return (
     <div style={{ padding: 15 }}>

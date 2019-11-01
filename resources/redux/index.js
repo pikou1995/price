@@ -165,7 +165,16 @@ export function reducer(state = initialState, action) {
         },
       }
     case SET_ORDERS:
-      return { ...state, orders: action.orders }
+      return {
+        ...state,
+        orders: action.orders,
+        ordersLoaded: true,
+      }
+    case SAVE_ORDER:
+      return {
+        ...state,
+        ordersLoaded: false,
+      }
     case SET_ORDER:
       return {
         ...action.order,
