@@ -15,7 +15,7 @@ const saveOrder = (orderId, state) => {
     priceConfigLoaded,
     time: timeString(),
   }
-  id ? axios.put('/api/orders/' + orderId, order) : axios.post('/api/orders', order)
+  orderId ? axios.put('/api/orders/' + orderId, order) : axios.post('/api/orders', order)
 }
 
 const saveCablesState = state => {
