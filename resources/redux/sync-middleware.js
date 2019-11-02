@@ -6,7 +6,7 @@ const savePriceConfig = _.debounce(config => {
   axios.put('/api/config', config)
 }, 500)
 
-const saveOrder = (orderId, state) => {
+const saveOrder = _.throttle((orderId, state, cb) => {
   const { id, cables, priceConfig, priceConfigLoaded } = state
   const order = {
     id,
@@ -15,8 +15,13 @@ const saveOrder = (orderId, state) => {
     priceConfigLoaded,
     time: timeString(),
   }
-  orderId ? axios.put('/api/orders/' + orderId, order) : axios.post('/api/orders', order)
-}
+
+  const promise = orderId
+    ? axios.put('/api/orders/' + orderId, order)
+    : axios.post('/api/orders', order)
+
+  promise.then(res => cb && cb(res.data || {}))
+}, 1000)
 
 const saveCablesState = state => {
   const { id, cables } = state
@@ -30,7 +35,7 @@ const syncMiddleware = store => next => action => {
       savePriceConfig(store.getState().priceConfig)
       return
     case SAVE_ORDER:
-      saveOrder(action.id, store.getState())
+      saveOrder(action.id, store.getState(), action.callback)
       return
     default:
       saveCablesState(store.getState())

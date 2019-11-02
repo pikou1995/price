@@ -10,7 +10,7 @@ function toFixed(p, num = 2) {
 
 function corePrice(c, priceConfig) {
   const { coreNum, coreArea, coreType, pair } = c
-  const weight = (coreNum * coreArea * DENSITY[coreType])
+  const weight = coreNum * coreArea * DENSITY[coreType]
   const p = weight * priceConfig.material[coreType]
   return toFixed(pair ? p * 2 : p)
 }
@@ -62,7 +62,7 @@ function swaPrice(c, priceConfig) {
     return '0'
   }
   const num = (diameter * Math.PI) / swa
-  const weight = (num * SWA_WASTE * priceConfig.swaWeight[swa])
+  const weight = num * SWA_WASTE * priceConfig.swaWeight[swa]
   const p = weight * priceConfig.material.STEEL
   return toFixed(p)
 }
@@ -75,47 +75,37 @@ function innerSheathPrice(c, priceConfig) {
 
   const key = getCableKey(c)
   const p =
-    priceConfig.innerSheathWeight[key] *
-    priceConfig.material[innerSheath]
+    priceConfig.innerSheathWeight[key] * priceConfig.material[innerSheath]
   return toFixed(p)
 }
 
 function sheathPrice(c, priceConfig) {
   const { sheath } = c
   const key = getCableKey(c)
-  const p =
-    priceConfig.sheathWeight[key] *
-    priceConfig.material[sheath]
+  const p = priceConfig.sheathWeight[key] * priceConfig.material[sheath]
   return toFixed(p)
 }
 
 function calPrice(cable, priceConfig) {
-  if (!priceConfig.exchangeRage.USD) {
-    return { id: cable.id }
+  const { coreNum, coreArea, id } = cable
+  if (!coreNum || !coreArea) {
+    return { id }
   }
-
-  const coreP = corePrice(cable, priceConfig)
-  const micaP = micaPrice(cable, priceConfig)
-  const insulationP = insulationPrice(cable, priceConfig)
-  const iscrP = iscrPrice(cable, priceConfig)
-  const oscrP = oscrPrice(cable, priceConfig)
-  const swaP = swaPrice(cable, priceConfig)
-  const innerSheathP = innerSheathPrice(cable, priceConfig)
-  const sheathP = sheathPrice(cable, priceConfig)
   const price = {
-    corePrice: coreP,
-    micaPrice: micaP,
-    insulationPrice: insulationP,
-    iscrPrice: iscrP,
-    oscrPrice: oscrP,
-    innerSheathPrice: innerSheathP,
-    swaPrice: swaP,
-    sheathPrice: sheathP,
+    corePrice: corePrice(cable, priceConfig),
+    micaPrice: micaPrice(cable, priceConfig),
+    insulationPrice: insulationPrice(cable, priceConfig),
+    iscrPrice: iscrPrice(cable, priceConfig),
+    oscrPrice: oscrPrice(cable, priceConfig),
+    innerSheathPrice: innerSheathPrice(cable, priceConfig),
+    swaPrice: swaPrice(cable, priceConfig),
+    sheathPrice: sheathPrice(cable, priceConfig),
   }
 
   const total = toFixed(
     Object.values(price).reduce(
-      (accumulator, currentValue) => accumulator + +currentValue, 0
+      (accumulator, currentValue) => accumulator + +currentValue,
+      0
     )
   )
 
