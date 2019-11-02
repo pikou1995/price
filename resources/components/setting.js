@@ -19,7 +19,7 @@ export default function Setting(props) {
     <div style={{ padding: 15 }}>
       <h2>材料价格</h2>
       <MaterialSetting {...props} />
-      <h2>更新型号</h2>
+      <h2>型号管理</h2>
       <Upload name="file" action="/api/models/file" accept=".xls,.xlsx">
         <Button>
           <Icon type="upload" /> 上传报价表文件
