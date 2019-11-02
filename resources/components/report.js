@@ -155,17 +155,17 @@ const USDColumns = [
 
 const expandedColumns = [
   {
-    title: '金属价格',
+    title: '金属',
     dataIndex: 'corePrice',
     key: 'corePrice',
   },
   {
-    title: '云母价格',
+    title: '云母',
     dataIndex: 'micaPrice',
     key: 'micaPrice',
   },
   {
-    title: '绝缘价格',
+    title: '绝缘',
     dataIndex: 'insulationPrice',
     key: 'insulationPrice',
   },
@@ -180,7 +180,7 @@ const expandedColumns = [
     key: 'oscrPrice',
   },
   {
-    title: '内护套价格',
+    title: '内护套',
     dataIndex: 'innerSheathPrice',
     key: 'innerSheathPrice',
   },
@@ -190,7 +190,7 @@ const expandedColumns = [
     key: 'swaPrice',
   },
   {
-    title: '外护套价格',
+    title: '外护套',
     dataIndex: 'sheathPrice',
     key: 'sheathPrice',
   },
@@ -217,7 +217,7 @@ export default class Report extends React.Component {
     return (
       <div>
         <Form layout="inline">
-          <Form.Item label="计算USD">
+          <Form.Item label="显示美元价格">
             <Switch checked={showUSD} onChange={this.handleToggle('showUSD')} />
           </Form.Item>
         </Form>

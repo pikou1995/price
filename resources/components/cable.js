@@ -2,21 +2,26 @@ const { React, antd } = window
 const { Select, Button, Input, Popconfirm, Checkbox } = antd
 const { Option } = Select
 import config from '../config'
-const { CORE_TYPE, CORE_NUM, AREA, INSULATION, ISCR_NUM, SWA, SHEATH } = config
+const { CORE_TYPE, CORE_NUM, AREA, INSULATION, SWA, SHEATH } = config
+import { updateCable, copyCable, deleteCable } from '../redux'
 
 export default class Cable extends React.Component {
   onChange = k => v => {
     if (v.target) {
       v = v.target.value
     }
-    this.props.setConfig({
-      id: this.props.id,
-      [k]: v,
-    })
+
+    this.props.dispatch(
+      updateCable({
+        id: this.props.id,
+        [k]: v,
+      })
+    )
   }
 
   render() {
     const props = this.props
+    const dispatch = props.dispatch
     return (
       <div style={{ wordBreak: 'break-word' }}>
         <Select
@@ -159,11 +164,11 @@ export default class Cable extends React.Component {
           type="primary"
           icon="copy"
           style={{ marginRight: 3 }}
-          onClick={() => props.copyCable(props.id)}
+          onClick={() => dispatch(copyCable(props.id))}
         />
         <Popconfirm
           title="确认删除？"
-          onConfirm={() => props.delCable(props.id)}
+          onConfirm={() => dispatch(deleteCable(props.id))}
         >
           <Button type="danger" icon="delete" />
         </Popconfirm>

@@ -4,7 +4,6 @@ const {
   Switch,
   Route,
   Link,
-  useParams,
   useLocation,
 } = ReactRouterDOM
 const { Provider } = ReactRedux
@@ -14,6 +13,7 @@ import Calculator from './containers/calculator'
 import History from './containers/history'
 import Model from './containers/model'
 import Setting from './containers/setting'
+import Footer from './components/footer'
 
 const PATHS = ['/history', '/model', '/setting']
 
@@ -71,6 +71,7 @@ export default function App() {
           </Route>
         </Switch>
       </Router>
+      <Footer />
     </Provider>
   )
 }

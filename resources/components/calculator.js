@@ -4,16 +4,7 @@ const { useParams, useHistory } = ReactRouterDOM
 import Cables from './cables'
 import Price from './price'
 import Report from './report'
-import {
-  addCable,
-  updateCable,
-  copyCable,
-  deleteCable,
-  updatePriceConfig,
-  saveOrder,
-  fetchPriceConfig,
-  fetchOrder,
-} from '../redux'
+import { saveOrder, fetchPriceConfig, fetchOrder } from '../redux'
 
 export default function Calculator(props) {
   const { dispatch, priceConfigLoaded, orderLoaded } = props
@@ -37,26 +28,15 @@ export default function Calculator(props) {
   return (
     <div style={{ padding: 15 }}>
       <h2>第一步: 配置规格</h2>
-      <Cables
-        cables={props.cables}
-        setCableConfig={c => dispatch(updateCable(c))}
-        addCable={() => dispatch(addCable())}
-        copyCable={id => dispatch(copyCable(id))}
-        delCable={id => dispatch(deleteCable(id))}
-      ></Cables>
+      <Cables {...props}></Cables>
       <h2>第二步: 配置价格</h2>
-      <Price
-        cables={props.cables}
-        priceConfig={props.priceConfig}
-        setPriceConfig={(c, k, e) =>
-          dispatch(updatePriceConfig(c, k, e.target.value))
-        }
-      ></Price>
+      <Price {...props}></Price>
       <h2>第三步: 计算结果</h2>
-      <Report cables={props.cables} priceConfig={props.priceConfig}></Report>
+      <Report {...props}></Report>
       <Button
         type="primary"
         block
+        icon="cloud-upload"
         onClick={() =>
           dispatch(
             saveOrder(id, ({ id }) => {
@@ -67,7 +47,7 @@ export default function Calculator(props) {
         }
         style={{ marginTop: 24 }}
       >
-        保存订单
+        保存
       </Button>
     </div>
   )
