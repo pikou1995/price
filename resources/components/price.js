@@ -120,7 +120,7 @@ export default function Price(props) {
           onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
         />
       </Form.Item>
-      <MaterialSettingDrawer {...props} />
+      <MaterialSettingDrawer {...props} style={{ marginBottom: 12 }} />
     </Form>
   )
 }
