@@ -111,7 +111,7 @@ export default function Price(props) {
           </Form.Item>
         )
       })}
-      <Form.Item label="请输入1RMB兑换多少USD,例如:0.14">
+      <Form.Item label="请输入1RMB兑换多少USD,如:0.14">
         <Input
           type="number"
           prefix="$"
@@ -120,7 +120,7 @@ export default function Price(props) {
           onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
         />
       </Form.Item>
-      <MaterialSettingDrawer {...props} style={{ marginBottom: 12 }} />
+      <MaterialSettingDrawer {...props} style={{ paddingBottom: 12 }} />
     </Form>
   )
 }
