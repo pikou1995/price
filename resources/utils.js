@@ -17,6 +17,7 @@ export function getInitialState() {
   if (prevState) {
     try {
       const state = JSON.parse(prevState)
+      
       if (['id', 'cables'].every(key => key in state)) {
         return state
       }

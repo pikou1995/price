@@ -22,6 +22,8 @@ export const SET_ORDER = 'SET_ORDER'
 export const CLEAR_ORDER = 'CLEAR_ORDER'
 export const DELETE_ORDER = 'DELETE_ORDER'
 
+export const SET_MODELS = 'SET_MODELS'
+
 /**
  * action creators
  */
@@ -69,6 +71,10 @@ export function deleteOrder(id) {
   return { type: DELETE_ORDER, id }
 }
 
+export function setModels(models) {
+  return { type: SET_MODELS, models }
+}
+
 /**
  * async action creators
  */
@@ -108,6 +114,14 @@ export function requestDeleleOrder(id) {
   return function(dispatch) {
     axios.delete('/api/orders/' + id)
     dispatch(deleteOrder(id))
+  }
+}
+
+export function fetchModels() {
+  return function(dispatch) {
+    axios.get('/api/models').then(res => {
+      dispatch(setModels(res.data))
+    })
   }
 }
 
@@ -197,6 +211,12 @@ export function reducer(state = initialState, action) {
       return {
         ...state,
         orders: state.orders.filter(o => o.id !== action.id),
+      }
+    case SET_MODELS:
+      return {
+        ...state,
+        models: action.models,
+        modelsLoaded: true,
       }
     default:
       return state
