@@ -1,6 +1,7 @@
 const { React, antd } = window
-const { Button, Modal, Upload, Icon } = antd
+const { Button, Upload, Icon, Modal } = antd
 import MaterialSetting from './material-setting'
+import { fetchModels } from '../redux'
 
 function clearLocalStorage() {
   Modal.confirm({
@@ -18,11 +19,20 @@ export default function Setting(props) {
     <div style={{ padding: 15 }}>
       <h2>材料价格</h2>
       <MaterialSetting {...props} />
-      {/* <Upload name="file" action="/api/file">
-          <Button>
-            <Icon type="upload" /> 上传excel文件
-          </Button>
-        </Upload> */}
+      <h2>更新型号</h2>
+      <Upload name="file" action="/api/models/file" accept=".xls,.xlsx">
+        <Button>
+          <Icon type="upload" /> 上传报价表文件
+        </Button>
+      </Upload>
+      <Button
+        type="primary"
+        block
+        style={{ margin: '12px 0' }}
+        onClick={() => props.dispatch(fetchModels())}
+      >
+        更新型号
+      </Button>
       <h2>调试工具</h2>
       <Button type="danger" block onClick={clearLocalStorage}>
         清空缓存

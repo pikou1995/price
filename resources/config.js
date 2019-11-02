@@ -43,6 +43,8 @@ export const defaultState = {
   priceConfigLoaded: false,
   orderLoaded: false,
   orders: [],
+  modelsLoaded: false,
+  models: [],
 }
 
 export const defaultCable = {

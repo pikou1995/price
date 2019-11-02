@@ -1,5 +1,5 @@
 const { axios, _ } = window
-import { UPDATE_PRICE_CONFIG, SAVE_ORDER } from '.'
+import { UPDATE_PRICE_CONFIG, SAVE_ORDER, SET_MODELS } from '.'
 import { timeString } from '../utils'
 
 const savePriceConfig = _.debounce(config => {
@@ -24,21 +24,27 @@ const saveOrder = _.throttle((orderId, state, cb) => {
 }, 1000)
 
 const saveCablesStateLocal = state => {
-  const { id, cables } = state
-  localStorage.setItem('app', JSON.stringify({ id, cables }))
+  const { id, cables, models, modelsLoaded } = state
+  localStorage.setItem(
+    'app',
+    JSON.stringify({ id, cables, models, modelsLoaded })
+  )
 }
 
 const syncMiddleware = store => next => action => {
   next(action)
+
+  const state = store.getState()
+
   switch (action.type) {
     case UPDATE_PRICE_CONFIG:
-      savePriceConfig(store.getState().priceConfig)
+      savePriceConfig(state.priceConfig)
       return
     case SAVE_ORDER:
-      saveOrder(action.id, store.getState(), action.callback)
+      saveOrder(action.id, state, action.callback)
       return
     default:
-      saveCablesStateLocal(store.getState())
+      saveCablesStateLocal(state)
       break
   }
 }

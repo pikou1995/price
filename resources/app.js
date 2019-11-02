@@ -34,16 +34,16 @@ function TopMenu() {
           计算器
         </Link>
       </Menu.Item>
+      <Menu.Item key="/model">
+        <Link to="/model">
+          <Icon type="tags" />
+          型号参考
+        </Link>
+      </Menu.Item>
       <Menu.Item key="/history">
         <Link to="/history">
           <Icon type="history" />
           历史记录
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="/model">
-        <Link to="/model">
-          <Icon type="tags" />
-          型号管理
         </Link>
       </Menu.Item>
       <Menu.Item key="/setting">
@@ -62,11 +62,11 @@ export default function App() {
       <Router>
         <TopMenu />
         <Switch>
-          <Route path="/history">
-            <History />
-          </Route>
           <Route path="/model">
             <Model />
+          </Route>
+          <Route path="/history">
+            <History />
           </Route>
           <Route path="/setting">
             <Setting />
