@@ -51,9 +51,7 @@ export default class Cable extends React.Component {
         </Select>
         <Checkbox
           checked={props.pair}
-          onChange={e =>
-            props.setConfig({ id: props.id, pair: e.target.checked })
-          }
+          onChange={e => this.onChange('pair')(e.target.checked)}
         >
           双绞线
         </Checkbox>
@@ -94,19 +92,16 @@ export default class Cable extends React.Component {
         {props.pair && [
           <Checkbox
             key="iscr"
+            style={{ paddingBottom: 12 }}
             checked={props.iscr}
-            onChange={e =>
-              props.setConfig({ id: props.id, iscr: e.target.checked })
-            }
+            onChange={e => this.onChange('iscr')(e.target.checked)}
           >
             OSCR铝箔单屏
           </Checkbox>,
           <Checkbox
             key="oscr"
             checked={props.oscr}
-            onChange={e =>
-              props.setConfig({ id: props.id, oscr: e.target.checked })
-            }
+            onChange={e => this.onChange('oscr')(e.target.checked)}
           >
             OSCR铝箔总屏蔽
           </Checkbox>,
@@ -145,7 +140,7 @@ export default class Cable extends React.Component {
             type="number"
             style={{ width: 100, marginRight: 3 }}
             value={props.diameter}
-            onChange={e => this.onChange('diameter')(e.target.value)}
+            onChange={this.onChange('diameter')}
           />
         )}
         <Select
