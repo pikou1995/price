@@ -7,13 +7,18 @@ const {
   useLocation,
 } = ReactRouterDOM
 const { Provider } = ReactRedux
-const { Menu, Icon } = antd
+const { Menu, Icon, message } = antd
 import store from './redux'
 import Calculator from './containers/calculator'
 import History from './containers/history'
 import Model from './containers/model'
 import Setting from './containers/setting'
 import Footer from './components/footer'
+
+message.config({
+  top: 100,
+  duration: 2,
+})
 
 const PATHS = ['/history', '/model', '/setting']
 
