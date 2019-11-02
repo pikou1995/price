@@ -49,8 +49,8 @@ export function updatePriceConfig(c, k, v) {
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
 
-export function saveOrder(id) {
-  return { type: SAVE_ORDER, id }
+export function saveOrder(id, callback) {
+  return { type: SAVE_ORDER, id, callback }
 }
 
 export function setOrders(orders) {
@@ -88,12 +88,19 @@ export function fetchOrders() {
   }
 }
 
-export function fetchOrder(id) {
+export function fetchOrder(id, errCb) {
   return function(dispatch) {
-    dispatch(clearOrder())
-    axios.get('/api/orders/' + id).then(res => {
-      dispatch(setOrder(res.data))
-    })
+    axios
+      .get('/api/orders/' + id)
+      .then(res => {
+        dispatch(setOrder(res.data))
+      })
+      .catch(e => {
+        if (errCb) {
+          return errCb(e)
+        }
+        throw e
+      })
   }
 }
 

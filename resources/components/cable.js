@@ -112,7 +112,9 @@ export default class Cable extends React.Component {
           value={props.innerSheath}
           onChange={this.onChange('innerSheath')}
         >
-          <Option value="0" key="0">无内护套</Option>
+          <Option value="0" key="0">
+            无内护套
+          </Option>
           {SHEATH.map(i => (
             <Option value={i} key={i}>
               {i}

@@ -1,6 +1,6 @@
 const { React, antd, ReactRouterDOM } = window
-const { Button, Modal } = antd
-const { useParams } = ReactRouterDOM
+const { Button, message } = antd
+const { useParams, useHistory } = ReactRouterDOM
 import Cables from './cables'
 import Price from './price'
 import Report from './report'
@@ -18,8 +18,16 @@ import {
 export default function Calculator(props) {
   const { dispatch, priceConfigLoaded, orderLoaded } = props
   const { id } = useParams()
+  const history = useHistory()
   if (id) {
-    orderLoaded || dispatch(fetchOrder(id))
+    if (!orderLoaded) {
+      dispatch(
+        fetchOrder(id, () => {
+          history.replace('/')
+        })
+      )
+      return null
+    }
   } else {
     priceConfigLoaded || dispatch(fetchPriceConfig())
   }
@@ -49,7 +57,14 @@ export default function Calculator(props) {
       <Button
         type="primary"
         block
-        onClick={() => dispatch(saveOrder(id))}
+        onClick={() =>
+          dispatch(
+            saveOrder(id, ({ id }) => {
+              message.success('保存成功')
+              id && history.replace('/' + id)
+            })
+          )
+        }
         style={{ marginTop: 24 }}
       >
         保存订单
