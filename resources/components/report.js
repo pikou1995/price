@@ -211,7 +211,7 @@ export default class Report extends React.Component {
   }
 
   render() {
-    const { priceConfig, cables } = this.props
+    const { priceConfig, cables = [] } = this.props
     const data = cables.map(cable => calPrice(cable, priceConfig))
     const { showUSD } = this.state
     return (

@@ -16,7 +16,10 @@ export function getInitialState() {
   const prevState = localStorage.getItem('app')
   if (prevState) {
     try {
-      return JSON.parse(prevState)
+      const state = JSON.parse(prevState)
+      if (['id', 'cables'].every(key => key in state)) {
+        return state
+      }
     } catch (e) {
       localStorage.removeItem('app')
     }
