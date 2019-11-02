@@ -18,8 +18,9 @@ export default class MaterialSettingDrawer extends React.Component {
   }
 
   render() {
+    const { style, ...props } = this.props
     return (
-      <div>
+      <div style={style}>
         <Button
           block
           type="primary"
@@ -34,7 +35,7 @@ export default class MaterialSettingDrawer extends React.Component {
           onClose={this.onClose}
           visible={this.state.visible}
         >
-          <MaterialSetting {...this.props} />
+          <MaterialSetting {...props} />
         </Drawer>
       </div>
     )
