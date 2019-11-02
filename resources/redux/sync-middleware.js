@@ -23,7 +23,7 @@ const saveOrder = _.throttle((orderId, state, cb) => {
   promise.then(res => cb && cb(res.data || {}))
 }, 1000)
 
-const saveCablesState = state => {
+const saveCablesStateLocal = state => {
   const { id, cables } = state
   localStorage.setItem('app', JSON.stringify({ id, cables }))
 }
@@ -38,7 +38,7 @@ const syncMiddleware = store => next => action => {
       saveOrder(action.id, store.getState(), action.callback)
       return
     default:
-      saveCablesState(store.getState())
+      saveCablesStateLocal(store.getState())
       break
   }
 }
