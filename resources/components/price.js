@@ -1,6 +1,8 @@
 const { React, antd } = window
 const { Input, Form } = antd
 import { getCableKey } from '../utils'
+import MaterialSettingDrawer from './material-setting-drawer'
+import { updatePriceConfig } from '../redux'
 
 function genPriceFields(cables = []) {
   const insulationWeights = new Set()
@@ -40,7 +42,7 @@ function genPriceFields(cables = []) {
 }
 
 export default function Price(props) {
-  const { setPriceConfig, priceConfig, cables } = props
+  const { priceConfig, cables, dispatch } = props
   const {
     insulationWeights,
     iscrWeights,
@@ -48,6 +50,9 @@ export default function Price(props) {
     innerSheathWeights,
     sheathWeights,
   } = genPriceFields(cables)
+
+  const setPriceConfig = (c, k, e) =>
+    dispatch(updatePriceConfig(c, k, e.target.value))
 
   return (
     <Form layout="vertical">
@@ -115,6 +120,7 @@ export default function Price(props) {
           onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
         />
       </Form.Item>
+      <MaterialSettingDrawer {...props} />
     </Form>
   )
 }

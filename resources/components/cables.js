@@ -1,25 +1,22 @@
 const { React, antd } = window
 const { Button, Icon, List } = antd
 import Cable from './cable'
+import { addCable } from '../redux'
 
 export default function Cables(props) {
+  const { cables, dispatch } = props
   return (
     <List
-      dataSource={props.cables}
+      dataSource={cables}
       renderItem={c => (
         <List.Item key={c.id}>
-          <Cable
-            {...c}
-            setConfig={props.setCableConfig}
-            copyCable={props.copyCable}
-            delCable={props.delCable}
-          ></Cable>
+          <Cable {...c} dispatch={dispatch}></Cable>
         </List.Item>
       )}
       footer={
         <Button
           type="dashed"
-          onClick={props.addCable}
+          onClick={() => dispatch(addCable())}
           style={{ width: '100%' }}
         >
           <Icon type="plus" /> 增加一种线材
