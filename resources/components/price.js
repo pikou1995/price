@@ -2,6 +2,7 @@ const { React, antd } = window
 const { Input, Form } = antd
 import { getCableKey } from '../utils'
 import MaterialSettingDrawer from './material-setting-drawer'
+import ModelReferenceDrawer from './model-reference-drawer'
 import { updatePriceConfig } from '../redux'
 
 function genPriceFields(cables = []) {
@@ -63,6 +64,17 @@ export default function Price(props) {
               type="number"
               value={priceConfig.insulationWeight[i]}
               onChange={e => setPriceConfig('insulationWeight', i, e)}
+              suffix={
+                priceConfig.insulationWeight[i] ? (
+                  <span />
+                ) : (
+                  <ModelReferenceDrawer
+                    {...props}
+                    showSheathWeitht={false}
+                    spec={i}
+                  />
+                )
+              }
             />
           </Form.Item>
         )
@@ -96,6 +108,17 @@ export default function Price(props) {
               type="number"
               value={priceConfig.innerSheathWeight[i]}
               onChange={e => setPriceConfig('innerSheathWeight', i, e)}
+              suffix={
+                priceConfig.innerSheathWeight[i] ? (
+                  <span />
+                ) : (
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    spec={i}
+                  />
+                )
+              }
             />
           </Form.Item>
         )
@@ -107,6 +130,17 @@ export default function Price(props) {
               type="number"
               value={priceConfig.sheathWeight[i]}
               onChange={e => setPriceConfig('sheathWeight', i, e)}
+              suffix={
+                priceConfig.sheathWeight[i] ? (
+                  <span />
+                ) : (
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    spec={i}
+                  />
+                )
+              }
             />
           </Form.Item>
         )
