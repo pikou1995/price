@@ -9,6 +9,7 @@ export default {
   // 单位 g/cm³
   DENSITY: {
     CU: 8.9,
+    TC: 8.9,
     OTHER: 1,
   },
   SWA: [0.9, 1.25, 1.6, 2],
