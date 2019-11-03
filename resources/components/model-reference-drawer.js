@@ -30,7 +30,7 @@ export default class ModelReferenceDrawer extends React.Component {
         >
           <Model
             {...this.props}
-            style={{}}
+            style={{ margin: -24 }}
             models={models.filter(m => m.spec === spec)}
           />
         </Drawer>
