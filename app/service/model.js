@@ -1,7 +1,7 @@
 const Service = require('egg').Service
 
-const fields = [/^型号$/, /^规格$/, /^绝缘重量{0,1}$/, /^护套重量$/]
-const keys = ['model', 'spec', 'iw', 'sw']
+const fields = [/^型号$/, /^规格$/, /^绝缘重量{0,1}$/, /^护套重量$/, /^屏蔽重量$/]
+const keys = ['model', 'spec', 'iw', 'sw', 'oscr']
 
 class ExcelService extends Service {
   /**

@@ -70,7 +70,8 @@ export default function Price(props) {
                 ) : (
                   <ModelReferenceDrawer
                     {...props}
-                    showSheathWeitht={false}
+                    showSheathWeight={false}
+                    showOscrWeight={false}
                     spec={i}
                   />
                 )
@@ -97,6 +98,18 @@ export default function Price(props) {
               type="number"
               value={priceConfig.oscrWeight[i]}
               onChange={e => setPriceConfig('oscrWeight', i, e)}
+              suffix={
+                priceConfig.oscrWeight[i] ? (
+                  <span />
+                ) : (
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    showSheathWeight={false}
+                    spec={i}
+                  />
+                )
+              }
             />
           </Form.Item>
         )
@@ -115,6 +128,7 @@ export default function Price(props) {
                   <ModelReferenceDrawer
                     {...props}
                     showInsulationWeight={false}
+                    showOscrWeight={false}
                     spec={i}
                   />
                 )
@@ -137,6 +151,7 @@ export default function Price(props) {
                   <ModelReferenceDrawer
                     {...props}
                     showInsulationWeight={false}
+                    showOscrWeight={false}
                     spec={i}
                   />
                 )
