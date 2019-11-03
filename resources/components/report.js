@@ -33,6 +33,33 @@ function insulationPrice(c, priceConfig) {
   return toFixed(pair ? p * 2 : p)
 }
 
+function iscrPrice(c, priceConfig) {
+  const { coreNum, pair, iscr } = c
+
+  if (!(pair && iscr)) {
+    return '0'
+  }
+
+  const key = getCableKey(c)
+  const p = priceConfig.material.AL * priceConfig.iscrWeight[key] * coreNum
+  return toFixed(p)
+}
+
+function drainWireWeight(drainWire) {
+  return Math.pow(drainWire / 2, 2) * Math.PI
+}
+
+function iDrainWirePrice(c, priceConfig) {
+  const { coreNum, pair, iscr, iDrainWire } = c
+
+  if (!(pair && iscr && iDrainWire)) {
+    return '0'
+  }
+
+  const p = drainWireWeight(iDrainWire) * priceConfig.material.TC * coreNum
+  return toFixed(p)
+}
+
 function oscrPrice(c, priceConfig) {
   const { pair, oscr } = c
   if (!(pair && oscr)) {
@@ -44,15 +71,14 @@ function oscrPrice(c, priceConfig) {
   return toFixed(p)
 }
 
-function iscrPrice(c, priceConfig) {
-  const { coreNum, pair, iscr } = c
+function drainWirePrice(c, priceConfig) {
+  const { pair, oscr, drainWire } = c
 
-  if (!(pair && iscr)) {
+  if (!(pair && oscr && drainWire)) {
     return '0'
   }
 
-  const key = getCableKey(c)
-  const p = priceConfig.material.AL * priceConfig.iscrWeight[key] * coreNum
+  const p = drainWireWeight(drainWire) * priceConfig.material.TC
   return toFixed(p)
 }
 
@@ -96,7 +122,9 @@ function calPrice(cable, priceConfig) {
     micaPrice: micaPrice(cable, priceConfig),
     insulationPrice: insulationPrice(cable, priceConfig),
     iscrPrice: iscrPrice(cable, priceConfig),
+    iDrainWirePrice: iDrainWirePrice(cable, priceConfig),
     oscrPrice: oscrPrice(cable, priceConfig),
+    drainWirePrice: drainWirePrice(cable, priceConfig),
     innerSheathPrice: innerSheathPrice(cable, priceConfig),
     swaPrice: swaPrice(cable, priceConfig),
     sheathPrice: sheathPrice(cable, priceConfig),
@@ -175,9 +203,19 @@ const expandedColumns = [
     key: 'iscrPrice',
   },
   {
+    title: '单排流线',
+    dataIndex: 'iDrainWirePrice',
+    key: 'iDrainWirePrice',
+  },
+  {
     title: 'OSCR铝箔总屏蔽',
     dataIndex: 'oscrPrice',
     key: 'oscrPrice',
+  },
+  {
+    title: '总排流线',
+    dataIndex: 'drainWirePrice',
+    key: 'drainWirePrice',
   },
   {
     title: '内护套',
@@ -228,7 +266,7 @@ export default class Report extends React.Component {
           pagination={false}
           expandedRowRender={c => (
             <Table
-              columns={expandedColumns}
+              columns={expandedColumns.filter(column => +c[column.dataIndex])}
               rowKey="id"
               dataSource={[c]}
               pagination={false}

@@ -96,8 +96,17 @@ export default class Cable extends React.Component {
             checked={props.iscr}
             onChange={e => this.onChange('iscr')(e.target.checked)}
           >
-            OSCR铝箔单屏
+            ISCR铝箔单屏
           </Checkbox>,
+          props.iscr && (
+            <Input
+              key="iDrainWire"
+              style={{ width: 80, marginRight: 3 }}
+              value={props.iDrainWire}
+              onChange={e => this.onChange('iDrainWire')(e.target.value)}
+              placeholder="单排流线"
+            ></Input>
+          ),
           <Checkbox
             key="oscr"
             checked={props.oscr}
@@ -105,6 +114,15 @@ export default class Cable extends React.Component {
           >
             OSCR铝箔总屏蔽
           </Checkbox>,
+          props.oscr && (
+            <Input
+              key="drainWire"
+              style={{ width: 80, marginRight: 3 }}
+              value={props.drainWire}
+              onChange={e => this.onChange('drainWire')(e.target.value)}
+              placeholder="总排流线"
+            ></Input>
+          ),
         ]}
         <Select
           placeholder="内护套"

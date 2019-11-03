@@ -23,7 +23,8 @@ export default function Model(props) {
     models,
     dispatch,
     showInsulationWeight = true,
-    showSheathWeitht = true,
+    showSheathWeight = true,
+    showOscrWeight = true,
   } = props
 
   if (!modelsLoaded) {
@@ -40,11 +41,17 @@ export default function Model(props) {
       key: 'iw',
     })
 
-  showSheathWeitht &&
+  showSheathWeight &&
     columns.push({
       title: '护套重量',
       dataIndex: 'sw',
       key: 'sw',
+    })
+  showOscrWeight &&
+    columns.push({
+      title: '屏蔽重量',
+      dataIndex: 'oscr',
+      key: 'oscr',
     })
 
   columns[0].filters = [...new Set(models.map(m => m.model))].map(m => ({
@@ -54,10 +61,7 @@ export default function Model(props) {
 
   return (
     <div style={props.style || { padding: 15 }}>
-      <Table
-        columns={columns}
-        dataSource={models}
-      ></Table>
+      <Table columns={columns} dataSource={models}></Table>
     </div>
   )
 }
