@@ -46,7 +46,7 @@ function iscrPrice(c, priceConfig) {
 }
 
 function drainWireWeight(drainWire) {
-  return Math.pow(drainWire / 2, 2) * Math.PI
+  return Math.pow(drainWire / 2, 2) * Math.PI * DENSITY.TC
 }
 
 function iDrainWirePrice(c, priceConfig) {
