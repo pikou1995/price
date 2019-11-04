@@ -21,7 +21,11 @@ export default class ModelReferenceDrawer extends React.Component {
     const { models = [], spec, showOscrWeight = true } = this.props
     return (
       <span>
-        <Icon type="question-circle" onClick={this.showDrawer} />
+        <Icon
+          type="question-circle"
+          onClick={this.showDrawer}
+          style={{ color: '#1890ff' }}
+        />
         <Drawer
           title="材料价格"
           onClose={this.onClose}
