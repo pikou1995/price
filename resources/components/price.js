@@ -56,7 +56,7 @@ export default function Price(props) {
     dispatch(updatePriceConfig(c, k, e.target.value))
 
   return (
-    <Form layout="vertical">
+    <Form layout="vertical" wrapperCol={{ xs: 24, sm: 12 }}>
       {insulationWeights.map(i => {
         return (
           <Form.Item label={`请输入[${i}]绝缘重量`} key={i}>
@@ -169,7 +169,9 @@ export default function Price(props) {
           onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
         />
       </Form.Item>
-      <MaterialSettingDrawer {...props} style={{ paddingBottom: 12 }} />
+      <Form.Item>
+        <MaterialSettingDrawer {...props} />
+      </Form.Item>
     </Form>
   )
 }
