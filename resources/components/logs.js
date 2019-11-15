@@ -14,9 +14,9 @@ export default function Logs(props) {
         loading={!loaded}
         dataSource={logs}
         rowKey={log => log}
-        renderItem={item => <List.Item>{item}--------</List.Item>}
+        renderItem={item => <List.Item>{item}</List.Item>}
         loadMore={
-          loading ? null : (
+          loading || page * pageSize >= total ? null : (
             <div
               style={{
                 textAlign: 'center',
@@ -27,11 +27,7 @@ export default function Logs(props) {
             >
               <Button
                 onClick={() => {
-                  if (page * pageSize < total) {
-                    dispatch(fetchLogs(page + 1))
-                  } else {
-                    console.log(page, pageSize, total)
-                  }
+                  dispatch(fetchLogs(page + 1))
                 }}
               >
                 loading more
