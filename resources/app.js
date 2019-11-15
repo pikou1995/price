@@ -13,6 +13,7 @@ import Calculator from './containers/calculator'
 import History from './containers/history'
 import Model from './containers/model'
 import Setting from './containers/setting'
+import Logs from './containers/logs'
 import Footer from './components/footer'
 
 message.config({
@@ -70,6 +71,9 @@ export default function App() {
           </Route>
           <Route path="/setting">
             <Setting />
+          </Route>
+          <Route path="/logs">
+            <Logs />
           </Route>
           <Route path={['/:id', '/']}>
             <Calculator />

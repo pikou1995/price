@@ -4,6 +4,7 @@ const thunkMiddleware = ReduxThunk.default
 import syncMiddleware from './sync-middleware'
 import { defaultCable } from '../config'
 import { getInitialState } from '../utils'
+import { logsReducer } from './logs'
 
 /**
  * action types
@@ -219,7 +220,10 @@ export function reducer(state = initialState, action) {
         modelsLoaded: true,
       }
     default:
-      return state
+      return {
+        ...state,
+        logs: logsReducer(state.logs, action),
+      }
   }
 }
 

@@ -1,8 +1,13 @@
 module.exports = app => {
   const { router, controller } = app
-  router.get('/api/config', controller.config.show)
-  router.put('/api/config', controller.config.save)
-  router.resources('orders', '/api/orders', controller.orders)
-  router.get('/api/models', controller.model.index)
-  router.post('/api/models/file', controller.model.parse)
+  const apiRouter = router.prefix('/api')
+
+  ;(function(router) {
+    router.get('/config', controller.config.show)
+    router.put('/config', controller.config.save)
+    router.resources('orders', '/orders', controller.orders)
+    router.get('/models', controller.model.index)
+    router.post('/models/file', controller.model.parse)
+    router.resources('logs', '/logs', controller.logs)
+  })(apiRouter)
 }
