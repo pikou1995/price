@@ -31,7 +31,7 @@ export function logsReducer(state = initialState, action) {
     case SET_LOGS:
       return {
         ...state,
-        logs: [...state.logs, ...action.logs],
+        logs: action.logs,
         page: action.page,
         pageSize: action.pageSize,
         total: action.total,
