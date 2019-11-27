@@ -1,10 +1,14 @@
 const { ReactDOM, axios } = window
 import App from './app'
-
-location.pathname !== '/logs' &&
-  axios.post('/api/logs', {
-    log: `[${new Date().toLocaleString()}]${navigator.userAgent}`,
-  })
+;(function() {
+  const path = location.pathname
+  path !== '/logs' &&
+    axios.post('/api/logs', {
+      time: new Date().getTime(),
+      path,
+      userAgent: navigator.userAgent,
+    })
+})()
 
 const root = document.createElement('div')
 document.body.appendChild(root)

@@ -8,8 +8,8 @@ export function randomIndex(length) {
   return Math.floor(Math.random() * length)
 }
 
-export function timeString() {
-  return moment().format('YYYY-MM-DD HH:mm:ss')
+export function timeString(timestamp) {
+  return moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
 export function getInitialState() {

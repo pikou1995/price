@@ -1,6 +1,25 @@
 const { React, antd } = window
-const { List, Button } = antd
+const { Table } = antd
 import { fetchLogs } from '../redux/logs'
+import { timeString } from '../utils'
+
+const columns = [
+  {
+    key: 'time',
+    title: 'time',
+    render: ({ time }) => timeString(time),
+  },
+  {
+    key: 'path',
+    title: 'path',
+    dataIndex: 'path',
+  },
+  {
+    key: 'userAgent',
+    title: 'userAgent',
+    dataIndex: 'userAgent',
+  },
+]
 
 export default function Logs(props) {
   const { dispatch, logs, page, pageSize, total, loading, loaded } = props
@@ -10,30 +29,14 @@ export default function Logs(props) {
 
   return (
     <div style={{ padding: 15 }}>
-      <List
+      <Table
+        columns={columns}
         loading={!loaded}
         dataSource={logs}
-        rowKey={log => log}
-        renderItem={item => <List.Item>{item}</List.Item>}
-        loadMore={
-          loading || page * pageSize >= total ? null : (
-            <div
-              style={{
-                textAlign: 'center',
-                marginTop: 12,
-                height: 32,
-                lineHeight: '32px',
-              }}
-            >
-              <Button
-                onClick={() => {
-                  dispatch(fetchLogs(page + 1))
-                }}
-              >
-                loading more
-              </Button>
-            </div>
-          )
+        rowKey="time"
+        pagination={{ current: page, pageSize, total, showSizeChanger: true }}
+        onChange={({ current, pageSize }) =>
+          dispatch(fetchLogs(current, pageSize))
         }
       />
     </div>
