@@ -52,6 +52,12 @@ export function updatePriceConfig(c, k, v) {
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
 
+/**
+ * 保存清单
+ * 只是触发事件, 真正保存操作是在 sync-middleware.js
+ * @param {*} id 有 id 是更新, 无 id 是新增
+ * @param {*} callback 保存成功后在 sync-middleware.js 里面回调
+ */
 export function saveOrder(id, callback) {
   return { type: SAVE_ORDER, id, callback }
 }
@@ -95,19 +101,11 @@ export function fetchOrders() {
   }
 }
 
-export function fetchOrder(id, errCb) {
+export function fetchOrder(id) {
   return function(dispatch) {
-    axios
+    return axios
       .get('/api/orders/' + id)
-      .then(res => {
-        dispatch(setOrder(res.data))
-      })
-      .catch(e => {
-        if (errCb) {
-          return errCb(e)
-        }
-        throw e
-      })
+      .then(res => dispatch(setOrder(res.data)))
   }
 }
 
@@ -120,7 +118,7 @@ export function requestDeleleOrder(id) {
 
 export function fetchModels() {
   return function(dispatch) {
-    axios.get('/api/models').then(res => {
+    return axios.get('/api/models').then(res => {
       dispatch(setModels(res.data))
     })
   }

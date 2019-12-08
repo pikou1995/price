@@ -1,5 +1,5 @@
 const { React, antd } = window
-const { Button, Upload, Icon, Modal, Row, Col } = antd
+const { Button, Upload, Icon, Modal, Row, Col, message } = antd
 import MaterialSetting from './material-setting'
 import { fetchModels } from '../redux'
 
@@ -31,7 +31,12 @@ export default function Setting(props) {
             type="primary"
             block
             style={{ margin: '12px 0' }}
-            onClick={() => props.dispatch(fetchModels())}
+            onClick={() =>
+              props
+                .dispatch(fetchModels())
+                .then(() => message.success('更新成功'))
+                .catch(e => message.error('更新失败:' + e))
+            }
           >
             更新型号
           </Button>
