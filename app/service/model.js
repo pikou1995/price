@@ -1,7 +1,19 @@
 const Service = require('egg').Service
 
-const fields = [/^型号$/, /^规格$/, /^绝缘重量{0,1}$/, /^护套重量$/, /^屏蔽重量$/]
+const fields = [
+  /^型号$/,
+  /^规格$/,
+  /^绝缘重量{0,1}$/,
+  /^护套重量$/,
+  /^屏蔽重量$/,
+]
 const keys = ['model', 'spec', 'iw', 'sw', 'oscr']
+
+/**
+ * 猜测是不是型号名
+ * @param {string} model
+ */
+const _isLikeModel = model => model && /^[A-Za-z]/.test(model)
 
 class ExcelService extends Service {
   /**
@@ -14,15 +26,7 @@ class ExcelService extends Service {
         sheet.data.forEach(item => item[0] && acc.add(item[0]))
         return acc
       }, new Set()),
-    ].filter(this._isLikeModel)
-  }
-
-  /**
-   * 猜测是不是型号名
-   * @param {string} model
-   */
-  _isLikeModel(model) {
-    return model && /^[A-Za-z]/.test(model)
+    ].filter(_isLikeModel)
   }
 
   /**
@@ -43,19 +47,17 @@ class ExcelService extends Service {
 
   /**
    * 洗去杂数据
-   * @param {array} data
+   * @param {array} line 一行数据
    */
-  _clean(data) {
-    return data.filter(
-      line => this._isLikeModel(line[0]) || fields[0].test(line[0])
-    )
+  _clean(line) {
+    return _isLikeModel(line[0]) || fields[0].test(line[0])
   }
 
   /**
-   * 抽取组装数据
+   * 组装数据
    * @param {array} data
    */
-  _read(data) {
+  _trans(data) {
     const [head, ...models] = data
     const modelIndexs = fields.map(field => head.findIndex(f => field.test(f)))
     return models.map(m => {
@@ -67,13 +69,25 @@ class ExcelService extends Service {
     })
   }
 
+  /**
+   * 把单芯线转成 string
+   * @param {object} model
+   */
+  _transSpec(model) {
+    const spec = model.spec
+    model.spec = spec === 1 ? '1.0' : spec + ''
+    return model
+  }
+
   getModels(sheets) {
     return sheets
       .filter(sheet => sheet.data.length)
-      .map(sheet => this._slice(this._clean(sheet.data)).map(this._read))
+      .map(sheet => sheet.data.filter(this._clean))
+      .map(data => this._slice(data).map(this._trans))
       .reduce((acc, val) => {
         return [...acc, ...val.reduce((a, v) => [...a, ...v], [])]
       }, [])
+      .map(this._transSpec)
       .sort((a, b) => {
         if (a.model < b.model) {
           return -1
