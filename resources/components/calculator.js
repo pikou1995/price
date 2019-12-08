@@ -12,11 +12,7 @@ export default function Calculator(props) {
   const history = useHistory()
   if (id) {
     if (!orderLoaded) {
-      dispatch(
-        fetchOrder(id, () => {
-          history.replace('/')
-        })
-      )
+      dispatch(fetchOrder(id)).catch(() => history.replace('/'))
       return null
     }
   } else {
