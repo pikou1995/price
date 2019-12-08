@@ -17,7 +17,8 @@ class ModelController extends Controller {
       const models = service.model.getModels(workSheetsFromBuffer)
       app.redis.set('models', JSON.stringify(models))
       ctx.body = 'OK'
-    } catch (error) {
+    } catch (e) {
+      ctx.logger.error(e)
       ctx.throw('文件错误')
     }
   }
