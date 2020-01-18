@@ -1,8 +1,10 @@
-const { ReactDOM, axios } = window
+import axios from 'axios'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import App from './app'
 ;(function() {
   const path = location.pathname
-  path !== '/logs' &&
+  ;/^\/logs\/?$/.test(path) ||
     axios.post('/api/logs', {
       time: new Date().getTime(),
       path,

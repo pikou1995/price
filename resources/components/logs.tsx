@@ -1,13 +1,14 @@
-const { React, antd } = window
-const { Table } = antd
-import { fetchLogs } from '../redux/logs'
+import * as React from 'react'
+import { Table } from 'antd'
+import { fetchLogs, Log, LogState, LogActionTypes } from '../redux/log'
 import { timeString } from '../utils'
+import { ThunkDispatch } from 'redux-thunk'
 
 const columns = [
   {
     key: 'time',
     title: 'time',
-    render: ({ time }) => timeString(time),
+    render: ({ time }: Log) => timeString(time),
   },
   {
     key: 'path',
@@ -21,8 +22,16 @@ const columns = [
   },
 ]
 
-export default function Logs(props) {
-  const { dispatch, logs, page, pageSize, total, loading, loaded } = props
+export interface LogProps {
+  dispatch: ThunkDispatch<LogState, undefined, LogActionTypes>
+  log: LogState
+}
+
+export default function Logs(props: LogProps) {
+  const {
+    dispatch,
+    log: { logs, page, pageSize, total, loading, loaded },
+  } = props
   if (!loaded && !loading) {
     dispatch(fetchLogs(page))
   }
