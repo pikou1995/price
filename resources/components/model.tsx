@@ -1,6 +1,12 @@
-const { React, antd } = window
-const { Table } = antd
-import { fetchModels } from '../redux'
+import * as React from 'react'
+import { Table } from 'antd'
+import {
+  fetchModels,
+  Model,
+  ModelState,
+  ModelActionTypes,
+} from '../redux/model'
+import { ThunkDispatch } from 'redux-thunk'
 
 const baseColumns = [
   {
@@ -8,7 +14,8 @@ const baseColumns = [
     dataIndex: 'model',
     key: 'model',
     filterMultiple: false,
-    onFilter: (value, record) => record.model === value,
+    onFilter: (value: string, record: Model) => record.model === value,
+    filters: [] as { text: string; value: string }[],
   },
   {
     title: '规格',
@@ -17,10 +24,18 @@ const baseColumns = [
   },
 ]
 
-export default function Model(props) {
+export interface ModelProps {
+  dispatch: ThunkDispatch<ModelState, undefined, ModelActionTypes>
+  model: ModelState
+  showInsulationWeight?: boolean
+  showSheathWeight?: boolean
+  showOscrWeight?: boolean
+  style?: React.CSSProperties
+}
+
+export default function Model(props: ModelProps) {
   const {
-    modelsLoaded,
-    models,
+    model: { modelsLoaded, models },
     dispatch,
     showInsulationWeight = true,
     showSheathWeight = true,

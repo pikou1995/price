@@ -1,17 +1,28 @@
-const { React, antd, ReactRouterDOM } = window
-const { Link } = ReactRouterDOM
-const { Button, Table, Popconfirm, Divider } = antd
-import { fetchOrders, fetchOrder, requestDeleleOrder } from '../redux'
+import * as React from 'react'
+import { Link } from 'react-router-dom'
+import { Button, Table, Popconfirm, Divider } from 'antd'
+import { fetchOrders, requestDeleleOrder } from '../redux/order/actions'
+import { OrderState, OrderActionTypes, Order } from '../redux/order/types'
+import { fetchOrder } from '../redux'
+import { ThunkDispatch } from 'redux-thunk'
 
-export default function History(props) {
-  const { ordersLoaded, dispatch, orders = [] } = props
+export interface HistoryProps {
+  dispatch: ThunkDispatch<OrderState, undefined, OrderActionTypes>
+  order: OrderState
+}
+
+export default function History(props: HistoryProps) {
+  const {
+    dispatch,
+    order: { ordersLoaded, orders = [] },
+  } = props
   !ordersLoaded && dispatch(fetchOrders())
 
   const columns = [
     {
       title: '#',
       key: 'index',
-      render: (_, __, i) => i + 1,
+      render: (_: any, __: any, i: number) => i + 1,
     },
     {
       title: '时间',
@@ -21,7 +32,7 @@ export default function History(props) {
     {
       title: '操作',
       key: 'action',
-      render: ({ id }) => [
+      render: ({ id }: Order) => [
         <Link to={'/' + id} key="download">
           <Button
             type="primary"

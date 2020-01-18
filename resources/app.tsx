@@ -1,13 +1,13 @@
-const { ReactRouterDOM, antd, ReactRedux } = window
-const {
-  BrowserRouter: Router,
+import * as React from 'react'
+import {
+  BrowserRouter as Router,
   Switch,
   Route,
   Link,
   useLocation,
-} = ReactRouterDOM
-const { Provider } = ReactRedux
-const { Menu, Icon, message } = antd
+} from 'react-router-dom'
+import { Menu, Icon, message } from 'antd'
+import {Provider} from 'react-redux'
 import store from './redux'
 import Calculator from './containers/calculator'
 import History from './containers/history'
@@ -70,13 +70,13 @@ export default function App() {
             <History />
           </Route>
           <Route path="/setting">
-            <Setting />
+            {/* <Setting /> */}
           </Route>
           <Route path="/logs">
             <Logs />
           </Route>
           <Route path={['/:id', '/']}>
-            <Calculator />
+            {/* <Calculator /> */}
           </Route>
         </Switch>
       </Router>

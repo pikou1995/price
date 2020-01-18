@@ -1,3 +1,5 @@
+import { State } from './redux'
+
 export default {
   CORE_TYPE: {
     CU: '铜',
@@ -43,32 +45,4 @@ export const trans = {
   AL: '铝箔屏蔽',
   mica: '云母带',
   EPDM: 'EPDM乙丙橡胶',
-}
-
-export const defaultState = {
-  id: 1,
-  cables: [],
-  priceConfig: {
-    core: {},
-    material: {},
-    insulationWeight: {},
-    iscrWeight: {},
-    oscrWeight: {},
-    sheathWeight: {},
-    innerSheathWeight: {},
-    exchangeRage: {},
-    swaWeight: {},
-  },
-  priceConfigLoaded: false,
-  orderLoaded: false,
-  orders: [],
-  modelsLoaded: false,
-  models: [],
-}
-
-export const defaultCable = {
-  coreType: 'CU',
-  mica: '0',
-  swa: '0',
-  innerSheath: '0',
 }
