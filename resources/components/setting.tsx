@@ -1,7 +1,9 @@
-const { React, antd } = window
-const { Button, Upload, Icon, Modal, Row, Col, message } = antd
+import * as React from 'react'
+import { Button, Upload, Icon, Modal, Row, Col, message } from 'antd'
 import MaterialSetting from './material-setting'
-import { fetchModels } from '../redux'
+import { fetchModels, ModelState, ModelActionTypes } from '../redux/model'
+import { ThunkDispatch } from 'redux-thunk'
+import { PriceConfigState, PriceConfigActionTypes } from '../redux/price-config'
 
 function clearLocalStorage() {
   Modal.confirm({
@@ -14,13 +16,27 @@ function clearLocalStorage() {
   })
 }
 
-export default function Setting(props) {
+export interface SettingProps {
+  priceConfigDispatch: ThunkDispatch<
+    PriceConfigState,
+    undefined,
+    PriceConfigActionTypes
+  >
+  modelDispatch: ThunkDispatch<ModelState, undefined, ModelActionTypes>
+  priceConfig: PriceConfigState
+}
+
+export default function Setting(props: SettingProps) {
+  const { priceConfig, priceConfigDispatch, modelDispatch } = props
   return (
     <div style={{ padding: 15 }}>
       <Row>
         <Col xs={24} sm={12}>
           <h2>材料价格</h2>
-          <MaterialSetting {...props} />
+          <MaterialSetting
+            priceConfig={priceConfig}
+            dispatch={priceConfigDispatch}
+          />
           <h2>型号管理</h2>
           <Upload name="file" action="/api/models/file" accept=".xls,.xlsx">
             <Button>
@@ -32,10 +48,9 @@ export default function Setting(props) {
             block
             style={{ margin: '12px 0' }}
             onClick={() =>
-              props
-                .dispatch(fetchModels())
+              modelDispatch(fetchModels())
                 .then(() => message.success('更新成功'))
-                .catch(e => message.error('更新失败:' + e))
+                .catch((e: Error) => message.error('更新失败:' + e))
             }
           >
             更新型号

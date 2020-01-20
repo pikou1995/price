@@ -1,10 +1,24 @@
-const { React, antd } = window
-const { Input, Form } = antd
-import { fetchPriceConfig, updatePriceConfig } from '../redux'
+import * as React from 'react'
+import { Input, Form } from 'antd'
+import {
+  fetchPriceConfig,
+  updatePriceConfig,
+  PriceConfigState,
+  PriceConfigActionTypes,
+} from '../redux/price-config'
 import { trans } from '../config'
+import { ThunkDispatch } from 'redux-thunk'
 
-export default function MaterialSetting(props) {
-  const { priceConfigLoaded, dispatch, priceConfig } = props
+export interface MaterialSettingProps {
+  dispatch: ThunkDispatch<PriceConfigState, undefined, PriceConfigActionTypes>
+  priceConfig: PriceConfigState
+}
+
+export default function MaterialSetting(props: MaterialSettingProps) {
+  const {
+    dispatch,
+    priceConfig: { priceConfigLoaded, priceConfig },
+  } = props
   if (!priceConfigLoaded) {
     props.dispatch(fetchPriceConfig())
     return null

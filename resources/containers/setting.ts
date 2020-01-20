@@ -1,4 +1,8 @@
 import { connect } from 'react-redux'
 import Setting from '../components/setting'
+import { State } from '../redux'
+import { Dispatch } from 'react'
 
-export default connect(state => state)(Setting)
+const mapStateToProps = ({ priceConfig }: State) => ({ priceConfig })
+const mapDispatchToProps = (dispatch: Dispatch) => ({})
+export default connect(mapStateToProps, mapDispatchToProps)(Setting)
