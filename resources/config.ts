@@ -38,7 +38,7 @@ export default {
   SHEATH: ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料'],
 }
 
-export const trans = {
+export const trans: { [index: string]: string } = {
   CU: '纯铜',
   TC: '镀锡铜',
   STEEL: '钢丝',

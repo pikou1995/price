@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Dispatch } from 'redux'
+import { ThunkAction } from 'redux-thunk'
 
 export type Price = {
   [index: string]: number
@@ -58,14 +59,20 @@ export function updatePriceConfig<K extends keyof PriceConfig>(
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
 
+type ThunkResult<R> = ThunkAction<
+  R,
+  PriceConfigState,
+  undefined,
+  PriceConfigActionTypes
+>
+
 /**
  * async action creators
  */
-export function fetchPriceConfig() {
-  return function(dispatch: Dispatch) {
-    axios.get('/api/config').then(res => {
-      dispatch(setPriceConfig(res.data))
-    })
+export function fetchPriceConfig(): ThunkResult<Promise<void>> {
+  return async function(dispatch) {
+    const res = await axios.get('/api/config')
+    dispatch(setPriceConfig(res.data))
   }
 }
 
