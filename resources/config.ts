@@ -1,42 +1,47 @@
-import { State } from './redux'
+import { CoreType } from './redux/cable/types'
 
-export default {
-  CORE_TYPE: {
-    CU: '铜',
-    TC: '镀锡铜',
-    // OTHER: '其他'
-  },
-  CORE_NUM: new Array(20).fill(null).map((_, i) => i + 1),
-  AREA: [
-    '0.75',
-    '1.0',
-    '1.5',
-    '2.5',
-    '4',
-    '6',
-    '10',
-    '16',
-    '25',
-    '35',
-    '50',
-    '70',
-    '95',
-    '120',
-    '150',
-    '185',
-    '240',
-  ],
-  // 单位 g/cm³
-  DENSITY: {
-    CU: 8.9,
-    TC: 8.9,
-    OTHER: 1,
-  },
-  SWA: ['0.9', '1.25', '1.6', '2'],
-  SWA_WASTE: 0.85,
-  INSULATION: ['XLPE', 'PVC', 'PE', 'WDZ'],
-  SHEATH: ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料'],
+export const CORE_TYPE: { [index in CoreType]: string } = {
+  CU: '铜',
+  TC: '镀锡铜',
+  // OTHER: '其他',
 }
+
+export const CORE_NUM = new Array(20).fill(null).map((_, i) => i + 1)
+
+export const AREA = [
+  '0.75',
+  '1.0',
+  '1.5',
+  '2.5',
+  '4',
+  '6',
+  '10',
+  '16',
+  '25',
+  '35',
+  '50',
+  '70',
+  '95',
+  '120',
+  '150',
+  '185',
+  '240',
+]
+
+// 单位 g/cm³
+export const DENSITY = {
+  CU: 8.9,
+  TC: 8.9,
+  OTHER: 1,
+}
+
+export const SWA = ['0.9', '1.25', '1.6', '2']
+
+export const SWA_WASTE = 0.85
+
+export const INSULATION = ['XLPE', 'PVC', 'PE', 'WDZ']
+
+export const SHEATH = ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料']
 
 export const trans: { [index: string]: string } = {
   CU: '纯铜',

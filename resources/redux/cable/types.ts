@@ -1,6 +1,6 @@
-type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料'
-type CoreType = 'CU' | 'TC'
-type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ'
+export type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料'
+export type CoreType = 'CU' | 'TC'
+export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ'
 
 export type Cable = {
   id: number
@@ -20,7 +20,7 @@ export type Cable = {
   swa: 0 | 0.9 | 1.25 | 1.6 | 2
   coreArea?: number
   /** 内护套 */
-  innerSheath: '0' | Sheath
+  innerSheath: 0 | Sheath
 }
 
 export const defaultCable: Cable = {
@@ -28,7 +28,7 @@ export const defaultCable: Cable = {
   coreType: 'CU',
   mica: 0,
   swa: 0,
-  innerSheath: '0',
+  innerSheath: 0,
 }
 
 export type CableState = {

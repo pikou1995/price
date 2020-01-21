@@ -1,8 +1,12 @@
-const { React, antd } = window
-const { Drawer, Button } = antd
-import MaterialSetting from './material-setting'
+import * as React from 'react'
+import { Drawer, Button } from 'antd'
+import MaterialSetting, { MaterialSettingProps } from './material-setting'
 
-export default class MaterialSettingDrawer extends React.Component {
+export interface MaterialSettingDrawerProps extends MaterialSettingProps {
+  style?: React.CSSProperties 
+}
+
+export default class MaterialSettingDrawer extends React.Component<MaterialSettingDrawerProps> {
   state = { visible: false }
 
   showDrawer = () => {

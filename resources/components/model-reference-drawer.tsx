@@ -1,8 +1,14 @@
-const { React, antd } = window
-const { Drawer, Icon } = antd
-import Model from './model'
+import * as React from 'react'
+import { Drawer, Icon } from 'antd'
+import Model, { ModelProps } from './model'
 
-export default class ModelReferenceDrawer extends React.Component {
+export interface ModelReferenceDrawerProps extends ModelProps {
+  spec: string
+}
+
+export default class ModelReferenceDrawer extends React.Component<
+  ModelReferenceDrawerProps
+> {
   state = { visible: false }
 
   showDrawer = () => {
@@ -18,7 +24,11 @@ export default class ModelReferenceDrawer extends React.Component {
   }
 
   render() {
-    const { models = [], spec, showOscrWeight = true } = this.props
+    const {
+      model: { models = [] },
+      spec,
+      showOscrWeight = true,
+    } = this.props
     return (
       <span>
         <Icon
@@ -34,9 +44,12 @@ export default class ModelReferenceDrawer extends React.Component {
           <Model
             {...this.props}
             style={{ margin: -24 }}
-            models={models.filter(
-              m => m.spec === spec && (!showOscrWeight || m.oscr)
-            )}
+            model={{
+              modelsLoaded: true,
+              models: models.filter(
+                m => m.spec === spec && (!showOscrWeight || m.oscr)
+              ),
+            }}
           />
         </Drawer>
       </span>

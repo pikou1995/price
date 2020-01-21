@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Table } from 'antd'
-import { fetchLogs, Log, LogState, LogActionTypes } from '../redux/log'
+import { fetchLogs, Log, LogState } from '../redux/log'
 import { timeString } from '../utils'
-import { ThunkDispatch } from 'redux-thunk'
+import { Dispatch } from '../redux'
 
 const columns = [
   {
@@ -23,7 +23,7 @@ const columns = [
 ]
 
 export interface LogProps {
-  dispatch: ThunkDispatch<LogState, undefined, LogActionTypes>
+  dispatch: Dispatch
   log: LogState
 }
 

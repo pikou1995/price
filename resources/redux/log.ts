@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Dispatch } from 'redux'
 import { ThunkAction } from 'redux-thunk'
+import { ThunkResult } from '.'
 
 export type Log = {
   time: number
@@ -47,8 +48,6 @@ export function setLogs(
 export function setLoading(loading: boolean): LogActionTypes {
   return { type: SET_LOADING, loading }
 }
-
-type ThunkResult<R> = ThunkAction<R, LogState, undefined, LogActionTypes>
 
 export function fetchLogs(page = 1, pageSize = 10): ThunkResult<Promise<void>> {
   return async function(dispatch) {

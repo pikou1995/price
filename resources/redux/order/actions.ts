@@ -3,12 +3,14 @@ import {
   SAVE_ORDER,
   SET_ORDERS,
   DELETE_ORDER,
+  SET_ORDER,
   Order,
-  OrderState,
+  SaveOrderCallback,
 } from './types'
 import axios from 'axios'
-import { Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk'
+import { ThunkResult } from '..'
+import { setCables } from '../cable/actions'
+import { setPriceConfig } from '../price-config'
 
 /**
  * 保存清单
@@ -16,13 +18,10 @@ import { ThunkAction } from 'redux-thunk'
  * @param {number} id 有 id 是更新, 无 id 是新增
  * @param {Function} callback 保存成功后在 sync-middleware.js 里面回调
  */
-export function saveOrder({
-  id,
-  callback,
-}: {
-  id: Order['id']
-  callback: Function
-}): OrderActionTypes {
+export function saveOrder(
+  id: Order['id'],
+  callback: SaveOrderCallback
+): OrderActionTypes {
   return { type: SAVE_ORDER, id, callback }
 }
 
@@ -34,7 +33,9 @@ export function deleteOrder(id: Order['id']): OrderActionTypes {
   return { type: DELETE_ORDER, id }
 }
 
-type ThunkResult<R> = ThunkAction<R, OrderState, undefined, OrderActionTypes>
+export function setOrder(): OrderActionTypes {
+  return { type: SET_ORDER }
+}
 
 export function fetchOrders(): ThunkResult<Promise<void>> {
   return async function(dispatch) {
@@ -47,5 +48,15 @@ export function requestDeleleOrder(id: number): ThunkResult<void> {
   return function(dispatch) {
     axios.delete('/api/orders/' + id)
     dispatch(deleteOrder(id))
+  }
+}
+
+export function fetchOrder(id: number): ThunkResult<Promise<void>> {
+  return async function(dispatch) {
+    const res = await axios.get('/api/orders/' + id)
+    const { cables, priceConfig } = res.data
+    dispatch(setCables(cables))
+    dispatch(setPriceConfig(priceConfig))
+    dispatch(setOrder())
   }
 }

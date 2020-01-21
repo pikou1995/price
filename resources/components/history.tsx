@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Table, Popconfirm, Divider } from 'antd'
-import { fetchOrders, requestDeleleOrder } from '../redux/order/actions'
-import { OrderState, OrderActionTypes, Order } from '../redux/order/types'
-import { fetchOrder } from '../redux'
-import { ThunkDispatch } from 'redux-thunk'
+import { fetchOrders, requestDeleleOrder, fetchOrder } from '../redux/order/actions'
+import { OrderState, Order } from '../redux/order/types'
+import { Dispatch } from '../redux'
 
 export interface HistoryProps {
-  dispatch: ThunkDispatch<OrderState, undefined, OrderActionTypes>
+  dispatch: Dispatch
   order: OrderState
 }
 

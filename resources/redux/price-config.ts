@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Dispatch } from 'redux'
 import { ThunkAction } from 'redux-thunk'
+import { ThunkResult } from '.'
 
 export type Price = {
   [index: string]: number
@@ -54,17 +55,10 @@ export function setPriceConfig(
 export function updatePriceConfig<K extends keyof PriceConfig>(
   c: K,
   k: string,
-  v: string | number
+  v: number
 ): PriceConfigActionTypes {
   return { type: UPDATE_PRICE_CONFIG, c, k, v }
 }
-
-type ThunkResult<R> = ThunkAction<
-  R,
-  PriceConfigState,
-  undefined,
-  PriceConfigActionTypes
->
 
 /**
  * async action creators
@@ -105,6 +99,7 @@ export function priceConfigReducer(
     case UPDATE_PRICE_CONFIG: {
       const { c, k, v } = action
       return {
+        priceConfigLoaded: true,
         priceConfig: {
           ...priceConfig,
           [c]: {

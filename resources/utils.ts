@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { State } from './redux'
+import { RootState } from './redux'
 import { Cable } from './redux/cable/types'
 
 export function isDebuging() {
@@ -14,7 +14,7 @@ export function timeString(timestamp?: number) {
   return moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export function getInitialState(): State {
+export function getInitialState(): RootState {
   const prevState = localStorage.getItem('app')
   if (prevState) {
     try {
