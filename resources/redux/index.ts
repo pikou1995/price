@@ -1,39 +1,43 @@
-import { createStore, applyMiddleware, Dispatch, combineReducers } from 'redux'
-import thunkMiddleware from 'redux-thunk'
-import axios from 'axios'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import thunkMiddleware, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 
 import syncMiddleware from './sync-middleware'
 import { getInitialState } from '../utils'
-import { logReducer, LogState } from './log'
-import { setCables } from './cable/actions'
+import { logReducer, LogState, LogActionTypes } from './log'
 import { cableReducer } from './cable/reducers'
 import {
-  setPriceConfig,
   priceConfigReducer,
   PriceConfigState,
+  PriceConfigActionTypes,
 } from './price-config'
 import { orderReducer } from './order/reducers'
-import { modelReducer, ModelState } from './model'
-import { CableState } from './cable/types'
-import { OrderState } from './order/types'
+import { modelReducer, ModelState, ModelActionTypes } from './model'
+import { CableState, CableActionTypes } from './cable/types'
+import { OrderState, OrderActionTypes } from './order/types'
 
-export function fetchOrder(id: number) {
-  return function(dispatch: Dispatch) {
-    return axios.get('/api/orders/' + id).then(res => {
-      const { cables, priceConfig } = res.data
-      dispatch(setCables(cables))
-      dispatch(setPriceConfig(priceConfig))
-    })
-  }
-}
-
-export type State = {
+export type RootState = {
   cable: CableState
   priceConfig: PriceConfigState
   model: ModelState
   order: OrderState
   log: LogState
 }
+
+export type RootActionTypes =
+  | CableActionTypes
+  | OrderActionTypes
+  | LogActionTypes
+  | ModelActionTypes
+  | PriceConfigActionTypes
+
+export type Dispatch = ThunkDispatch<RootState, undefined, RootActionTypes>
+
+export type ThunkResult<R> = ThunkAction<
+  R,
+  RootState,
+  undefined,
+  RootActionTypes
+>
 
 const initialState = getInitialState()
 

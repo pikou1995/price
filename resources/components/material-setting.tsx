@@ -4,13 +4,12 @@ import {
   fetchPriceConfig,
   updatePriceConfig,
   PriceConfigState,
-  PriceConfigActionTypes,
 } from '../redux/price-config'
 import { trans } from '../config'
-import { ThunkDispatch } from 'redux-thunk'
+import { Dispatch } from '../redux'
 
 export interface MaterialSettingProps {
-  dispatch: ThunkDispatch<PriceConfigState, undefined, PriceConfigActionTypes>
+  dispatch: Dispatch
   priceConfig: PriceConfigState
 }
 
@@ -20,7 +19,7 @@ export default function MaterialSetting(props: MaterialSettingProps) {
     priceConfig: { priceConfigLoaded, priceConfig },
   } = props
   if (!priceConfigLoaded) {
-    props.dispatch(fetchPriceConfig())
+    dispatch(fetchPriceConfig())
     return null
   }
 
@@ -36,7 +35,7 @@ export default function MaterialSetting(props: MaterialSettingProps) {
               type="number"
               value={material[i]}
               onChange={e =>
-                dispatch(updatePriceConfig('material', i, e.target.value))
+                dispatch(updatePriceConfig('material', i, +e.target.value))
               }
             />
           </Form.Item>

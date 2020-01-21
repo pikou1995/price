@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk'
+import { ThunkResult } from '.'
 
 export type Model = {
   model: string
@@ -27,8 +26,6 @@ export type ModelActionTypes = SetModelsAction
 export function setModels(models: Array<Model>): ModelActionTypes {
   return { type: SET_MODELS, models }
 }
-
-type ThunkResult<R> = ThunkAction<R, ModelState, undefined, ModelActionTypes>
 
 export function fetchModels(): ThunkResult<Promise<void>> {
   return async function(dispatch) {

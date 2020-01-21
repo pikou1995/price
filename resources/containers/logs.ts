@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Logs from '../components/logs'
-import { State } from '../redux'
+import { RootState } from '../redux'
 
-export default connect(({ log }: State) => ({
+export default connect(({ log }: RootState) => ({
   log,
 }))(Logs)

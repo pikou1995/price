@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
 import History from '../components/history'
-import { State } from '../redux'
+import { RootState } from '../redux'
 
-export default connect(({ order }: State) => ({ order }))(History)
+export default connect(({ order }: RootState) => ({ order }))(History)

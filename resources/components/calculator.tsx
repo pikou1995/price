@@ -1,18 +1,35 @@
-const { React, antd, ReactRouterDOM } = window
-const { Button, message } = antd
-const { useParams, useHistory } = ReactRouterDOM
+import * as React from 'react'
+import { Button, message } from 'antd'
+import { useParams, useHistory } from 'react-router-dom'
 import Cables from './cables'
 import Price from './price'
 import Report from './report'
-import { saveOrder, fetchPriceConfig, fetchOrder } from '../redux'
+import { Dispatch } from '../redux'
+import { PriceConfigState, fetchPriceConfig } from '../redux/price-config'
+import { saveOrder, fetchOrder } from '../redux/order/actions'
+import { CableState } from '../redux/cable/types'
+import { ModelState } from '../redux/model'
+import { OrderState } from '../redux/order/types'
 
-export default function Calculator(props) {
-  const { dispatch, priceConfigLoaded, orderLoaded } = props
+export interface CalculatorProps {
+  dispatch: Dispatch
+  priceConfig: PriceConfigState
+  cable: CableState
+  model: ModelState
+  order: OrderState
+}
+
+export default function Calculator(props: CalculatorProps) {
+  const {
+    dispatch,
+    priceConfig: { priceConfigLoaded },
+    order: { orderLoaded },
+  } = props
   const { id } = useParams()
   const history = useHistory()
   if (id) {
     if (!orderLoaded) {
-      dispatch(fetchOrder(id)).catch(() => history.replace('/'))
+      dispatch(fetchOrder(+id)).catch(() => history.replace('/'))
       return null
     }
   } else {
@@ -35,7 +52,7 @@ export default function Calculator(props) {
         icon="cloud-upload"
         onClick={() =>
           dispatch(
-            saveOrder(id, ({ id }) => {
+            saveOrder(+id, ({ id }) => {
               message.success('保存成功')
               id && history.replace('/' + id)
             })

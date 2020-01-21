@@ -1,16 +1,18 @@
-const { React, antd } = window
-const { Input, Form } = antd
+import * as React from 'react'
+import { Input, Form } from 'antd'
 import { getCableKey } from '../utils'
 import MaterialSettingDrawer from './material-setting-drawer'
 import ModelReferenceDrawer from './model-reference-drawer'
-import { updatePriceConfig } from '../redux'
+import { updatePriceConfig, PriceConfig } from '../redux/price-config'
+import { Cable } from '../redux/cable/types'
+import { CalculatorProps } from './calculator'
 
-function genPriceFields(cables = []) {
-  const insulationWeights = new Set()
-  const sheathWeights = new Set()
-  const innerSheathWeights = new Set()
-  const iscrWeights = new Set()
-  const oscrWeights = new Set()
+function genPriceFields(cables: Cable[] = []) {
+  const insulationWeights: Set<Cable['coreNum']> = new Set()
+  const sheathWeights: Set<string> = new Set()
+  const innerSheathWeights: Set<string> = new Set()
+  const iscrWeights: Set<string> = new Set()
+  const oscrWeights: Set<string> = new Set()
 
   cables.forEach(c => {
     const { coreNum, coreArea, innerSheath, pair, iscr, oscr } = c
@@ -23,7 +25,7 @@ function genPriceFields(cables = []) {
     const key = getCableKey(c)
     sheathWeights.add(key)
 
-    if (innerSheath && innerSheath !== '0') {
+    if (innerSheath) {
       innerSheathWeights.add(key)
     }
 
@@ -42,8 +44,12 @@ function genPriceFields(cables = []) {
   }
 }
 
-export default function Price(props) {
-  const { priceConfig, cables, dispatch } = props
+export default function Price(props: CalculatorProps) {
+  const {
+    priceConfig: { priceConfig },
+    cable: { cables },
+    dispatch,
+  } = props
   const {
     insulationWeights,
     iscrWeights,
@@ -52,8 +58,11 @@ export default function Price(props) {
     sheathWeights,
   } = genPriceFields(cables)
 
-  const setPriceConfig = (c, k, e) =>
-    dispatch(updatePriceConfig(c, k, e.target.value))
+  const setPriceConfig = <K extends keyof PriceConfig>(
+    c: K,
+    k: string,
+    e: any
+  ) => dispatch(updatePriceConfig(c, k, +e.target.value))
 
   return (
     <Form layout="vertical" wrapperCol={{ xs: 24, sm: 12 }}>
@@ -63,7 +72,7 @@ export default function Price(props) {
             <Input
               type="number"
               value={priceConfig.insulationWeight[i]}
-              onChange={e => setPriceConfig('insulationWeight', i, e)}
+              onChange={e => setPriceConfig('insulationWeight', i + '', e)}
               suffix={
                 priceConfig.insulationWeight[i] ? (
                   <span />
@@ -72,7 +81,7 @@ export default function Price(props) {
                     {...props}
                     showSheathWeight={false}
                     showOscrWeight={false}
-                    spec={i}
+                    spec={i + ''}
                   />
                 )
               }

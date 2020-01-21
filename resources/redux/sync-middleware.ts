@@ -1,17 +1,21 @@
 import axios from 'axios'
-import * as _ from 'underscore'
+import { throttle, debounce } from 'underscore'
 import { timeString } from '../utils'
-import { State } from '.'
-import { Store, Action } from 'redux'
+import { RootState, RootActionTypes } from '.'
+import { Store } from 'redux'
 import { UPDATE_PRICE_CONFIG, PriceConfig } from './price-config'
-import { SAVE_ORDER, OrderActionTypes } from './order/types'
+import { SAVE_ORDER, SaveOrderCallback } from './order/types'
 
-const savePriceConfig = _.debounce((config: PriceConfig) => {
+const savePriceConfig = debounce((config: PriceConfig) => {
   axios.put('/api/config', config)
 }, 500)
 
-const saveOrder = _.throttle(
-  (orderId: number, { cable, priceConfig }: State, cb: Function) => {
+const saveOrder = throttle(
+  (
+    orderId: number,
+    { cable, priceConfig }: RootState,
+    cb?: SaveOrderCallback
+  ) => {
     const order = {
       cable,
       priceConfig,
@@ -27,18 +31,20 @@ const saveOrder = _.throttle(
   1000
 )
 
-const saveCablesStateLocal = ({ cable, model }: State) => {
+const saveCablesStateLocal = ({ cable, model }: RootState) => {
   localStorage.setItem('app', JSON.stringify({ cable, model }))
 }
 
-const syncMiddleware = (store: Store) => (next: Function) => (action: any) => {
+const syncMiddleware = (store: Store) => (next: Function) => (
+  action: RootActionTypes
+) => {
   next(action)
 
-  const state = store.getState()
+  const state = store.getState() as RootState
 
   switch (action.type) {
     case UPDATE_PRICE_CONFIG:
-      savePriceConfig(state.priceConfig)
+      savePriceConfig(state.priceConfig.priceConfig)
       return
     case SAVE_ORDER:
       saveOrder(action.id, state, action.callback)

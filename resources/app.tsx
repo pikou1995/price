@@ -70,13 +70,13 @@ export default function App() {
             <History />
           </Route>
           <Route path="/setting">
-            {/* <Setting /> */}
+            <Setting />
           </Route>
           <Route path="/logs">
             <Logs />
           </Route>
           <Route path={['/:id', '/']}>
-            {/* <Calculator /> */}
+            <Calculator />
           </Route>
         </Switch>
       </Router>

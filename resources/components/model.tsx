@@ -1,12 +1,7 @@
 import * as React from 'react'
 import { Table } from 'antd'
-import {
-  fetchModels,
-  Model,
-  ModelState,
-  ModelActionTypes,
-} from '../redux/model'
-import { ThunkDispatch } from 'redux-thunk'
+import { fetchModels, Model, ModelState } from '../redux/model'
+import { Dispatch } from '../redux'
 
 const baseColumns = [
   {
@@ -25,7 +20,7 @@ const baseColumns = [
 ]
 
 export interface ModelProps {
-  dispatch: ThunkDispatch<ModelState, undefined, ModelActionTypes>
+  dispatch: Dispatch
   model: ModelState
   showInsulationWeight?: boolean
   showSheathWeight?: boolean
