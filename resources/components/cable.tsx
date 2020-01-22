@@ -79,9 +79,9 @@ export default class CableComponent extends React.Component<CableProps> {
           value={cable.mica}
           onChange={this.onChange('mica')}
         >
-          <Option value="0">无云母带</Option>
-          <Option value="1">一层云母</Option>
-          <Option value="2">二层云母</Option>
+          <Option value={0}>无云母带</Option>
+          <Option value={1}>一层云母</Option>
+          <Option value={2}>二层云母</Option>
         </Select>
         <Select
           placeholder="绝缘材料"
@@ -136,7 +136,7 @@ export default class CableComponent extends React.Component<CableProps> {
           value={cable.innerSheath}
           onChange={this.onChange('innerSheath')}
         >
-          <Option value="0" key="0">
+          <Option value={0} key="0">
             无内护套
           </Option>
           {SHEATH.map(i => (
@@ -151,7 +151,7 @@ export default class CableComponent extends React.Component<CableProps> {
           value={cable.swa}
           onChange={this.onChange('swa')}
         >
-          <Option value="0">无SWA</Option>
+          <Option value={0}>无SWA</Option>
           {SWA.map(i => (
             <Option value={i} key={i}>
               {i}MM

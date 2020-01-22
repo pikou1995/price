@@ -14,11 +14,11 @@ export function timeString(timestamp?: number) {
   return moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export function getInitialState(): RootState {
+export function getInitialState(): RootState | undefined {
   const prevState = localStorage.getItem('app')
   if (prevState) {
     try {
-      const state = JSON.parse(prevState)
+      const state = JSON.parse(prevState) as RootState
 
       if (['cable'].every(key => key in state)) {
         return state

@@ -58,6 +58,8 @@ export default function Price(props: CalculatorProps) {
     sheathWeights,
   } = genPriceFields(cables)
 
+  console.log(priceConfig);
+  
   const setPriceConfig = <K extends keyof PriceConfig>(
     c: K,
     k: string,
@@ -71,10 +73,10 @@ export default function Price(props: CalculatorProps) {
           <Form.Item label={`请输入[${i}]绝缘重量`} key={i}>
             <Input
               type="number"
-              value={priceConfig.insulationWeight[i]}
+              value={priceConfig.insulationWeight[i + '']}
               onChange={e => setPriceConfig('insulationWeight', i + '', e)}
               suffix={
-                priceConfig.insulationWeight[i] ? (
+                priceConfig.insulationWeight[i + ''] ? (
                   <span />
                 ) : (
                   <ModelReferenceDrawer

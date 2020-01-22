@@ -9,7 +9,7 @@ import { PriceConfigState, fetchPriceConfig } from '../redux/price-config'
 import { saveOrder, fetchOrder } from '../redux/order/actions'
 import { CableState } from '../redux/cable/types'
 import { ModelState } from '../redux/model'
-import { OrderState } from '../redux/order/types'
+import { OrderState, Order } from '../redux/order/types'
 
 export interface CalculatorProps {
   dispatch: Dispatch
@@ -52,7 +52,7 @@ export default function Calculator(props: CalculatorProps) {
         icon="cloud-upload"
         onClick={() =>
           dispatch(
-            saveOrder(+id, ({ id }) => {
+            saveOrder(id ? +id : undefined, ({ id }: Order) => {
               message.success('保存成功')
               id && history.replace('/' + id)
             })

@@ -7,182 +7,193 @@ import { Cable } from '../redux/cable/types'
 import { Dispatch } from '../redux'
 import { CalculatorProps } from './calculator'
 
-function toFixed(p: number, num = 2) {
-  return isNaN(p) ? '' : p.toFixed(num)
-}
+class CableReport {
+  constructor(private cable: Cable, private priceConfig: PriceConfig) {}
 
-function corePrice(c: Cable, priceConfig: PriceConfig) {
-  const { coreNum, coreArea, coreType, pair } = c
-  const weight = coreNum * coreArea * DENSITY[coreType]
-  const p = weight * priceConfig.material[coreType]
-  return toFixed(pair ? p * 2 : p)
-}
-
-function micaPrice(c: Cable, priceConfig: PriceConfig) {
-  const { coreNum, mica } = c
-  if (mica === 0) {
-    return '0'
+  private toFixed(p: number, num = 2) {
+    return isNaN(p) ? '' : p.toFixed(num)
   }
 
-  const p = coreNum * mica * priceConfig.material.mica
-  return toFixed(p)
-}
-
-function insulationPrice(c: Cable, priceConfig: PriceConfig) {
-  const { coreNum, coreArea, insulation, pair } = c
-  const p =
-    coreNum *
-    priceConfig.insulationWeight[coreArea] *
-    priceConfig.material[insulation]
-  return toFixed(pair ? p * 2 : p)
-}
-
-function iscrPrice(c: Cable, priceConfig: PriceConfig) {
-  const { coreNum, pair, iscr } = c
-
-  if (!(pair && iscr)) {
-    return '0'
+  private drainWireWeight(drainWire: number) {
+    return Math.pow(drainWire / 2, 2) * Math.PI * DENSITY.TC
   }
 
-  const key = getCableKey(c)
-  const p = priceConfig.material.AL * priceConfig.iscrWeight[key] * coreNum
-  return toFixed(p)
-}
-
-function drainWireWeight(drainWire: number) {
-  return Math.pow(drainWire / 2, 2) * Math.PI * DENSITY.TC
-}
-
-function iDrainWirePrice(c: Cable, priceConfig: PriceConfig) {
-  const { coreNum, pair, iscr, iDrainWire } = c
-
-  if (!(pair && iscr && iDrainWire)) {
-    return '0'
+  private segmentedPrice(price: number) {
+    return price
+      ? [1.1, 1.15, 1.2, 1.25, 1.3].map(r => this.toFixed(r * price)).join('/')
+      : ''
   }
 
-  const p = drainWireWeight(+iDrainWire) * priceConfig.material.TC * coreNum
-  return toFixed(p)
-}
-
-function oscrPrice(c: Cable, priceConfig: PriceConfig) {
-  const { pair, oscr } = c
-  if (!(pair && oscr)) {
-    return '0'
+  get id(): number {
+    return this.cable.id
   }
 
-  const key = getCableKey(c)
-  const p = priceConfig.material.AL * priceConfig.oscrWeight[key]
-  return toFixed(p)
-}
-
-function drainWirePrice(c: Cable, priceConfig: PriceConfig) {
-  const { pair, oscr, drainWire } = c
-
-  if (!(pair && oscr && drainWire)) {
-    return '0'
+  get type(): string {
+    return getCableKey(this.cable)
   }
 
-  const p = drainWireWeight(+drainWire) * priceConfig.material.TC
-  return toFixed(p)
-}
+  get corePrice(): string {
+    const { coreNum, coreArea, coreType, pair } = this.cable
+    const { material } = this.priceConfig
 
-function swaPrice(c: Cable, priceConfig: PriceConfig) {
-  const { swa, diameter } = c
-  if (swa === 0) {
-    return '0'
-  }
-  const num = (+diameter * Math.PI) / swa
-  const weight = num * SWA_WASTE * priceConfig.swaWeight[swa]
-  const p = weight * priceConfig.material.STEEL
-  return toFixed(p)
-}
+    if (!coreNum || !coreArea) {
+      return '0'
+    }
 
-function innerSheathPrice(c: Cable, priceConfig: PriceConfig) {
-  const { innerSheath } = c
-  if (innerSheath === 0) {
-    return '0'
+    const weight = coreNum * coreArea * DENSITY[coreType]
+    const p = weight * material[coreType]
+    return this.toFixed(pair ? p * 2 : p)
   }
 
-  const key = getCableKey(c)
-  const p =
-    priceConfig.innerSheathWeight[key] * priceConfig.material[innerSheath]
-  return toFixed(p)
-}
+  get micaPrice(): string {
+    const { coreNum, mica } = this.cable
+    const { material } = this.priceConfig
+    if (mica === 0 || !coreNum) {
+      return '0'
+    }
 
-function sheathPrice(c: Cable, priceConfig: PriceConfig) {
-  const { sheath } = c
-  const key = getCableKey(c)
-  const p = priceConfig.sheathWeight[key] * priceConfig.material[sheath]
-  return toFixed(p)
-}
-
-/**
- * 各部分的价格
- */
-export type CablePrice = {
-  corePrice: string
-  micaPrice: string
-  insulationPrice: string
-  iscrPrice: string
-  iDrainWirePrice: string
-  oscrPrice: string
-  drainWirePrice: string
-  innerSheathPrice: string
-  swaPrice: string
-  sheathPrice: string
-}
-
-/**
- * 总价等
- */
-export type CalPriceResult = {
-  id: number
-  type?: string
-  price?: CablePrice
-  total?: string
-  totalUSD?: string
-}
-
-function calPrice(cable: Cable, priceConfig: PriceConfig): CalPriceResult {
-  const { coreNum, coreArea, id } = cable
-  if (!coreNum || !coreArea) {
-    return { id }
-  }
-  const price: CablePrice = {
-    corePrice: corePrice(cable, priceConfig),
-    micaPrice: micaPrice(cable, priceConfig),
-    insulationPrice: insulationPrice(cable, priceConfig),
-    iscrPrice: iscrPrice(cable, priceConfig),
-    iDrainWirePrice: iDrainWirePrice(cable, priceConfig),
-    oscrPrice: oscrPrice(cable, priceConfig),
-    drainWirePrice: drainWirePrice(cable, priceConfig),
-    innerSheathPrice: innerSheathPrice(cable, priceConfig),
-    swaPrice: swaPrice(cable, priceConfig),
-    sheathPrice: sheathPrice(cable, priceConfig),
+    const p = coreNum * mica * material.mica
+    return this.toFixed(p)
   }
 
-  const total = toFixed(
-    Object.values(price).reduce(
-      (accumulator, currentValue) => accumulator + +currentValue,
-      0
+  get insulationPrice(): string {
+    const { coreNum, coreArea, insulation, pair } = this.cable
+    const { insulationWeight, material } = this.priceConfig
+
+    if (!insulation || !coreArea || !coreNum) {
+      return '0'
+    }
+
+    const p = coreNum * insulationWeight[coreArea] * material[insulation]
+    return this.toFixed(pair ? p * 2 : p)
+  }
+  get iscrPrice(): string {
+    const { coreNum, pair, iscr } = this.cable
+    const { material, iscrWeight } = this.priceConfig
+
+    if (!(pair && iscr) || !coreNum) {
+      return '0'
+    }
+
+    const p = material.AL * iscrWeight[this.type] * coreNum
+    return this.toFixed(p)
+  }
+
+  get iDrainWirePrice(): string {
+    const { coreNum, pair, iscr, iDrainWire } = this.cable
+    const { material } = this.priceConfig
+
+    if (!(pair && iscr && iDrainWire) || !coreNum) {
+      return '0'
+    }
+
+    const p = this.drainWireWeight(+iDrainWire) * material.TC * coreNum
+    return this.toFixed(p)
+  }
+
+  get oscrPrice(): string {
+    const { pair, oscr } = this.cable
+    const { material, oscrWeight } = this.priceConfig
+    if (!(pair && oscr)) {
+      return '0'
+    }
+
+    const p = material.AL * oscrWeight[this.type]
+    return this.toFixed(p)
+  }
+
+  get drainWirePrice(): string {
+    const { coreNum, pair, iscr, iDrainWire } = this.cable
+    const { material } = this.priceConfig
+
+    if (!(pair && iscr && iDrainWire) || !coreNum) {
+      return '0'
+    }
+
+    const p = this.drainWireWeight(+iDrainWire) * material.TC * coreNum
+    return this.toFixed(p)
+  }
+
+  get innerSheathPrice(): string {
+    const { innerSheath } = this.cable
+    const { material, innerSheathWeight } = this.priceConfig
+    if (innerSheath === 0) {
+      return '0'
+    }
+
+    const p = innerSheathWeight[this.type] * material[innerSheath]
+    return this.toFixed(p)
+  }
+  get swaPrice(): string {
+    const { swa, diameter } = this.cable
+    const { material, swaWeight } = this.priceConfig
+    if (swa === 0 || !diameter) {
+      return '0'
+    }
+    const num = (+diameter * Math.PI) / swa
+    const weight = num * SWA_WASTE * swaWeight[swa]
+    const p = weight * material.STEEL
+    return this.toFixed(p)
+  }
+
+  get sheathPrice(): string {
+    const { sheath } = this.cable
+    if (!sheath) {
+      return '0'
+    }
+    const { material, sheathWeight } = this.priceConfig
+    const p = sheathWeight[this.type] * material[sheath]
+    return this.toFixed(p)
+  }
+
+  get price() {
+    const {
+      corePrice,
+      micaPrice,
+      insulationPrice,
+      iscrPrice,
+      iDrainWirePrice,
+      oscrPrice,
+      drainWirePrice,
+      innerSheathPrice,
+      swaPrice,
+      sheathPrice,
+    } = this
+    return {
+      corePrice,
+      micaPrice,
+      insulationPrice,
+      iscrPrice,
+      iDrainWirePrice,
+      oscrPrice,
+      drainWirePrice,
+      innerSheathPrice,
+      swaPrice,
+      sheathPrice,
+    }
+  }
+
+  get total(): string {
+    return this.toFixed(
+      Object.values(this.price).reduce(
+        (accumulator, currentValue) => accumulator + +currentValue,
+        0
+      )
     )
-  )
-
-  const totalUSD = toFixed(priceConfig.exchangeRage.USD * +total)
-
-  return {
-    id: cable.id,
-    type: getCableKey(cable),
-    price,
-    total,
-    totalUSD,
   }
-}
 
-function segmentedPrice(price: number) {
-  return (
-    price && [1.1, 1.15, 1.2, 1.25, 1.3].map(r => toFixed(r * price)).join('/')
-  )
+  get RMBUp(): string {
+    return this.segmentedPrice(+this.total)
+  }
+
+  get totalUSD(): string {
+    const { exchangeRage } = this.priceConfig
+    return this.toFixed(exchangeRage.USD * +this.total)
+  }
+
+  get USDUp(): string {
+    return this.segmentedPrice(+this.totalUSD)
+  }
 }
 
 const columns = [
@@ -198,8 +209,8 @@ const columns = [
   },
   {
     title: 'RMB上浮10%/15%/20%/25%/30%',
+    dataIndex: 'RMBUp',
     key: 'RMBUp',
-    render: ({ total }: CalPriceResult) => segmentedPrice(+total),
   },
 ]
 
@@ -211,15 +222,15 @@ const USDColumns = [
   },
   {
     title: 'USD上浮10%/15%/20%/25%/30%',
+    dataIndex: 'USDUp',
     key: 'USDUp',
-    render: ({ totalUSD }: CalPriceResult) => segmentedPrice(+totalUSD),
   },
 ]
 
 const expandedColumns: {
   title: string
-  dataIndex: keyof CablePrice
-  key: keyof CablePrice
+  dataIndex: keyof CableReport['price']
+  key: keyof CableReport['price']
 }[] = [
   {
     title: '金属',
@@ -299,7 +310,7 @@ export default class Report extends React.Component<
       priceConfig: { priceConfig },
       cable: { cables = [] },
     } = this.props
-    const data = cables.map(cable => calPrice(cable, priceConfig))
+    const data = cables.map(cable => new CableReport(cable, priceConfig))
     const { showUSD } = this.state
     return (
       <div>
@@ -313,14 +324,14 @@ export default class Report extends React.Component<
           dataSource={data}
           rowKey="id"
           pagination={false}
-          expandedRowRender={({ price }: CalPriceResult) =>
-            price ? (
+          expandedRowRender={(cable: CableReport) =>
+            cable ? (
               <Table
                 columns={expandedColumns.filter(
-                  ({ dataIndex }) => price[dataIndex]
+                  ({ dataIndex }) => cable[dataIndex]
                 )}
                 rowKey={(_: any, i: number) => i + ''}
-                dataSource={[price]}
+                dataSource={[cable]}
                 pagination={false}
               ></Table>
             ) : null

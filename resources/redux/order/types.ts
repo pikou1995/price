@@ -20,7 +20,7 @@ export type SaveOrderCallback = (order?: Order) => void
 
 interface SaveOrderAction {
   type: typeof SAVE_ORDER
-  id: Order['id']
+  id?: Order['id']
   callback?: SaveOrderCallback
 }
 

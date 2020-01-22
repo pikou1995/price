@@ -19,8 +19,8 @@ import { setPriceConfig } from '../price-config'
  * @param {Function} callback 保存成功后在 sync-middleware.js 里面回调
  */
 export function saveOrder(
-  id: Order['id'],
-  callback: SaveOrderCallback
+  id?: Order['id'],
+  callback?: SaveOrderCallback
 ): OrderActionTypes {
   return { type: SAVE_ORDER, id, callback }
 }
