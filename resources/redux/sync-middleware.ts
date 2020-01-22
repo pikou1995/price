@@ -13,7 +13,7 @@ const savePriceConfig = debounce((config: PriceConfig) => {
 
 const saveOrder = throttle(
   (
-    orderId: number,
+    orderId: number | undefined,
     { cable, priceConfig }: RootState,
     cb?: SaveOrderCallback
   ) => {

@@ -58,8 +58,6 @@ export default function Price(props: CalculatorProps) {
     sheathWeights,
   } = genPriceFields(cables)
 
-  console.log(priceConfig);
-  
   const setPriceConfig = <K extends keyof PriceConfig>(
     c: K,
     k: string,
