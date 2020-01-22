@@ -49,7 +49,7 @@ export function cableReducer(
           {
             ...cables.find((c: Cable) => c.id === action.id),
             id: genId(),
-          },
+          } as Cable,
         ],
       }
     case DELETE_CABLE:

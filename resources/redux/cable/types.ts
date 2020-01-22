@@ -5,11 +5,13 @@ export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ'
 export type Cable = {
   id: number
   coreType: CoreType
+  /** 绝缘材料 */
   insulation?: Insulation
   iscr?: boolean
   oscr?: boolean
   iDrainWire?: string
   drainWire?: string
+  /** 钢丝铠装直径 */
   diameter?: string
   sheath?: Sheath
   pair?: false

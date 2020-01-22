@@ -5,6 +5,7 @@ import { RootState, RootActionTypes } from '.'
 import { Store } from 'redux'
 import { UPDATE_PRICE_CONFIG, PriceConfig } from './price-config'
 import { SAVE_ORDER, SaveOrderCallback } from './order/types'
+import { Cable } from './cable/types'
 
 const savePriceConfig = debounce((config: PriceConfig) => {
   axios.put('/api/config', config)
@@ -26,7 +27,7 @@ const saveOrder = throttle(
       ? axios.put('/api/orders/' + orderId, order)
       : axios.post('/api/orders', order)
 
-    promise.then(res => cb && cb(res.data || {}))
+    promise.then(res => cb && cb(res.data || {} as Cable))
   },
   1000
 )
