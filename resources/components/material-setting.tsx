@@ -7,6 +7,7 @@ import {
 } from '../redux/price-config'
 import { trans } from '../config'
 import { Dispatch } from '../redux'
+import { Material } from '../redux/cable/types'
 
 export interface MaterialSettingProps {
   dispatch: Dispatch
@@ -24,7 +25,7 @@ export default function MaterialSetting(props: MaterialSettingProps) {
   }
 
   const { material } = priceConfig
-  const keys = Object.keys(material).sort()
+  const keys = Object.keys(material).sort() as Array<Material>
 
   return (
     <Form layout="vertical">

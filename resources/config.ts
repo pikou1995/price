@@ -1,4 +1,4 @@
-import { CoreType } from './redux/cable/types'
+import { CoreType, Material } from './redux/cable/types'
 
 export const CORE_TYPE: { [index in CoreType]: string } = {
   CU: '铜',
@@ -43,11 +43,16 @@ export const INSULATION = ['XLPE', 'PVC', 'PE', 'WDZ']
 
 export const SHEATH = ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料']
 
-export const trans: { [index: string]: string } = {
+export const trans: { [index in Material]: string } = {
   CU: '纯铜',
   TC: '镀锡铜',
   STEEL: '钢丝',
   AL: '铝箔屏蔽',
   mica: '云母带',
   EPDM: 'EPDM乙丙橡胶',
+  XLPE: 'XLPE',
+  PVC: 'PVC',
+  PE: 'PE',
+  WDZ: 'WDZ',
+  AB隔氧层料: 'AB隔氧层料',
 }

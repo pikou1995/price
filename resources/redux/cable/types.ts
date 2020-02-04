@@ -1,6 +1,8 @@
 export type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料'
 export type CoreType = 'CU' | 'TC'
 export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ'
+export type Material = Sheath | CoreType | Insulation | 'STEEL' | 'AL' | 'mica'
+export type SWA = '0.9' | '1.25' | '1.6' | '2'
 
 export type Cable = {
   id: number

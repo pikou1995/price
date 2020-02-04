@@ -1,25 +1,36 @@
 import axios from 'axios'
-import { Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk'
 import { ThunkResult } from '.'
+import { Material, SWA } from './cable/types'
 
 export type Price = {
   [index: string]: number
 }
+
 export type Weight = {
   [index: string]: number
 }
 
+type materialConfig = {
+  [index in Material]: number
+}
+
+type exchangeRageConfig = {
+  USD: number
+}
+
+type swaWeightConfig = {
+    [index in SWA]: number
+}
+
 export type PriceConfig = {
-  exchangeRage: Price
-  core: Price
-  material: Price
-  insulationWeight: Weight
+  exchangeRage: exchangeRageConfig
+  material: materialConfig
   iscrWeight: Weight
+  insulationWeight: Weight
   oscrWeight: Weight
   sheathWeight: Weight
   innerSheathWeight: Weight
-  swaWeight: Weight
+  swaWeight: swaWeightConfig
 }
 
 export type PriceConfigState = {
@@ -72,15 +83,14 @@ export function fetchPriceConfig(): ThunkResult<Promise<void>> {
 
 const initialState: PriceConfigState = {
   priceConfig: {
-    core: {},
-    material: {},
+    material: <materialConfig>{},
     insulationWeight: {},
     iscrWeight: {},
     oscrWeight: {},
     sheathWeight: {},
     innerSheathWeight: {},
-    exchangeRage: {},
-    swaWeight: {},
+    exchangeRage: <exchangeRageConfig>{},
+    swaWeight: <swaWeightConfig>{},
   },
   priceConfigLoaded: false,
 }
