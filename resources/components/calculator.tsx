@@ -40,11 +40,11 @@ export default function Calculator(props: CalculatorProps) {
 
   return (
     <div style={{ padding: 15 }}>
-      <h2>第一步: 配置规格</h2>
-      <Cables {...props}></Cables>
-      <h2>第二步: 配置价格</h2>
+      <h2>配置价格</h2>
       <Price {...props}></Price>
-      <h2>第三步: 计算结果</h2>
+      <h2>配置规格</h2>
+      <Cables {...props}></Cables>
+      <h2>统计</h2>
       <Report {...props}></Report>
       <Button
         type="primary"

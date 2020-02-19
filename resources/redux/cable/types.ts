@@ -31,8 +31,10 @@ export const defaultCable: Cable = {
   id: 1,
   coreType: 'CU',
   mica: 0,
+  insulation: 'XLPE',
   swa: 0,
   innerSheath: 0,
+  sheath: 'WDZ',
 }
 
 export type CableState = {
