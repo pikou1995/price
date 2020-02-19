@@ -4,10 +4,9 @@ import { DENSITY, SWA_WASTE } from '../config'
 import { getCableKey } from '../utils'
 import { PriceConfig } from '../redux/price-config'
 import { Cable } from '../redux/cable/types'
-import { Dispatch } from '../redux'
 import { CalculatorProps } from './calculator'
 
-class CableReport {
+export class CableReport {
   constructor(private cable: Cable, private priceConfig: PriceConfig) {}
 
   private toFixed(p: number, num = 2) {
@@ -40,8 +39,8 @@ class CableReport {
       return '0'
     }
 
-    const weight = coreNum * coreArea * DENSITY[coreType]
-    const p = weight * material[coreType]
+    const weight = +(coreArea * DENSITY[coreType]).toFixed(1)
+    const p = coreNum * weight * material[coreType]
     return this.toFixed(pair ? p * 2 : p)
   }
 
@@ -207,11 +206,11 @@ const columns = [
     dataIndex: 'total',
     key: 'total',
   },
-  {
-    title: 'RMB上浮10%/15%/20%/25%/30%',
-    dataIndex: 'RMBUp',
-    key: 'RMBUp',
-  },
+  // {
+  //   title: 'RMB上浮10%/15%/20%/25%/30%',
+  //   dataIndex: 'RMBUp',
+  //   key: 'RMBUp',
+  // },
 ]
 
 const USDColumns = [

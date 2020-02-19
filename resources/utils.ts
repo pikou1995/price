@@ -30,5 +30,5 @@ export function getInitialState(): RootState | undefined {
 }
 
 export function getCableKey({ coreNum, coreArea, pair }: Cable) {
-  return `${coreNum}*${pair ? '2*' : ''}${coreArea}`
+  return `${coreNum || ''}*${pair ? '2*' : ''}${coreArea || ''}`
 }
