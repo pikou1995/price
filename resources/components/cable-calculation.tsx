@@ -15,7 +15,9 @@ const columns: {
   { title: 'oscr铝箔总屏价格', dataIndex: 'oscrPrice' },
   { title: '单排流线价格', dataIndex: 'iDrainWirePrice' },
   { title: '总排流线价格', dataIndex: 'drainWirePrice' },
+  { title: 'swa钢丝铠装价格', dataIndex: 'swaPrice' },
   { title: '内护套价格', dataIndex: 'innerSheathPrice' },
+  { title: '外护套价格', dataIndex: 'sheathPrice' },
 ]
 
 export default class CableCalculationComponent extends React.Component<
