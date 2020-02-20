@@ -283,15 +283,15 @@ export class CableReport {
     const log: string[] = []
 
     const PI = 3.14
-    const num = (+diameter * PI) / swa
+    const num = this.toFixed((+diameter * PI) / swa)
     log.push(`钢丝数量(${num}) = 直径(${diameter}) * ${PI} / 钢丝直径(${swa})`)
 
-    const weight = num * SWA_WASTE * swaWeight[swa]
+    const weight = this.toFixed(+num * SWA_WASTE * swaWeight[swa])
     log.push(
       `钢丝重量(${weight}) = ↸(${num}) * 绞距浪费(${SWA_WASTE}) * 钢丝单位重量(${swaWeight[swa]})`
     )
 
-    const p = this.toFixed(weight * material.STEEL)
+    const p = this.toFixed(+weight * material.STEEL)
     log.push(`总价(${p}) = ↸(${weight}) * 钢单价(${material.STEEL})`)
 
     this.setLog('swaPrice', log)
