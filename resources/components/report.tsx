@@ -6,21 +6,54 @@ import { PriceConfig } from '../redux/price-config'
 import { Cable } from '../redux/cable/types'
 import { CalculatorProps } from './calculator'
 
+export class CalculationFields<T> {
+  corePrice: T
+  micaPrice: T
+  insulationPrice: T
+  iscrPrice: T
+  iDrainWirePrice: T
+  oscrPrice: T
+  drainWirePrice: T
+  innerSheathPrice: T
+  swaPrice: T
+  sheathPrice: T
+}
+
 export class CableReport {
   constructor(private cable: Cable, private priceConfig: PriceConfig) {}
 
-  private toFixed(p: number, num = 2) {
-    return isNaN(p) ? '' : p.toFixed(num)
+  private logs: CalculationFields<string[]> = {
+    corePrice: [],
+    micaPrice: [],
+    insulationPrice: [],
+    iscrPrice: [],
+    iDrainWirePrice: [],
+    oscrPrice: [],
+    drainWirePrice: [],
+    innerSheathPrice: [],
+    swaPrice: [],
+    sheathPrice: [],
   }
 
-  private drainWireWeight(drainWire: number) {
-    return Math.pow(drainWire / 2, 2) * Math.PI * DENSITY.TC
+  private toFixed(p: number, num = 2) {
+    return isNaN(p) ? '' : p.toFixed(num)
   }
 
   private segmentedPrice(price: number) {
     return price
       ? [1.1, 1.15, 1.2, 1.25, 1.3].map(r => this.toFixed(r * price)).join('/')
       : ''
+  }
+
+  getLog(field: keyof CalculationFields<string[]>): string[] {
+    return this.logs[field]
+  }
+
+  private setLog(
+    field: keyof CalculationFields<string[]>,
+    log: string[]
+  ): void {
+    this.logs[field] = log
   }
 
   get id(): number {
@@ -38,10 +71,29 @@ export class CableReport {
     if (!coreNum || !coreArea) {
       return '0'
     }
+    const log: string[] = []
 
-    const weight = +(coreArea * DENSITY[coreType]).toFixed(1)
-    const p = coreNum * weight * material[coreType]
-    return this.toFixed(pair ? p * 2 : p)
+    const weight = +this.toFixed(coreArea * DENSITY[coreType], 1)
+
+    log.push(
+      `${coreType}单位重量(${weight}) = 平方(${coreArea}) * 密度(${DENSITY[coreType]})`
+    )
+
+    const unitP = (weight * material[coreType]).toFixed(2)
+
+    log.push(
+      `单位价格(${unitP}) = ↸(${weight}) * ${coreType}单价(${material[coreType]})`
+    )
+
+    const p = this.toFixed(coreNum * +unitP * (pair ? 2 : 1))
+
+    log.push(
+      `总价(${p}) = ${pair ? `${coreNum}对` : `数量(${coreNum})`} * ↸(${unitP})`
+    )
+
+    this.setLog('corePrice', log)
+
+    return p
   }
 
   get micaPrice(): string {
@@ -51,8 +103,17 @@ export class CableReport {
       return '0'
     }
 
-    const p = coreNum * mica * material.mica
-    return this.toFixed(p)
+    const log: string[] = []
+
+    log.push(`mica单价 = ${material.mica}`)
+
+    const p = this.toFixed(coreNum * mica * material.mica)
+
+    log.push(`总价(${p}) = 数量(${coreNum}) * ${mica}层 * ↸(${material.mica})`)
+
+    this.setLog('micaPrice', log)
+
+    return p
   }
 
   get insulationPrice(): string {
@@ -63,54 +124,131 @@ export class CableReport {
       return '0'
     }
 
-    const p = coreNum * insulationWeight[coreArea] * material[insulation]
-    return this.toFixed(pair ? p * 2 : p)
+    const log: string[] = []
+
+    log.push(`${insulation}单位重量 = ${insulationWeight[coreArea]}`)
+
+    const unitP = this.toFixed(
+      insulationWeight[coreArea] * material[insulation]
+    )
+
+    log.push(
+      `单位价格(${unitP}) = ↸(${insulationWeight[coreArea]}) * ${insulation}单价(${material[insulation]})`
+    )
+
+    const p = this.toFixed(coreNum * +unitP * (pair ? 2 : 1))
+
+    log.push(
+      `总价(${p}) = ${pair ? `${coreNum}对` : `数量(${coreNum})`} * ↸(${unitP})`
+    )
+
+    this.setLog('insulationPrice', log)
+
+    return p
   }
+
   get iscrPrice(): string {
-    const { coreNum, pair, iscr } = this.cable
+    const { coreNum, iscr } = this.cable
     const { material, iscrWeight } = this.priceConfig
 
-    if (!(pair && iscr) || !coreNum) {
+    if (!iscr || !coreNum) {
       return '0'
     }
 
-    const p = material.AL * iscrWeight[this.type] * coreNum
-    return this.toFixed(p)
-  }
+    const log: string[] = []
 
-  get iDrainWirePrice(): string {
-    const { coreNum, pair, iscr, iDrainWire } = this.cable
-    const { material } = this.priceConfig
+    log.push(`iscr单位重量 = ${iscrWeight[this.type]}`)
 
-    if (!(pair && iscr && iDrainWire) || !coreNum) {
-      return '0'
-    }
+    const unitP = this.toFixed(material.AL * iscrWeight[this.type])
+    log.push(
+      `单位价格(${unitP}) = ↸(${iscrWeight[this.type]}) * 铝单价(${
+        material.AL
+      })`
+    )
 
-    const p = this.drainWireWeight(+iDrainWire) * material.TC * coreNum
-    return this.toFixed(p)
+    const p = this.toFixed(coreNum * +unitP)
+    log.push(`总价(${p}) = 数量(${coreNum}) * ↸(${unitP})`)
+
+    this.setLog('iscrPrice', log)
+
+    return p
   }
 
   get oscrPrice(): string {
-    const { pair, oscr } = this.cable
+    const { oscr } = this.cable
     const { material, oscrWeight } = this.priceConfig
-    if (!(pair && oscr)) {
+    if (!oscr) {
       return '0'
     }
 
-    const p = material.AL * oscrWeight[this.type]
-    return this.toFixed(p)
+    const log: string[] = []
+
+    const weight = oscrWeight[this.type]
+    log.push(`oscr单位重量 = ${weight}`)
+
+    const p = this.toFixed(material.AL * weight)
+    log.push(`总价(${p}) = ↸(${weight}) * 铝单价(${material.AL})`)
+
+    this.setLog('oscrPrice', log)
+
+    return p
+  }
+
+  get iDrainWirePrice(): string {
+    const { coreNum, iscr, iDrainWire } = this.cable
+    const { material } = this.priceConfig
+
+    if (!(iscr && iDrainWire) || !coreNum) {
+      return '0'
+    }
+
+    const log: string[] = []
+
+    const PI = 3.14
+    log.push(`单排流线直径 = ${iDrainWire}`)
+
+    const volume = this.toFixed(Math.pow(+iDrainWire / 2, 2) * PI)
+    log.push(`排流线体积(${volume}): ↸(${iDrainWire} / 2) ^ 2 * 3.14`)
+
+    const weight = this.toFixed(+volume * DENSITY.TC)
+    log.push(`排流线重量(${weight}) = ↸(${volume}) * 镀锡铜密度(${DENSITY.TC})`)
+
+    const unitP = this.toFixed(+weight * material.TC)
+    log.push(`单位价格(${unitP}) = ↸(${weight}) * ${material.TC}`)
+
+    const p = this.toFixed(+unitP * coreNum)
+    log.push(`总价(${p}) = 数量(${coreNum}) * ↸(${unitP})`)
+
+    this.setLog('iDrainWirePrice', log)
+
+    return p
   }
 
   get drainWirePrice(): string {
-    const { coreNum, pair, iscr, iDrainWire } = this.cable
+    const { coreNum, iscr, drainWire } = this.cable
     const { material } = this.priceConfig
 
-    if (!(pair && iscr && iDrainWire) || !coreNum) {
+    if (!(iscr && drainWire) || !coreNum) {
       return '0'
     }
 
-    const p = this.drainWireWeight(+iDrainWire) * material.TC * coreNum
-    return this.toFixed(p)
+    const log: string[] = []
+
+    const PI = 3.14
+    log.push(`总排流线直径 = ${drainWire}`)
+
+    const volume = this.toFixed(Math.pow(+drainWire / 2, 2) * PI)
+    log.push(`排流线体积(${volume}): ↸(${drainWire} / 2) ^ 2 * 3.14`)
+
+    const weight = this.toFixed(+volume * DENSITY.TC)
+    log.push(`排流线重量${weight} = ↸(${volume}) * 镀锡铜密度(${DENSITY.TC})`)
+
+    const p = this.toFixed(+weight * material.TC)
+    log.push(`总价${p} = ↸(${weight}) * 铝单价(${material.TC})`)
+
+    this.setLog('drainWirePrice', log)
+
+    return p
   }
 
   get innerSheathPrice(): string {
@@ -120,19 +258,45 @@ export class CableReport {
       return '0'
     }
 
-    const p = innerSheathWeight[this.type] * material[innerSheath]
-    return this.toFixed(p)
+    const log: string[] = []
+
+    const weight = innerSheathWeight[this.type]
+    log.push(`${innerSheath}单位重量 = ${weight}`)
+
+    const p = this.toFixed(weight * material[innerSheath])
+    log.push(
+      `总价(${p}) = ↸(${weight}) * ${innerSheath}单价(${material[innerSheath]})`
+    )
+
+    this.setLog('innerSheathPrice', log)
+
+    return p
   }
+
   get swaPrice(): string {
     const { swa, diameter } = this.cable
     const { material, swaWeight } = this.priceConfig
     if (swa === 0 || !diameter) {
       return '0'
     }
-    const num = (+diameter * Math.PI) / swa
+
+    const log: string[] = []
+
+    const PI = 3.14
+    const num = (+diameter * PI) / swa
+    log.push(`钢丝数量(${num}) = 直径(${diameter}) * ${PI} / 钢丝直径(${swa})`)
+
     const weight = num * SWA_WASTE * swaWeight[swa]
-    const p = weight * material.STEEL
-    return this.toFixed(p)
+    log.push(
+      `钢丝重量(${weight}) = ↸(${num}) * 绞距浪费(${SWA_WASTE}) * 钢丝单位重量(${swaWeight[swa]})`
+    )
+
+    const p = this.toFixed(weight * material.STEEL)
+    log.push(`总价(${p}) = ↸(${weight}) * 钢单价(${material.STEEL})`)
+
+    this.setLog('swaPrice', log)
+
+    return p
   }
 
   get sheathPrice(): string {
@@ -140,12 +304,23 @@ export class CableReport {
     if (!sheath) {
       return '0'
     }
+
     const { material, sheathWeight } = this.priceConfig
-    const p = sheathWeight[this.type] * material[sheath]
-    return this.toFixed(p)
+
+    const log: string[] = []
+
+    const weight = sheathWeight[this.type]
+    log.push(`${sheath}单位重量 = ${weight}`)
+
+    const p = this.toFixed(weight * material[sheath])
+    log.push(`总价(${p}) = ↸(${weight}) * ${sheath}单价(${material[sheath]})`)
+
+    this.setLog('sheathPrice', log)
+
+    return p
   }
 
-  get price() {
+  get price(): CalculationFields<string> {
     const {
       corePrice,
       micaPrice,
@@ -228,8 +403,8 @@ const USDColumns = [
 
 const expandedColumns: {
   title: string
-  dataIndex: keyof CableReport['price']
-  key: keyof CableReport['price']
+  dataIndex: keyof CalculationFields<string>
+  key: keyof CalculationFields<string>
 }[] = [
   {
     title: '金属',

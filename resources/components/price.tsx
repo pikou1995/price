@@ -9,8 +9,6 @@ export default function Price(props: CalculatorProps) {
     priceConfig: { priceConfig },
     dispatch,
   } = props
-  console.log(priceConfig);
-  
 
   const setPriceConfig = <K extends keyof PriceConfig>(
     c: K,
