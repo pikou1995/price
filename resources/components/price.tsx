@@ -9,6 +9,8 @@ export default function Price(props: CalculatorProps) {
     priceConfig: { priceConfig },
     dispatch,
   } = props
+  console.log(priceConfig);
+  
 
   const setPriceConfig = <K extends keyof PriceConfig>(
     c: K,
@@ -23,8 +25,8 @@ export default function Price(props: CalculatorProps) {
           type="number"
           prefix="$"
           suffix="USD"
-          value={priceConfig.exchangeRage.USD}
-          onChange={e => setPriceConfig('exchangeRage', 'USD', e)}
+          value={priceConfig.exchangeRate.USD}
+          onChange={e => setPriceConfig('exchangeRate', 'USD', e)}
         />
       </Form.Item>
       <Form.Item>

@@ -54,7 +54,10 @@ export function requestDeleleOrder(id: number): ThunkResult<void> {
 export function fetchOrder(id: number): ThunkResult<Promise<void>> {
   return async function(dispatch) {
     const res = await axios.get('/api/orders/' + id)
-    const { cables, priceConfig } = res.data
+    const {
+      cable: { cables },
+      priceConfig: { priceConfig },
+    } = res.data
     dispatch(setCables(cables))
     dispatch(setPriceConfig(priceConfig))
     dispatch(setOrder())

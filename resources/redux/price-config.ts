@@ -14,7 +14,7 @@ type materialConfig = {
   [index in Material]: number
 }
 
-type exchangeRageConfig = {
+type exchangeRateConfig = {
   USD: number
 }
 
@@ -23,7 +23,7 @@ type swaWeightConfig = {
 }
 
 export type PriceConfig = {
-  exchangeRage: exchangeRageConfig
+  exchangeRate: exchangeRateConfig
   material: materialConfig
   iscrWeight: Weight
   insulationWeight: Weight
@@ -89,7 +89,7 @@ const initialState: PriceConfigState = {
     oscrWeight: {},
     sheathWeight: {},
     innerSheathWeight: {},
-    exchangeRage: <exchangeRageConfig>{},
+    exchangeRate: <exchangeRateConfig>{},
     swaWeight: <swaWeightConfig>{},
   },
   priceConfigLoaded: false,
