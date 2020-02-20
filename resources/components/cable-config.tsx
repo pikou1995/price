@@ -6,7 +6,6 @@ import { Form, Switch, Input, Select } from 'antd'
 import { CORE_TYPE, INSULATION, SHEATH, SWA } from '../config'
 const { Option } = Select
 
-
 export default class CableConfigComponent extends React.Component<CableProps> {
   onChange = <K extends keyof Cable>(k: K) => (v: any) => {
     if (v.target) {
@@ -78,38 +77,36 @@ export default class CableConfigComponent extends React.Component<CableProps> {
             ))}
           </Select>
         </Form.Item>
-        {cable.pair && [
-          <Form.Item label="铝箔单屏" key="iscr">
-            <Switch
-              checked={cable.iscr}
-              onChange={checked => this.onChange('iscr')(checked)}
+        <Form.Item label="铝箔单屏" key="iscr">
+          <Switch
+            checked={cable.iscr}
+            onChange={checked => this.onChange('iscr')(checked)}
+          />
+        </Form.Item>
+        {cable.iscr && (
+          <Form.Item label="单排流线" key="iDrainWire">
+            <Input
+              value={cable.iDrainWire}
+              onChange={e => this.onChange('iDrainWire')(e.target.value)}
+              placeholder="单排流线直径"
             />
-          </Form.Item>,
-          cable.iscr && (
-            <Form.Item label="单排流线" key="iDrainWire">
-              <Input
-                value={cable.iDrainWire}
-                onChange={e => this.onChange('iDrainWire')(e.target.value)}
-                placeholder="单排流线重量"
-              />
-            </Form.Item>
-          ),
-          <Form.Item label="铝箔总屏" key="oscr">
-            <Switch
-              checked={cable.oscr}
-              onChange={checked => this.onChange('oscr')(checked)}
+          </Form.Item>
+        )}
+        <Form.Item label="铝箔总屏" key="oscr">
+          <Switch
+            checked={cable.oscr}
+            onChange={checked => this.onChange('oscr')(checked)}
+          />
+        </Form.Item>
+        {cable.oscr && (
+          <Form.Item label="总排流线" key="drainWire">
+            <Input
+              value={cable.drainWire}
+              onChange={e => this.onChange('drainWire')(e.target.value)}
+              placeholder="总排流线直径"
             />
-          </Form.Item>,
-          cable.oscr && (
-            <Form.Item label="总排流线" key="drainWire">
-              <Input
-                value={cable.drainWire}
-                onChange={e => this.onChange('drainWire')(e.target.value)}
-                placeholder="总排流线重量"
-              />
-            </Form.Item>
-          ),
-        ]}
+          </Form.Item>
+        )}
         <Form.Item label="内护套">
           <Select
             value={cable.innerSheath}

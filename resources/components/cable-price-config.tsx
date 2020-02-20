@@ -34,10 +34,8 @@ function genPriceFields(cable: Cable): PriceFields {
       innerSheathWeights.add(key)
     }
 
-    if (pair) {
-      iscr && iscrWeights.add(key)
-      oscr && oscrWeights.add(key)
-    }
+    iscr && iscrWeights.add(key)
+    oscr && oscrWeights.add(key)
   }
 
   return {
