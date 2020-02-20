@@ -186,8 +186,8 @@ export class CableReport {
   }
 
   get totalUSD(): string {
-    const { exchangeRage } = this.priceConfig
-    return this.toFixed(exchangeRage.USD * +this.total)
+    const { exchangeRate } = this.priceConfig
+    return this.toFixed(exchangeRate.USD * +this.total)
   }
 
   get USDUp(): string {
@@ -206,14 +206,14 @@ const columns = [
     dataIndex: 'total',
     key: 'total',
   },
-  // {
-  //   title: 'RMB上浮10%/15%/20%/25%/30%',
-  //   dataIndex: 'RMBUp',
-  //   key: 'RMBUp',
-  // },
 ]
 
 const USDColumns = [
+  {
+    title: 'RMB上浮10%/15%/20%/25%/30%',
+    dataIndex: 'RMBUp',
+    key: 'RMBUp',
+  },
   {
     title: '总价USD',
     dataIndex: 'totalUSD',
@@ -314,7 +314,7 @@ export default class Report extends React.Component<
     return (
       <div>
         <Form layout="inline">
-          <Form.Item label="显示美元价格">
+          <Form.Item label="显示美元价格和上浮价格">
             <Switch checked={showUSD} onChange={this.handleToggle('showUSD')} />
           </Form.Item>
         </Form>
@@ -327,7 +327,7 @@ export default class Report extends React.Component<
             cable ? (
               <Table
                 columns={expandedColumns.filter(
-                  ({ dataIndex }) => cable[dataIndex]
+                  ({ dataIndex }) => cable[dataIndex] !== '0'
                 )}
                 rowKey={(_: any, i: number) => i + ''}
                 dataSource={[cable]}

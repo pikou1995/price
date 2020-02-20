@@ -40,7 +40,7 @@ module.exports = appInfo => {
       oscrWeight: {},
       sheathWeight: {},
       innerSheathWeight: {},
-      exchangeRage: {
+      exchangeRate: {
         USD: 0.14,
       },
       swaWeight: {

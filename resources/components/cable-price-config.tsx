@@ -67,7 +67,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
     c: K,
     k: string,
     e: any
-  ) => dispatch(updatePriceConfig(c, k, +e.target.value))
+  ) => dispatch(updatePriceConfig(c, k, e.target.value))
 
   return (
     <Form labelCol={{ xs: 6 }} wrapperCol={{ xs: 18 }}>

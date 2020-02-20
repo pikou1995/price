@@ -32,7 +32,7 @@ export default class Cables extends React.Component<CablesProps> {
 
   render() {
     const {
-      cable: { cables },
+      cable: { cables = [] },
       dispatch,
       priceConfig,
       model,
