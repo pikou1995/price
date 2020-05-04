@@ -19,12 +19,13 @@ type exchangeRateConfig = {
 }
 
 type swaWeightConfig = {
-    [index in SWA]: number
+  [index in SWA]: number
 }
 
 export type PriceConfig = {
   exchangeRate: exchangeRateConfig
   material: materialConfig
+  coreWeight: Weight
   iscrWeight: Weight
   insulationWeight: Weight
   oscrWeight: Weight
@@ -75,7 +76,7 @@ export function updatePriceConfig<K extends keyof PriceConfig>(
  * async action creators
  */
 export function fetchPriceConfig(): ThunkResult<Promise<void>> {
-  return async function(dispatch) {
+  return async function (dispatch) {
     const res = await axios.get('/api/config')
     dispatch(setPriceConfig(res.data))
   }
@@ -84,6 +85,7 @@ export function fetchPriceConfig(): ThunkResult<Promise<void>> {
 const initialState: PriceConfigState = {
   priceConfig: {
     material: <materialConfig>{},
+    coreWeight: {},
     insulationWeight: {},
     iscrWeight: {},
     oscrWeight: {},

@@ -6,7 +6,7 @@ import { PriceConfig } from '../redux/price-config'
 import { Cable } from '../redux/cable/types'
 import { CalculatorProps } from './calculator'
 
-export class CalculationFields<T> {
+export interface CalculationFields<T> {
   corePrice: T
   micaPrice: T
   insulationPrice: T
@@ -20,7 +20,7 @@ export class CalculationFields<T> {
 }
 
 export class CableReport {
-  constructor(private cable: Cable, private priceConfig: PriceConfig) {}
+  constructor(private cable: Cable, private priceConfig: PriceConfig) { }
 
   private logs: CalculationFields<string[]> = {
     corePrice: [],
@@ -66,17 +66,17 @@ export class CableReport {
 
   get corePrice(): string {
     const { coreNum, coreArea, coreType, pair } = this.cable
-    const { material } = this.priceConfig
+    const { material, coreWeight } = this.priceConfig
 
     if (!coreNum || !coreArea) {
       return '0'
     }
     const log: string[] = []
 
-    const weight = +this.toFixed(coreArea * DENSITY[coreType], 1)
+    const weight = coreWeight[coreArea]
 
     log.push(
-      `${coreType}单位重量(${weight}) = 平方(${coreArea}) * 密度(${DENSITY[coreType]})`
+      `${coreType}单位重量 = ${weight}`
     )
 
     const unitP = (weight * material[coreType]).toFixed(2)
@@ -85,7 +85,7 @@ export class CableReport {
       `单位价格(${unitP}) = ↸(${weight}) * ${coreType}单价(${material[coreType]})`
     )
 
-    const p = this.toFixed(coreNum * +unitP * (pair ? 2 : 1))
+    const p = this.toFixed(+coreNum * +unitP * (pair ? 2 : 1))
 
     log.push(
       `总价(${p}) = ${pair ? `${coreNum}对` : `数量(${coreNum})`} * ↸(${unitP})`
@@ -107,7 +107,7 @@ export class CableReport {
 
     log.push(`mica单价 = ${material.mica}`)
 
-    const p = this.toFixed(coreNum * mica * material.mica)
+    const p = this.toFixed(+coreNum * mica * material.mica)
 
     log.push(`总价(${p}) = 数量(${coreNum}) * ${mica}层 * ↸(${material.mica})`)
 
@@ -136,7 +136,7 @@ export class CableReport {
       `单位价格(${unitP}) = ↸(${insulationWeight[coreArea]}) * ${insulation}单价(${material[insulation]})`
     )
 
-    const p = this.toFixed(coreNum * +unitP * (pair ? 2 : 1))
+    const p = this.toFixed(+coreNum * +unitP * (pair ? 2 : 1))
 
     log.push(
       `总价(${p}) = ${pair ? `${coreNum}对` : `数量(${coreNum})`} * ↸(${unitP})`
@@ -162,11 +162,11 @@ export class CableReport {
     const unitP = this.toFixed(material.AL * iscrWeight[this.type])
     log.push(
       `单位价格(${unitP}) = ↸(${iscrWeight[this.type]}) * 铝单价(${
-        material.AL
+      material.AL
       })`
     )
 
-    const p = this.toFixed(coreNum * +unitP)
+    const p = this.toFixed(+coreNum * +unitP)
     log.push(`总价(${p}) = 数量(${coreNum}) * ↸(${unitP})`)
 
     this.setLog('iscrPrice', log)
@@ -216,7 +216,7 @@ export class CableReport {
     const unitP = this.toFixed(+weight * material.TC)
     log.push(`单位价格(${unitP}) = ↸(${weight}) * ${material.TC}`)
 
-    const p = this.toFixed(+unitP * coreNum)
+    const p = this.toFixed(+unitP * +coreNum)
     log.push(`总价(${p}) = 数量(${coreNum}) * ↸(${unitP})`)
 
     this.setLog('iDrainWirePrice', log)
@@ -406,57 +406,57 @@ const expandedColumns: {
   dataIndex: keyof CalculationFields<string>
   key: keyof CalculationFields<string>
 }[] = [
-  {
-    title: '金属',
-    dataIndex: 'corePrice',
-    key: 'corePrice',
-  },
-  {
-    title: '云母',
-    dataIndex: 'micaPrice',
-    key: 'micaPrice',
-  },
-  {
-    title: '绝缘',
-    dataIndex: 'insulationPrice',
-    key: 'insulationPrice',
-  },
-  {
-    title: 'ISCR铝箔单屏',
-    dataIndex: 'iscrPrice',
-    key: 'iscrPrice',
-  },
-  {
-    title: '单排流线',
-    dataIndex: 'iDrainWirePrice',
-    key: 'iDrainWirePrice',
-  },
-  {
-    title: 'OSCR铝箔总屏蔽',
-    dataIndex: 'oscrPrice',
-    key: 'oscrPrice',
-  },
-  {
-    title: '总排流线',
-    dataIndex: 'drainWirePrice',
-    key: 'drainWirePrice',
-  },
-  {
-    title: '内护套',
-    dataIndex: 'innerSheathPrice',
-    key: 'innerSheathPrice',
-  },
-  {
-    title: '钢丝铠装',
-    dataIndex: 'swaPrice',
-    key: 'swaPrice',
-  },
-  {
-    title: '外护套',
-    dataIndex: 'sheathPrice',
-    key: 'sheathPrice',
-  },
-]
+    {
+      title: '金属',
+      dataIndex: 'corePrice',
+      key: 'corePrice',
+    },
+    {
+      title: '云母',
+      dataIndex: 'micaPrice',
+      key: 'micaPrice',
+    },
+    {
+      title: '绝缘',
+      dataIndex: 'insulationPrice',
+      key: 'insulationPrice',
+    },
+    {
+      title: 'ISCR铝箔单屏',
+      dataIndex: 'iscrPrice',
+      key: 'iscrPrice',
+    },
+    {
+      title: '单排流线',
+      dataIndex: 'iDrainWirePrice',
+      key: 'iDrainWirePrice',
+    },
+    {
+      title: 'OSCR铝箔总屏蔽',
+      dataIndex: 'oscrPrice',
+      key: 'oscrPrice',
+    },
+    {
+      title: '总排流线',
+      dataIndex: 'drainWirePrice',
+      key: 'drainWirePrice',
+    },
+    {
+      title: '内护套',
+      dataIndex: 'innerSheathPrice',
+      key: 'innerSheathPrice',
+    },
+    {
+      title: '钢丝铠装',
+      dataIndex: 'swaPrice',
+      key: 'swaPrice',
+    },
+    {
+      title: '外护套',
+      dataIndex: 'sheathPrice',
+      key: 'sheathPrice',
+    },
+  ]
 
 export interface ReportState {
   showUSD: boolean
@@ -465,7 +465,7 @@ export interface ReportState {
 export default class Report extends React.Component<
   CalculatorProps,
   ReportState
-> {
+  > {
   constructor(props: CalculatorProps) {
     super(props)
     this.state = {
