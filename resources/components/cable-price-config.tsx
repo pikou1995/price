@@ -6,44 +6,49 @@ import { updatePriceConfig, PriceConfig } from '../redux/price-config'
 import { Cable } from '../redux/cable/types'
 import { CableProps } from './cable'
 
-interface PriceFields {
-  insulationWeights: number[]
-  sheathWeights: string[]
-  innerSheathWeights: string[]
-  iscrWeights: string[]
-  oscrWeights: string[]
-}
+type PriceKeys =
+  'coreWeights'
+  | 'insulationWeights'
+  | 'sheathWeights'
+  | 'innerSheathWeights'
+  | 'iscrWeights'
+  | 'oscrWeights'
+
+type PriceFields = Record<PriceKeys, string[]>
 
 function genPriceFields(cable: Cable): PriceFields {
-  const insulationWeights: Set<number> = new Set()
-  const sheathWeights: Set<string> = new Set()
-  const innerSheathWeights: Set<string> = new Set()
-  const iscrWeights: Set<string> = new Set()
-  const oscrWeights: Set<string> = new Set()
+  const coreWeights: string[] = []
+  const insulationWeights: string[] = []
+  const sheathWeights: string[] = []
+  const innerSheathWeights: string[] = []
+  const iscrWeights: string[] = []
+  const oscrWeights: string[] = []
 
-  const { coreNum, coreArea, innerSheath, pair, iscr, oscr } = cable
+  const { coreNum, coreArea, innerSheath, iscr, oscr } = cable
 
   if (coreNum && coreArea) {
+    coreWeights.push(coreArea)
     // 绝缘重量
-    insulationWeights.add(coreArea)
+    insulationWeights.push(coreArea)
     // 外护套重量
     const key = getCableKey(cable)
-    sheathWeights.add(key)
+    sheathWeights.push(key)
 
     if (innerSheath) {
-      innerSheathWeights.add(key)
+      innerSheathWeights.push(key)
     }
 
-    iscr && iscrWeights.add(key)
-    oscr && oscrWeights.add(key)
+    iscr && iscrWeights.push(key)
+    oscr && oscrWeights.push(key)
   }
 
   return {
-    insulationWeights: [...insulationWeights],
-    iscrWeights: [...iscrWeights],
-    oscrWeights: [...oscrWeights],
-    innerSheathWeights: [...innerSheathWeights],
-    sheathWeights: [...sheathWeights],
+    coreWeights,
+    insulationWeights,
+    iscrWeights,
+    oscrWeights,
+    innerSheathWeights,
+    sheathWeights,
   }
 }
 
@@ -54,6 +59,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
     dispatch,
   } = props
   const {
+    coreWeights,
     insulationWeights,
     iscrWeights,
     oscrWeights,
@@ -69,6 +75,17 @@ export default function CablePriceConfigComponent(props: CableProps) {
 
   return (
     <Form labelCol={{ xs: 6 }} wrapperCol={{ xs: 18 }}>
+      {coreWeights.map(i => {
+        return (
+          <Form.Item label="芯材重量" key={i}>
+            <Input
+              type="number"
+              value={priceConfig.coreWeight && priceConfig.coreWeight[i]}
+              onChange={e => setPriceConfig('coreWeight', i, e)}
+            />
+          </Form.Item>
+        )
+      })}
       {insulationWeights.map(i => {
         return (
           <Form.Item label={`绝缘重量`} key={i}>
@@ -80,13 +97,13 @@ export default function CablePriceConfigComponent(props: CableProps) {
                 priceConfig.insulationWeight[i + ''] ? (
                   <span />
                 ) : (
-                  <ModelReferenceDrawer
-                    {...props}
-                    showSheathWeight={false}
-                    showOscrWeight={false}
-                    spec={i + ''}
-                  />
-                )
+                    <ModelReferenceDrawer
+                      {...props}
+                      showSheathWeight={false}
+                      showOscrWeight={false}
+                      spec={i + ''}
+                    />
+                  )
               }
             />
           </Form.Item>
@@ -114,13 +131,13 @@ export default function CablePriceConfigComponent(props: CableProps) {
                 priceConfig.oscrWeight[i] ? (
                   <span />
                 ) : (
-                  <ModelReferenceDrawer
-                    {...props}
-                    showInsulationWeight={false}
-                    showSheathWeight={false}
-                    spec={i}
-                  />
-                )
+                    <ModelReferenceDrawer
+                      {...props}
+                      showInsulationWeight={false}
+                      showSheathWeight={false}
+                      spec={i}
+                    />
+                  )
               }
             />
           </Form.Item>
@@ -137,13 +154,13 @@ export default function CablePriceConfigComponent(props: CableProps) {
                 priceConfig.innerSheathWeight[i] ? (
                   <span />
                 ) : (
-                  <ModelReferenceDrawer
-                    {...props}
-                    showInsulationWeight={false}
-                    showOscrWeight={false}
-                    spec={i}
-                  />
-                )
+                    <ModelReferenceDrawer
+                      {...props}
+                      showInsulationWeight={false}
+                      showOscrWeight={false}
+                      spec={i}
+                    />
+                  )
               }
             />
           </Form.Item>
@@ -160,13 +177,13 @@ export default function CablePriceConfigComponent(props: CableProps) {
                 priceConfig.sheathWeight[i] ? (
                   <span />
                 ) : (
-                  <ModelReferenceDrawer
-                    {...props}
-                    showInsulationWeight={false}
-                    showOscrWeight={false}
-                    spec={i}
-                  />
-                )
+                    <ModelReferenceDrawer
+                      {...props}
+                      showInsulationWeight={false}
+                      showOscrWeight={false}
+                      spec={i}
+                    />
+                  )
               }
             />
           </Form.Item>

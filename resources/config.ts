@@ -1,4 +1,4 @@
-import { CoreType, Material } from './redux/cable/types'
+import { CoreType, Material, SWA as SWA_TYPE } from './redux/cable/types'
 
 export const CORE_TYPE: { [index in CoreType]: string } = {
   CU: '铜',
@@ -6,41 +6,23 @@ export const CORE_TYPE: { [index in CoreType]: string } = {
   // OTHER: '其他',
 }
 
-export const CORE_NUM = new Array(20).fill(null).map((_, i) => i + 1)
-
-export const AREA = [
-  '0.75',
-  '1.0',
-  '1.5',
-  '2.5',
-  '4',
-  '6',
-  '10',
-  '16',
-  '25',
-  '35',
-  '50',
-  '70',
-  '95',
-  '120',
-  '150',
-  '185',
-  '240',
-]
-
 // 单位 g/cm³
-export const DENSITY = {
+export const DENSITY: { [index in CoreType]: number } = {
   CU: 8.9,
   TC: 8.9,
-  OTHER: 1,
+  // OTHER: 1,
 }
 
-export const SWA = ['0.9', '1.25', '1.6', '2']
+// 钢丝直径
+export const SWA: SWA_TYPE[] = ['0.9', '1.25', '1.6', '2']
 
+// 绞距浪费
 export const SWA_WASTE = 0.85
 
+// 绝缘材料
 export const INSULATION = ['XLPE', 'PVC', 'PE', 'WDZ']
 
+// 外护套材料
 export const SHEATH = ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料']
 
 export const trans: { [index in Material]: string } = {

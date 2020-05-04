@@ -2,12 +2,8 @@ import * as React from 'react'
 import { Drawer, Icon } from 'antd'
 import Model, { ModelProps } from './model'
 
-export interface ModelReferenceDrawerProps extends ModelProps {
-  spec: string
-}
-
 export default class ModelReferenceDrawer extends React.Component<
-  ModelReferenceDrawerProps
+  ModelProps & { spec: string }
 > {
   state = { visible: false }
 

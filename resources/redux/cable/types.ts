@@ -5,7 +5,7 @@ export type Material = Sheath | CoreType | Insulation | 'STEEL' | 'AL' | 'mica'
 export type SWA = '0.9' | '1.25' | '1.6' | '2'
 
 export type Cable = {
-  id: number
+  readonly id: number
   coreType: CoreType
   /** 绝缘材料 */
   insulation?: Insulation
@@ -17,12 +17,12 @@ export type Cable = {
   diameter?: string
   sheath?: Sheath
   pair?: false
-  coreNum?: number
+  coreNum?: string
   /** 云母带 */
   mica: 0 | 1 | 2
   /** 钢丝铠装 */
   swa: 0 | 0.9 | 1.25 | 1.6 | 2
-  coreArea?: number
+  coreArea?: string
   /** 内护套 */
   innerSheath: 0 | Sheath
 }
