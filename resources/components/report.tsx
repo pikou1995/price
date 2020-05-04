@@ -66,7 +66,7 @@ export class CableReport {
 
   get corePrice(): string {
     const { coreNum, coreArea, coreType, pair } = this.cable
-    const { material, coreWeight } = this.priceConfig
+    const { material, coreWeight = {} } = this.priceConfig
 
     if (!coreNum || !coreArea) {
       return '0'
