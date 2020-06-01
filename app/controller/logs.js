@@ -3,9 +3,10 @@ const Controller = require('egg').Controller
 class LogController extends Controller {
   async index() {
     const { ctx, app } = this
-    const { page = 1, pageSize = 10 } = ctx.queries
+    let { page = 1, pageSize = 10 } = ctx.query
+    page = +page
+    pageSize = +pageSize
     const offset = pageSize * (page - 1)
-
     const logs = await app.redis.lrange(
       'accessLogs',
       offset,

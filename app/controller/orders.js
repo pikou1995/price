@@ -5,7 +5,7 @@ class OrdersController extends Controller {
     const { ctx, app } = this
     const keys = await app.redis.keys('orderTime-*')
     const times = keys.length ? await app.redis.mget(...keys) : []
-    ctx.body = keys.map((k, i) => ({ id: k.substring(10), time: times[i] }))
+    ctx.body = keys.map((k, i) => ({ id: +k.substring(10), time: times[i] }))
   }
 
   async show() {
