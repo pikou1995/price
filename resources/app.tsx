@@ -10,8 +10,8 @@ import { Menu, message } from 'antd'
 import { Provider } from 'react-redux'
 import store from './redux'
 import Calculator from './containers/calculator'
-const Model = React.lazy(() => import('./containers/model'))
-const Setting = React.lazy(() => import('./containers/setting'))
+const Model = React.lazy(() => import(/* webpackChunkName: "model" */ './containers/model'))
+const Setting = React.lazy(() => import(/* webpackChunkName: "setting" */ './containers/setting'))
 import Footer from './components/footer'
 import { CalculatorOutlined, SettingOutlined, TagsOutlined } from '@ant-design/icons'
 

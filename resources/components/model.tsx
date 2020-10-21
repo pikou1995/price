@@ -29,7 +29,7 @@ export interface ModelProps {
   style?: React.CSSProperties
 }
 
-export default function Model(props: ModelProps) {
+export default function ModelComponent(props: ModelProps) {
   const {
     model: { modelsLoaded, models },
     dispatch,

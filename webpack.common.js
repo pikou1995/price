@@ -21,18 +21,8 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-          // {
-          //   loader: 'ts-loader',
-          //   options: {
-          //     transpileOnly: true,
-          //   },
-          // },
-        ],
       },
       {
         test: /\.js$/,
@@ -41,13 +31,13 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
     ],
   },
   plugins: [
     new CleanWebpackPlugin(),
-    // new ForkTsCheckerWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin(),
     new CopyPlugin([{ from: './resources/assets' }]),
     new HtmlWebpackPlugin({
       template: './resources/index.html',
@@ -55,6 +45,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
+      ignoreOrder: false,
     }),
     new webpack.ProgressPlugin(),
   ],
