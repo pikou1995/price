@@ -45,7 +45,7 @@ export default function History(props: HistoryProps) {
           key="list-del"
           onConfirm={() => dispatch(requestDeleleOrder(id))}
         >
-          <Button type="danger" icon="delete" />
+          <Button danger icon="delete" />
         </Popconfirm>,
       ],
     },

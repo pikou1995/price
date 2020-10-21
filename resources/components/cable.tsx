@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Popconfirm, Card, Icon, Menu, Dropdown } from 'antd'
+import { Popconfirm, Card } from 'antd'
+import { AccountBookOutlined, CalculatorOutlined, CopyOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { copyCable, deleteCable } from '../redux/cable/actions'
 import { Cable } from '../redux/cable/types'
 import { Dispatch } from '../redux'
@@ -46,8 +47,7 @@ export default class CableComponent extends React.Component<CableProps> {
         activeTabKey={tab}
         onTabChange={key => this.setState({ tab: key })}
         actions={[
-          <Icon
-            type="copy"
+          <CopyOutlined
             key="copy"
             title="复制"
             onClick={() => dispatch(copyCable(cable.id))}
@@ -57,22 +57,19 @@ export default class CableComponent extends React.Component<CableProps> {
             key="delete"
             onConfirm={() => dispatch(deleteCable(cable.id))}
           >
-            <Icon type="delete" title="删除" />
+            <DeleteOutlined title="删除" />
           </Popconfirm>,
-          <Icon
-            type="search"
+          <SearchOutlined
             key="search"
             title="显示材料价格"
             onClick={showMaterialSettingDrawer}
           />,
-          <Icon
-            type="account-book"
+          <AccountBookOutlined
             key="account-book"
             title="价格"
             onClick={() => this.setState({ tab: 'price' })}
           />,
-          <Icon
-            type="calculator"
+          <CalculatorOutlined
             key="calculator"
             title="计算过程"
             onClick={() => this.setState({ tab: 'calculation' })}

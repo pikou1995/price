@@ -6,15 +6,14 @@ import {
   Link,
   useLocation,
 } from 'react-router-dom'
-import { Menu, Icon, message } from 'antd'
-import {Provider} from 'react-redux'
+import { Menu, message } from 'antd'
+import { Provider } from 'react-redux'
 import store from './redux'
 import Calculator from './containers/calculator'
-import History from './containers/history'
-import Model from './containers/model'
-import Setting from './containers/setting'
-import Logs from './containers/logs'
+const Model = React.lazy(() => import('./containers/model'))
+const Setting = React.lazy(() => import('./containers/setting'))
 import Footer from './components/footer'
+import { CalculatorOutlined, SettingOutlined, TagsOutlined } from '@ant-design/icons'
 
 message.config({
   top: 100,
@@ -31,25 +30,19 @@ function TopMenu() {
     <Menu mode="horizontal" selectedKeys={[key]}>
       <Menu.Item key="/">
         <Link to="/">
-          <Icon type="calculator" />
+          <CalculatorOutlined />
           计算器
         </Link>
       </Menu.Item>
       <Menu.Item key="/model">
         <Link to="/model">
-          <Icon type="tags" />
+          <TagsOutlined />
           型号参考
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="/history">
-        <Link to="/history">
-          <Icon type="history" />
-          历史记录
         </Link>
       </Menu.Item>
       <Menu.Item key="/setting">
         <Link to="/setting">
-          <Icon type="setting" />
+          <SettingOutlined />
           设置
         </Link>
       </Menu.Item>
@@ -66,14 +59,8 @@ export default function App() {
           <Route path="/model">
             <Model />
           </Route>
-          <Route path="/history">
-            <History />
-          </Route>
           <Route path="/setting">
             <Setting />
-          </Route>
-          <Route path="/logs">
-            <Logs />
           </Route>
           <Route path={['/:id', '/']}>
             <Calculator />

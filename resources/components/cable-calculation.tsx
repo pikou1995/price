@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { Tree, Icon } from 'antd'
+import { Tree } from 'antd'
 import { CableProps } from './cable'
 import { CableReport, CalculationFields } from './report'
+import { CodeOutlined, DownOutlined } from '@ant-design/icons'
 const { TreeNode } = Tree
 
 const columns: {
@@ -31,7 +32,7 @@ export default class CableCalculationComponent extends React.Component<
     const result = new CableReport(cable, priceConfig)
 
     return (
-      <Tree showLine defaultExpandAll switcherIcon={<Icon type="down" />}>
+      <Tree showLine defaultExpandAll switcherIcon={<DownOutlined />}>
         {columns
           .filter(({ dataIndex }) => result[dataIndex] !== '0')
           .map(({ title, dataIndex }) => (
@@ -40,7 +41,7 @@ export default class CableCalculationComponent extends React.Component<
                 <TreeNode
                   title={content}
                   key={content}
-                  switcherIcon={<Icon type="code" />}
+                  switcherIcon={<CodeOutlined />}
                 />
               ))}
             </TreeNode>
