@@ -1,12 +1,11 @@
 import * as React from 'react'
-import { Button, message } from 'antd'
 import { useParams, useHistory } from 'react-router-dom'
 import Cables from './cables'
 import Price from './price'
 import Report from './report'
 import { Dispatch } from '../redux'
 import { PriceConfigState, fetchPriceConfig } from '../redux/price-config'
-import { saveOrder, fetchOrder } from '../redux/order/actions'
+import { fetchOrder } from '../redux/order/actions'
 import { CableState } from '../redux/cable/types'
 import { ModelState } from '../redux/model'
 import { OrderState, Order } from '../redux/order/types'
@@ -25,7 +24,7 @@ export default function Calculator(props: CalculatorProps) {
     priceConfig: { priceConfigLoaded },
     order: { orderLoaded },
   } = props
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const history = useHistory()
   if (id) {
     if (!orderLoaded) {
@@ -46,22 +45,6 @@ export default function Calculator(props: CalculatorProps) {
       <Cables {...props}></Cables>
       <h2>统计</h2>
       <Report {...props}></Report>
-      <Button
-        type="primary"
-        block
-        icon="cloud-upload"
-        onClick={() =>
-          dispatch(
-            saveOrder(id ? +id : undefined, ({ id }: Order) => {
-              message.success('保存成功')
-              id && history.replace('/' + id)
-            })
-          )
-        }
-        style={{ marginTop: 24 }}
-      >
-        保存
-      </Button>
     </div>
   )
 }

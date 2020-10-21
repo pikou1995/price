@@ -2,14 +2,15 @@ import * as React from 'react'
 import { Table } from 'antd'
 import { fetchModels, Model, ModelState } from '../redux/model'
 import { Dispatch } from '../redux'
+import { ColumnsType } from 'antd/es/table'
 
-const baseColumns = [
+const baseColumns: ColumnsType<Model> = [
   {
     title: '型号',
     dataIndex: 'model',
     key: 'model',
     filterMultiple: false,
-    onFilter: (value: string, record: Model) => record.model === value,
+    onFilter: (value, record) => record.model === value,
     filters: [] as { text: string; value: string }[],
   },
   {

@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk'
 import { ThunkResult } from '.'
 
 export type Log = {

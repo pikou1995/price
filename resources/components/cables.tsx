@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Button, Icon, Col, Row, Drawer } from 'antd'
+import { Button, Col, Row, Drawer } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 import Cable from './cable'
 import { addCable } from '../redux/cable/actions'
 import { Dispatch } from '../redux'
@@ -62,7 +63,7 @@ export default class Cables extends React.Component<CablesProps> {
               onClick={() => dispatch(addCable())}
               style={{ marginTop: '16px' }}
             >
-              <Icon type="plus" /> 增加一种线材
+              <PlusCircleOutlined /> 增加一种线材
             </Button>
           </Col>
           <Drawer

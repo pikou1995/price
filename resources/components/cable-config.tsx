@@ -47,9 +47,9 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         </Form.Item>
         <Form.Item label="芯材">
           <Select value={cable.coreType} onChange={this.onChange('coreType')}>
-            {Object.keys(CORE_TYPE).map((k: CoreType) => (
+            {Object.keys(CORE_TYPE).map((k) => (
               <Option value={k} key={k}>
-                {CORE_TYPE[k]}
+                {CORE_TYPE[k as CoreType]}
               </Option>
             ))}
           </Select>

@@ -2,6 +2,9 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack')
 
 module.exports = {
   entry: './resources/index.tsx',
@@ -12,7 +15,7 @@ module.exports = {
   },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {
     rules: [
@@ -21,12 +24,14 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,
-              experimentalWatchApi: true,
-            },
+            loader: 'babel-loader',
           },
+          // {
+          //   loader: 'ts-loader',
+          //   options: {
+          //     transpileOnly: true,
+          //   },
+          // },
         ],
       },
       {
@@ -34,22 +39,23 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin(),
+    // new ForkTsCheckerWebpackPlugin(),
     new CopyPlugin([{ from: './resources/assets' }]),
+    new HtmlWebpackPlugin({
+      template: './resources/index.html',
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+    new webpack.ProgressPlugin(),
   ],
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-    'react-router-dom': 'ReactRouterDOM',
-    'react-redux': 'ReactRedux',
-    'redux-thunk': 'ReduxThunk',
-    antd: 'antd',
-    axios: 'axios',
-    moment: 'moment',
-    underscore: '_',
-  },
 }
