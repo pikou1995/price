@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { ThunkResult } from '.'
 import { Material, SWA } from './cable/types'
 
@@ -77,8 +76,8 @@ export function updatePriceConfig<K extends keyof PriceConfig>(
  */
 export function fetchPriceConfig(): ThunkResult<Promise<void>> {
   return async function (dispatch) {
-    const res = await axios.get('/api/config')
-    dispatch(setPriceConfig(res.data))
+    const data = await import('./config.json')
+    dispatch(setPriceConfig(data))
   }
 }
 

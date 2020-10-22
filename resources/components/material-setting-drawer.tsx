@@ -1,12 +1,15 @@
 import * as React from 'react'
 import { Drawer, Button } from 'antd'
 import MaterialSetting, { MaterialSettingProps } from './material-setting'
+import { SearchOutlined } from '@ant-design/icons'
 
 export interface MaterialSettingDrawerProps extends MaterialSettingProps {
-  style?: React.CSSProperties 
+  style?: React.CSSProperties
 }
 
-export default class MaterialSettingDrawer extends React.Component<MaterialSettingDrawerProps> {
+export default class MaterialSettingDrawer extends React.Component<
+  MaterialSettingDrawerProps
+> {
   state = { visible: false }
 
   showDrawer = () => {
@@ -28,7 +31,7 @@ export default class MaterialSettingDrawer extends React.Component<MaterialSetti
         <Button
           block
           type="primary"
-          icon="search"
+          icon={<SearchOutlined />}
           ghost
           onClick={this.showDrawer}
         >

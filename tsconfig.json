@@ -3,8 +3,9 @@
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "node",
-		"noEmit": true,
+        "noEmit": true,
         "strict": true,
-        "jsx": "react"
+        "jsx": "react",
+        "resolveJsonModule": true
     }
 }
