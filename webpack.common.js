@@ -1,18 +1,13 @@
-const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './resources/index.tsx',
-  output: {
-    filename: 'bundle.[hash:8].js',
-    publicPath: '/',
-    path: path.join(__dirname, './dist'),
-  },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['.ts', '.tsx', '.js', '.json'],
@@ -38,15 +33,22 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin(),
-    new CopyPlugin([{ from: './resources/assets' }]),
+    new CopyWebpackPlugin([
+      {
+        from: './resources/assets/',
+      },
+    ]),
     new HtmlWebpackPlugin({
       template: './resources/index.html',
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-      ignoreOrder: false,
-    }),
     new webpack.ProgressPlugin(),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/react-manifest.json'),
+    }),
+    new AddAssetHtmlPlugin([
+      {
+        filepath: './dll/*.js',
+      },
+    ]),
   ],
 }

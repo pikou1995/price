@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { ThunkResult } from '.'
 
 export type Model = {
@@ -28,9 +27,9 @@ export function setModels(models: Array<Model>): ModelActionTypes {
 }
 
 export function fetchModels(): ThunkResult<Promise<void>> {
-  return async function(dispatch) {
-    const res = await axios.get('/api/models')
-    dispatch(setModels(res.data))
+  return async function (dispatch) {
+    const data = await import('./models.json')
+    dispatch(setModels(data))
   }
 }
 

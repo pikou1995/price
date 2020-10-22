@@ -3,7 +3,6 @@ import thunkMiddleware, { ThunkAction, ThunkDispatch } from 'redux-thunk'
 
 import syncMiddleware from './sync-middleware'
 import { getInitialState } from '../utils'
-import { logReducer, LogState, LogActionTypes } from './log'
 import { cableReducer } from './cable/reducers'
 import {
   priceConfigReducer,
@@ -20,13 +19,11 @@ export type RootState = {
   priceConfig: PriceConfigState
   model: ModelState
   order: OrderState
-  log: LogState
 }
 
 export type RootActionTypes =
   | CableActionTypes
   | OrderActionTypes
-  | LogActionTypes
   | ModelActionTypes
   | PriceConfigActionTypes
 
@@ -46,7 +43,6 @@ export const reducer = combineReducers({
   priceConfig: priceConfigReducer,
   model: modelReducer,
   order: orderReducer,
-  log: logReducer,
 })
 
 export const store = createStore(
