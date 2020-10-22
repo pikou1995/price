@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Tree } from 'antd'
 import { CableProps } from './cable'
 import { CableReport, CalculationFields } from './report'
-import { CodeOutlined, DownOutlined } from '@ant-design/icons'
-const { TreeNode } = Tree
+import { DownOutlined } from '@ant-design/icons'
 
 const columns: {
   title: string
@@ -32,29 +31,41 @@ export default class CableCalculationComponent extends React.Component<
     const result = new CableReport(cable, priceConfig)
 
     return (
-      <Tree showLine defaultExpandAll switcherIcon={<DownOutlined />}>
-        {columns
-          .filter(({ dataIndex }) => result[dataIndex] !== '0')
-          .map(({ title, dataIndex }) => (
-            <TreeNode title={`${title}: ${result[dataIndex]}`} key={dataIndex}>
-              {result.getLog(dataIndex).map((content: string) => (
-                <TreeNode
-                  title={content}
-                  key={content}
-                  switcherIcon={<CodeOutlined />}
-                />
-              ))}
-            </TreeNode>
-          ))}
-        <TreeNode title={`RMB总价: ${result.total}`} />
-        <TreeNode title={`RMB上浮10%/15%/20%/25%/30%`}>
-          <TreeNode title={result.RMBUp} />
-        </TreeNode>
-        <TreeNode title={`USD总价: ${result.totalUSD}`} />
-        <TreeNode title={`USD上浮10%/15%/20%/25%/30%`}>
-          <TreeNode title={result.USDUp} />
-        </TreeNode>
-      </Tree>
+      <Tree
+        showLine={{ showLeafIcon: false }}
+        defaultExpandAll
+        switcherIcon={<DownOutlined />}
+        treeData={[
+          ...columns
+            .filter(({ dataIndex }) => result[dataIndex] !== '0')
+            .map(({ title, dataIndex }) => ({
+              title: `${title}: ${result[dataIndex]}`,
+              key: dataIndex,
+              children: result.getLog(dataIndex).map((content, i) => ({
+                title: content,
+                key: content + dataIndex + i,
+              })),
+            })),
+          {
+            title: `RMB总价: ${result.total}`,
+            key: 'title-RMB',
+          },
+          {
+            title: `RMB上浮10%/15%/20%/25%/30%`,
+            key: 'title-RMBUp',
+            children: [{ title: result.RMBUp, key: 'RMBUp' }],
+          },
+          {
+            title: `USD总价: ${result.totalUSD}`,
+            key: 'title-totalUSD',
+          },
+          {
+            title: `USD上浮10%/15%/20%/25%/30%`,
+            key: 'title-USDUp',
+            children: [{ title: result.USDUp, key: 'USDUp' }],
+          },
+        ]}
+      ></Tree>
     )
   }
 }

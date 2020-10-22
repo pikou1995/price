@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { lazy, Suspense } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,7 +10,6 @@ import { Menu, message, Spin } from 'antd'
 import { Provider } from 'react-redux'
 import store from './redux'
 import Calculator from './containers/calculator'
-const { lazy, Suspense } = React
 const Model = lazy(
   () => import(/* webpackChunkName: "model" */ './containers/model')
 )

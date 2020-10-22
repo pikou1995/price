@@ -28,7 +28,7 @@ export function setModels(models: Array<Model>): ModelActionTypes {
 
 export function fetchModels(): ThunkResult<Promise<void>> {
   return async function (dispatch) {
-    const data = await import('./models.json')
+    const { data } = await import('./models.json')
     dispatch(setModels(data))
   }
 }
