@@ -1,9 +1,15 @@
-import * as React from 'react'
+import React from 'react'
 import { Popconfirm, Card } from 'antd'
-import { AccountBookOutlined, CalculatorOutlined, CopyOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  AccountBookOutlined,
+  CalculatorOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
 import { copyCable, deleteCable } from '../redux/cable/actions'
 import { Cable } from '../redux/cable/types'
-import { Dispatch } from '../redux'
+import { Dispatch, setMaterialDrawerVisible } from '../redux'
 import CableConfig from './cable-config'
 import PriceConfig from './cable-price-config'
 import Calculation from './cable-calculation'
@@ -17,14 +23,13 @@ export interface CableProps {
   index: number
   priceConfig: PriceConfigState
   model: ModelState
-  showMaterialSettingDrawer: () => void
 }
 
 export default class CableComponent extends React.Component<CableProps> {
   state = { tab: 'cable' }
 
   render() {
-    const { cable, dispatch, index, showMaterialSettingDrawer } = this.props
+    const { cable, dispatch, index } = this.props
     const { tab } = this.state
     return (
       <Card
@@ -45,7 +50,7 @@ export default class CableComponent extends React.Component<CableProps> {
           },
         ]}
         activeTabKey={tab}
-        onTabChange={key => this.setState({ tab: key })}
+        onTabChange={(key) => this.setState({ tab: key })}
         actions={[
           <CopyOutlined
             key="copy"
@@ -62,7 +67,7 @@ export default class CableComponent extends React.Component<CableProps> {
           <SearchOutlined
             key="search"
             title="显示材料价格"
-            onClick={showMaterialSettingDrawer}
+            onClick={() => dispatch(setMaterialDrawerVisible(true))}
           />,
           <AccountBookOutlined
             key="account-book"

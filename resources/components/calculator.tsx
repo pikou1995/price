@@ -1,14 +1,38 @@
-import * as React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import Cables from './cables'
-import Price from './price'
-import Report from './report'
 import { Dispatch } from '../redux'
 import { PriceConfigState, fetchPriceConfig } from '../redux/price-config'
 import { fetchOrder } from '../redux/order/actions'
 import { CableState } from '../redux/cable/types'
 import { ModelState } from '../redux/model'
-import { OrderState, Order } from '../redux/order/types'
+import { OrderState } from '../redux/order/types'
+import { Spin } from 'antd'
+
+const Report = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "calculator" */
+      /* webpackPrefetch: true */
+      './report'
+    )
+)
+const Price = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "calculator" */
+      /* webpackPrefetch: true */
+      './price'
+    )
+)
+const MaterialSettingDrawer = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "material" */
+      /* webpackPrefetch: true */
+      './material-setting-drawer'
+    )
+)
 
 export interface CalculatorProps {
   dispatch: Dispatch
@@ -16,6 +40,7 @@ export interface CalculatorProps {
   cable: CableState
   model: ModelState
   order: OrderState
+  materialDrawerVisible: boolean
 }
 
 export default function Calculator(props: CalculatorProps) {
@@ -23,6 +48,8 @@ export default function Calculator(props: CalculatorProps) {
     dispatch,
     priceConfig: { priceConfigLoaded },
     order: { orderLoaded },
+    cable: { cables },
+    materialDrawerVisible,
   } = props
   const { id } = useParams<{ id: string }>()
   const history = useHistory()
@@ -39,12 +66,23 @@ export default function Calculator(props: CalculatorProps) {
 
   return (
     <div style={{ padding: 15 }}>
-      <h2>配置价格</h2>
-      <Price {...props}></Price>
       <h2>配置规格</h2>
       <Cables {...props}></Cables>
-      <h2>统计</h2>
-      <Report {...props}></Report>
+      {cables.length > 0 && [
+        <h2>配置价格</h2>,
+        <Suspense fallback={<Spin />}>
+          <Price {...props}></Price>
+        </Suspense>,
+        <h2>统计</h2>,
+        <Suspense fallback={<Spin />}>
+          <Report {...props}></Report>
+        </Suspense>,
+      ]}
+      {materialDrawerVisible && (
+        <Suspense fallback={<Spin />}>
+          <MaterialSettingDrawer {...props} />
+        </Suspense>
+      )}
     </div>
   )
 }
