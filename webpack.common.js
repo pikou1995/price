@@ -6,6 +6,8 @@ const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+const { PUBLIC_PATH = '/' } = process.env
+
 module.exports = {
   entry: './resources/index.tsx',
   resolve: {
@@ -31,6 +33,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.PUBLIC_PATH': JSON.stringify(PUBLIC_PATH),
+    }),
     new CleanWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin(),
     new CopyWebpackPlugin([
@@ -40,6 +45,7 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       template: './resources/index.html',
+      minify: true,
     }),
     new webpack.ProgressPlugin(),
     new webpack.DllReferencePlugin({
@@ -51,4 +57,10 @@ module.exports = {
       },
     ]),
   ],
+  stats: {
+    modules: false,
+    children: false,
+    chunks: false,
+    chunkModules: false,
+  },
 }

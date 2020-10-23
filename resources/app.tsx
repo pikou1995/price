@@ -61,7 +61,7 @@ function TopMenu() {
 export default function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename={process.env.PUBLIC_PATH}>
         <TopMenu />
         <Switch>
           <Route path="/model">
