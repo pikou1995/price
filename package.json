@@ -67,7 +67,8 @@
     "webpack-bundle-analyzer": "^3.9.0",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.9.0",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "workbox-webpack-plugin": "^5.1.4"
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=price",
@@ -75,10 +76,10 @@
     "dev": "egg-bin dev",
     "test": "egg-bin test",
     "cov": "egg-bin cov",
-    "dev-web": "webpack-dev-server --open --hot --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "dev-web": "cross-env PUBLIC_PATH=/price/ webpack-dev-server --open --hot --config webpack.dev.js",
+    "build": "cross-env PUBLIC_PATH=/price/ webpack --config webpack.prod.js",
     "build-dll": "webpack --config webpack.dll.js",
-    "build-analyze": "cross-env analyze=true npm run build",
+    "build-analyze": "cross-env analyze=true cross-env PUBLIC_PATH=/price/ npm run build",
     "tsc": "tsc ./app/extend/t.ts"
   },
   "author": "pikou",
