@@ -10,8 +10,7 @@ import { ModelState } from '../redux/model'
 const Cable = lazy(
   () =>
     import(
-      /* webpackChunkName: "calculator" */
-      /* webpackPrefetch: true */
+      /* webpackChunkName: "form" */
       './cable'
     )
 )

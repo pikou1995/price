@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Button, Modal, Row, Col } from 'antd'
 import MaterialSetting from './material-setting'
 import { PriceConfigState } from '../redux/price-config'

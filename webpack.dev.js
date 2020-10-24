@@ -16,6 +16,13 @@ module.exports = merge(common, {
   devtool: 'cheap-module-eval-source-map',
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
+    before(app) {
+      if (PUBLIC_PATH !== '/') {
+        app.get('/', function (_, res) {
+          res.redirect(PUBLIC_PATH)
+        })
+      }
+    },
     historyApiFallback: true,
     compress: true,
     watchOptions: {

@@ -22,6 +22,9 @@ module.exports = merge(common, {
       }),
       new OptimizeCssAssetsPlugin({}),
     ],
+    splitChunks: {
+      cacheGroups: {},
+    },
   },
   plugins: [
     new MiniCssExtractPlugin({

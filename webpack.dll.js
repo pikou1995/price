@@ -1,3 +1,4 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
@@ -21,6 +22,7 @@ module.exports = {
     library: '[name][hash:6]',
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.ProgressPlugin(),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
