@@ -65,14 +65,14 @@ export default function ModelComponent(props: ModelProps) {
       key: 'oscr',
     })
 
-  columns[0].filters = [...new Set(models.map(m => m.model))].map(m => ({
+  columns[0].filters = [...new Set(models.map((m) => m.model))].map((m) => ({
     text: m,
     value: m,
   }))
 
   return (
     <div style={props.style || { padding: 15 }}>
-      <Table columns={columns} dataSource={models}></Table>
+      <Table columns={columns} dataSource={models} />
     </div>
   )
 }

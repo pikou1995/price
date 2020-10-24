@@ -12,24 +12,21 @@ import { Spin } from 'antd'
 const Report = lazy(
   () =>
     import(
-      /* webpackChunkName: "calculator" */
-      /* webpackPrefetch: true */
+      /* webpackChunkName: "table" */
       './report'
     )
 )
 const Price = lazy(
   () =>
     import(
-      /* webpackChunkName: "calculator" */
-      /* webpackPrefetch: true */
+      /* webpackChunkName: "form" */
       './price'
     )
 )
 const MaterialSettingDrawer = lazy(
   () =>
     import(
-      /* webpackChunkName: "material" */
-      /* webpackPrefetch: true */
+      /* webpackChunkName: "form" */
       './material-setting-drawer'
     )
 )

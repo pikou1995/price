@@ -78,7 +78,7 @@ export function fetchPriceConfig(): ThunkResult<Promise<void>> {
   return async function (dispatch) {
     console.log('fetch price config')
 
-    const data = await import('./config.json')
+    const data = await import(/* webpackIgnore: true */ './config.json')
     dispatch(setPriceConfig(data))
   }
 }

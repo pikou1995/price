@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   Link,
@@ -11,10 +11,20 @@ import { Provider } from 'react-redux'
 import store from './redux'
 import Calculator from './containers/calculator'
 const Model = lazy(
-  () => import(/* webpackChunkName: "model" */ './containers/model')
+  () =>
+    import(
+      /* webpackChunkName: "table" */
+      /* webpackPrefetch: true */
+      './containers/model'
+    )
 )
 const Setting = lazy(
-  () => import(/* webpackChunkName: "setting" */ './containers/setting')
+  () =>
+    import(
+      /* webpackChunkName: "form" */
+      /* webpackPrefetch: true */
+      './containers/setting'
+    )
 )
 import Footer from './components/footer'
 import {
@@ -61,7 +71,7 @@ function TopMenu() {
 export default function App() {
   return (
     <Provider store={store}>
-      <Router basename={process.env.PUBLIC_PATH}>
+      <Router>
         <TopMenu />
         <Switch>
           <Route path="/model">
