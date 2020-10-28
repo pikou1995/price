@@ -2,7 +2,6 @@ const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const path = require('path')
 const webpack = require('webpack')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const { PUBLIC_PATH = '/' } = process.env
 
@@ -30,11 +29,13 @@ module.exports = merge(common, {
       ignored: /node_modules/,
     },
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      ignoreOrder: true,
-    }),
-  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'thread-loader', 'css-loader'],
+      },
+    ],
+  },
+  plugins: [new webpack.ProgressPlugin()],
 })
