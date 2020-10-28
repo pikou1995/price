@@ -1,8 +1,8 @@
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const TerserPlugin = require('terser-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 const path = require('path')
 const { PUBLIC_PATH = '/' } = process.env
@@ -20,11 +20,19 @@ module.exports = merge(common, {
       new TerserPlugin({
         parallel: true,
       }),
-      new OptimizeCssAssetsPlugin({}),
+      new CssMinimizerPlugin(),
     ],
     splitChunks: {
       cacheGroups: {},
     },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
