@@ -23,7 +23,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new webpack.ProgressPlugin(),
     new MomentLocalesPlugin({
       localesToKeep: ['zh-cn'],
     }),

@@ -1,7 +1,6 @@
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -46,7 +45,6 @@ module.exports = {
       template: './resources/index.html',
       minify: true,
     }),
-    new webpack.ProgressPlugin(),
     new webpack.DllReferencePlugin({
       manifest: require('./dll/react-manifest.json'),
     }),
