@@ -76,8 +76,6 @@ export function updatePriceConfig<K extends keyof PriceConfig>(
  */
 export function fetchPriceConfig(): ThunkResult<Promise<void>> {
   return async function (dispatch) {
-    console.log('fetch price config')
-
     const data = require('./config.json')
     dispatch(setPriceConfig(data))
   }

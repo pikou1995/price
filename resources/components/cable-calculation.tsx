@@ -39,7 +39,11 @@ export default class CableCalculationComponent extends React.Component<
           ...columns
             .filter(({ dataIndex }) => result[dataIndex] !== '0')
             .map(({ title, dataIndex }) => ({
-              title: `${title}: ${result[dataIndex]}`,
+              title: (
+                <span style={{ color: '#40e0d0', fontWeight: 'bold' }}>
+                  {`${title}: ${result[dataIndex]}`}
+                </span>
+              ),
               key: dataIndex,
               children: result.getLog(dataIndex).map((content, i) => ({
                 title: content,
@@ -47,7 +51,11 @@ export default class CableCalculationComponent extends React.Component<
               })),
             })),
           {
-            title: `RMB总价: ${result.total}`,
+            title: (
+              <span style={{ color: '#ff4500', fontWeight: 'bold' }}>
+                {`RMB总价: ${result.total}`}
+              </span>
+            ),
             key: 'title-RMB',
           },
           {
