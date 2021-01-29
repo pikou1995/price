@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react'
-import { Button, Col, Row, Spin } from 'antd'
+import { Button, Spin } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { addCable } from '../redux/cable/actions'
 import { Dispatch } from '../redux'
@@ -22,7 +22,31 @@ export interface CablesProps {
   model: ModelState
 }
 
-export default class Cables extends React.Component<CablesProps> {
+export interface CablesState {
+  mode: 'tab' | 'default'
+}
+
+function calMode(): CablesState['mode'] {
+  return document.body.clientWidth < 800 ? 'tab' : 'default'
+}
+
+const MODE_WIDTH = 900
+
+export default class Cables extends React.Component<CablesProps, CablesState> {
+  constructor(props: CablesProps) {
+    super(props)
+    this.state = { mode: calMode() }
+    window.addEventListener('resize', this.updateMode)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateMode)
+  }
+
+  updateMode = () => {
+    this.setState({ mode: calMode() })
+  }
+
   render() {
     const {
       cable: { cables = [] },
@@ -32,34 +56,27 @@ export default class Cables extends React.Component<CablesProps> {
     } = this.props
     return (
       <div>
-        <Row gutter={16}>
-          {cables.map((c, i) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={c.id}>
-              <Suspense fallback={<Spin />}>
-                <Cable
-                  cable={c}
-                  dispatch={dispatch}
-                  priceConfig={priceConfig}
-                  model={model}
-                  index={i + 1}
-                />
-              </Suspense>
-            </Col>
-          ))}
-        </Row>
-        <Row>
-          <Col xs={24} sm={12} md={6}>
-            <Button
-              block
-              type="primary"
-              ghost
-              onClick={() => dispatch(addCable())}
-              style={{ margin: '16px 0' }}
-            >
-              <PlusCircleOutlined /> 增加一种线材
-            </Button>
-          </Col>
-        </Row>
+        {cables.map((c, i) => (
+          <Suspense fallback={<Spin />}>
+            <Cable
+              cable={c}
+              dispatch={dispatch}
+              priceConfig={priceConfig}
+              model={model}
+              index={i + 1}
+              mode={this.state.mode}
+            />
+          </Suspense>
+        ))}
+        <Button
+          block
+          type="primary"
+          ghost
+          onClick={() => dispatch(addCable())}
+          style={{ margin: '16px 0' }}
+        >
+          <PlusCircleOutlined /> 增加一种线材
+        </Button>
       </div>
     )
   }
