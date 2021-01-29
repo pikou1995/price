@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Input, Form } from 'antd'
+import { Input, Form, Empty } from 'antd'
 import { getCableKey } from '../utils'
 import ModelReferenceDrawer from './model-reference-drawer'
 import { updatePriceConfig, PriceConfig } from '../redux/price-config'
@@ -7,7 +7,7 @@ import { Cable } from '../redux/cable/types'
 import { CableProps } from './cable'
 
 type PriceKeys =
-  'coreWeights'
+  | 'coreWeights'
   | 'insulationWeights'
   | 'sheathWeights'
   | 'innerSheathWeights'
@@ -75,120 +75,126 @@ export default function CablePriceConfigComponent(props: CableProps) {
 
   return (
     <Form labelCol={{ xs: 6 }} wrapperCol={{ xs: 18 }}>
-      {coreWeights.map(i => {
+      {coreWeights.map((i) => {
         return (
           <Form.Item label="芯材重量" key={i}>
             <Input
               type="number"
               value={priceConfig.coreWeight && priceConfig.coreWeight[i]}
-              onChange={e => setPriceConfig('coreWeight', i, e)}
+              onChange={(e) => setPriceConfig('coreWeight', i, e)}
             />
           </Form.Item>
         )
       })}
-      {insulationWeights.map(i => {
+      {insulationWeights.map((i) => {
         return (
           <Form.Item label={`绝缘重量`} key={i}>
             <Input
               type="number"
               value={priceConfig.insulationWeight[i + '']}
-              onChange={e => setPriceConfig('insulationWeight', i + '', e)}
+              onChange={(e) => setPriceConfig('insulationWeight', i + '', e)}
               suffix={
                 priceConfig.insulationWeight[i + ''] ? (
                   <span />
                 ) : (
-                    <ModelReferenceDrawer
-                      {...props}
-                      showSheathWeight={false}
-                      showOscrWeight={false}
-                      spec={i + ''}
-                    />
-                  )
+                  <ModelReferenceDrawer
+                    {...props}
+                    showSheathWeight={false}
+                    showOscrWeight={false}
+                    spec={i + ''}
+                  />
+                )
               }
             />
           </Form.Item>
         )
       })}
-      {iscrWeights.map(i => {
+      {iscrWeights.map((i) => {
         return (
           <Form.Item label={`铝箔单屏重量`} key={i}>
             <Input
               type="number"
               value={priceConfig.iscrWeight[i]}
-              onChange={e => setPriceConfig('iscrWeight', i, e)}
+              onChange={(e) => setPriceConfig('iscrWeight', i, e)}
             />
           </Form.Item>
         )
       })}
-      {oscrWeights.map(i => {
+      {oscrWeights.map((i) => {
         return (
           <Form.Item label={`铝箔总屏重量`} key={i}>
             <Input
               type="number"
               value={priceConfig.oscrWeight[i]}
-              onChange={e => setPriceConfig('oscrWeight', i, e)}
+              onChange={(e) => setPriceConfig('oscrWeight', i, e)}
               suffix={
                 priceConfig.oscrWeight[i] ? (
                   <span />
                 ) : (
-                    <ModelReferenceDrawer
-                      {...props}
-                      showInsulationWeight={false}
-                      showSheathWeight={false}
-                      spec={i}
-                    />
-                  )
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    showSheathWeight={false}
+                    spec={i}
+                  />
+                )
               }
             />
           </Form.Item>
         )
       })}
-      {innerSheathWeights.map(i => {
+      {innerSheathWeights.map((i) => {
         return (
           <Form.Item label={`内护套重量`} key={i}>
             <Input
               type="number"
               value={priceConfig.innerSheathWeight[i]}
-              onChange={e => setPriceConfig('innerSheathWeight', i, e)}
+              onChange={(e) => setPriceConfig('innerSheathWeight', i, e)}
               suffix={
                 priceConfig.innerSheathWeight[i] ? (
                   <span />
                 ) : (
-                    <ModelReferenceDrawer
-                      {...props}
-                      showInsulationWeight={false}
-                      showOscrWeight={false}
-                      spec={i}
-                    />
-                  )
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    showOscrWeight={false}
+                    spec={i}
+                  />
+                )
               }
             />
           </Form.Item>
         )
       })}
-      {sheathWeights.map(i => {
+      {sheathWeights.map((i) => {
         return (
           <Form.Item label={`外护套重量`} key={i}>
             <Input
               type="number"
               value={priceConfig.sheathWeight[i]}
-              onChange={e => setPriceConfig('sheathWeight', i, e)}
+              onChange={(e) => setPriceConfig('sheathWeight', i, e)}
               suffix={
                 priceConfig.sheathWeight[i] ? (
                   <span />
                 ) : (
-                    <ModelReferenceDrawer
-                      {...props}
-                      showInsulationWeight={false}
-                      showOscrWeight={false}
-                      spec={i}
-                    />
-                  )
+                  <ModelReferenceDrawer
+                    {...props}
+                    showInsulationWeight={false}
+                    showOscrWeight={false}
+                    spec={i}
+                  />
+                )
               }
             />
           </Form.Item>
         )
       })}
+      {Boolean(coreWeights.length) ||
+        Boolean(insulationWeights.length) ||
+        Boolean(iscrWeights.length) ||
+        Boolean(oscrWeights.length) ||
+        Boolean(innerSheathWeights.length) ||
+        Boolean(sheathWeights.length) || <Empty description="请先配置线材" />}
     </Form>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Popconfirm, Card } from 'antd'
+import { Popconfirm, Card, Col, Row } from 'antd'
 import {
   AccountBookOutlined,
   CalculatorOutlined,
@@ -23,32 +23,37 @@ export interface CableProps {
   index: number
   priceConfig: PriceConfigState
   model: ModelState
+  mode?: 'default' | 'tab'
 }
 
 export default class CableComponent extends React.Component<CableProps> {
   state = { tab: 'cable' }
 
   render() {
-    const { cable, dispatch, index } = this.props
+    const { cable, dispatch, index, mode = 'default' } = this.props
     const { tab } = this.state
     return (
       <Card
         title={`${index}. ${getCableKey(cable)}`}
         style={{ marginTop: 16 }}
-        tabList={[
-          {
-            key: 'cable',
-            tab: '规格',
-          },
-          {
-            key: 'price',
-            tab: '价格',
-          },
-          {
-            key: 'calculation',
-            tab: '计算',
-          },
-        ]}
+        tabList={
+          mode === 'tab'
+            ? [
+                {
+                  key: 'cable',
+                  tab: '规格',
+                },
+                {
+                  key: 'price',
+                  tab: '价格',
+                },
+                {
+                  key: 'calculation',
+                  tab: '计算',
+                },
+              ]
+            : undefined
+        }
         activeTabKey={tab}
         onTabChange={(key) => this.setState({ tab: key })}
         actions={[
@@ -81,9 +86,27 @@ export default class CableComponent extends React.Component<CableProps> {
           />,
         ]}
       >
-        {tab === 'cable' && <CableConfig {...this.props} />}
-        {tab === 'price' && <PriceConfig {...this.props} />}
-        {tab === 'calculation' && <Calculation {...this.props} />}
+        {mode === 'tab' ? (
+          tab === 'cable' ? (
+            <CableConfig {...this.props} />
+          ) : tab === 'price' ? (
+            <PriceConfig {...this.props} />
+          ) : tab === 'calculation' ? (
+            <Calculation {...this.props} />
+          ) : null
+        ) : (
+          <Row gutter={16}>
+            <Col span={8}>
+              <CableConfig {...this.props} />
+            </Col>
+            <Col span={8}>
+              <PriceConfig {...this.props} />
+            </Col>
+            <Col span={8}>
+              <Calculation {...this.props} />
+            </Col>
+          </Row>
+        )}
       </Card>
     )
   }
