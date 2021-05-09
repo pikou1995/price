@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Drawer, Icon } from 'antd'
+import { Drawer } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 import Model, { ModelProps } from './model'
 
 export default class ModelReferenceDrawer extends React.Component<
   ModelProps & { spec: string }
-> {
+  > {
   state = { visible: false }
 
   showDrawer = () => {
@@ -27,8 +28,7 @@ export default class ModelReferenceDrawer extends React.Component<
     } = this.props
     return (
       <span>
-        <Icon
-          type="question-circle"
+        <QuestionCircleOutlined
           onClick={this.showDrawer}
           style={{ color: '#1890ff' }}
         />

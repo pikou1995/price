@@ -161,8 +161,7 @@ export class CableReport {
 
     const unitP = this.toFixed(material.AL * iscrWeight[this.type])
     log.push(
-      `单位价格(${unitP}) = ↸(${iscrWeight[this.type]}) * 铝单价(${
-      material.AL
+      `单位价格(${unitP}) = ↸(${iscrWeight[this.type]}) * 铝单价(${material.AL
       })`
     )
 
@@ -504,7 +503,7 @@ export default class Report extends React.Component<
                 columns={expandedColumns.filter(
                   ({ dataIndex }) => cable[dataIndex] !== '0'
                 )}
-                rowKey={(_: any, i: number) => i + ''}
+                rowKey={() => '1'}
                 dataSource={[cable]}
                 pagination={false}
               ></Table>
