@@ -1,8 +1,9 @@
-import * as React from 'react'
-import { Input, Form } from 'antd'
-import MaterialSettingDrawer from './material-setting-drawer'
+import React from 'react'
+import { Input, Form, Button } from 'antd'
 import { updatePriceConfig, PriceConfig } from '../redux/price-config'
 import { CalculatorProps } from './calculator'
+import { SearchOutlined } from '@ant-design/icons'
+import { setMaterialDrawerVisible } from '../redux'
 
 export default function Price(props: CalculatorProps) {
   const {
@@ -24,11 +25,19 @@ export default function Price(props: CalculatorProps) {
           prefix="$"
           suffix="USD"
           value={priceConfig.exchangeRate.USD}
-          onChange={e => setPriceConfig('exchangeRate', 'USD', e)}
+          onChange={(e) => setPriceConfig('exchangeRate', 'USD', e)}
         />
       </Form.Item>
       <Form.Item>
-        <MaterialSettingDrawer {...props} />
+        <Button
+          block
+          type="primary"
+          icon={<SearchOutlined />}
+          ghost
+          onClick={() => dispatch(setMaterialDrawerVisible(true))}
+        >
+          材料价格
+        </Button>
       </Form.Item>
     </Form>
   )

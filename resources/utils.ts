@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment from 'moment'
 import { RootState } from './redux'
 import { Cable } from './redux/cable/types'
 
@@ -20,7 +20,7 @@ export function getInitialState(): RootState | undefined {
     try {
       const state = JSON.parse(prevState) as RootState
 
-      if (['cable'].every(key => key in state)) {
+      if (['cable'].every((key) => key in state)) {
         return state
       }
     } catch (e) {

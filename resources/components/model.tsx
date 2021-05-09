@@ -2,14 +2,15 @@ import * as React from 'react'
 import { Table } from 'antd'
 import { fetchModels, Model, ModelState } from '../redux/model'
 import { Dispatch } from '../redux'
+import { ColumnsType } from 'antd/es/table'
 
-const baseColumns = [
+const baseColumns: ColumnsType<Model> = [
   {
     title: '型号',
     dataIndex: 'model',
     key: 'model',
     filterMultiple: false,
-    onFilter: (value: string, record: Model) => record.model === value,
+    onFilter: (value, record) => record.model === value,
     filters: [] as { text: string; value: string }[],
   },
   {
@@ -28,7 +29,7 @@ export interface ModelProps {
   style?: React.CSSProperties
 }
 
-export default function Model(props: ModelProps) {
+export default function ModelComponent(props: ModelProps) {
   const {
     model: { modelsLoaded, models },
     dispatch,
@@ -64,14 +65,14 @@ export default function Model(props: ModelProps) {
       key: 'oscr',
     })
 
-  columns[0].filters = [...new Set(models.map(m => m.model))].map(m => ({
+  columns[0].filters = [...new Set(models.map((m) => m.model))].map((m) => ({
     text: m,
     value: m,
   }))
 
   return (
     <div style={props.style || { padding: 15 }}>
-      <Table columns={columns} dataSource={models}></Table>
+      <Table columns={columns} dataSource={models} />
     </div>
   )
 }

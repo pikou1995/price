@@ -1,12 +1,19 @@
-import * as React from 'react'
-import { Button, Icon, Col, Row, Drawer } from 'antd'
-import Cable from './cable'
+import React, { lazy, Suspense } from 'react'
+import { Button, Spin } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 import { addCable } from '../redux/cable/actions'
 import { Dispatch } from '../redux'
 import { CableState } from '../redux/cable/types'
 import { PriceConfigState } from '../redux/price-config'
-import MaterialSetting from './material-setting'
 import { ModelState } from '../redux/model'
+
+const Cable = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "form" */
+      './cable'
+    )
+)
 
 export interface CablesProps {
   dispatch: Dispatch
@@ -15,19 +22,29 @@ export interface CablesProps {
   model: ModelState
 }
 
-export default class Cables extends React.Component<CablesProps> {
-  state = { visible: false }
+export interface CablesState {
+  mode: 'tab' | 'default'
+}
 
-  showDrawer = () => {
-    this.setState({
-      visible: true,
-    })
+function calMode(): CablesState['mode'] {
+  return document.body.clientWidth < 800 ? 'tab' : 'default'
+}
+
+const MODE_WIDTH = 900
+
+export default class Cables extends React.Component<CablesProps, CablesState> {
+  constructor(props: CablesProps) {
+    super(props)
+    this.state = { mode: calMode() }
+    window.addEventListener('resize', this.updateMode)
   }
 
-  onClose = () => {
-    this.setState({
-      visible: false,
-    })
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateMode)
+  }
+
+  updateMode = () => {
+    this.setState({ mode: calMode() })
   }
 
   render() {
@@ -39,40 +56,27 @@ export default class Cables extends React.Component<CablesProps> {
     } = this.props
     return (
       <div>
-        <Row gutter={16}>
-          {cables.map((c, i) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={c.id}>
-              <Cable
-                cable={c}
-                dispatch={dispatch}
-                priceConfig={priceConfig}
-                model={model}
-                index={i + 1}
-                showMaterialSettingDrawer={this.showDrawer}
-              ></Cable>
-            </Col>
-          ))}
-        </Row>
-        <Row>
-          <Col xs={24} sm={12} md={6}>
-            <Button
-              block
-              type="primary"
-              ghost
-              onClick={() => dispatch(addCable())}
-              style={{ marginTop: '16px' }}
-            >
-              <Icon type="plus" /> 增加一种线材
-            </Button>
-          </Col>
-          <Drawer
-            title="材料价格"
-            onClose={this.onClose}
-            visible={this.state.visible}
-          >
-            <MaterialSetting dispatch={dispatch} priceConfig={priceConfig} />
-          </Drawer>
-        </Row>
+        {cables.map((c, i) => (
+          <Suspense fallback={<Spin />}>
+            <Cable
+              cable={c}
+              dispatch={dispatch}
+              priceConfig={priceConfig}
+              model={model}
+              index={i + 1}
+              mode={this.state.mode}
+            />
+          </Suspense>
+        ))}
+        <Button
+          block
+          type="primary"
+          ghost
+          onClick={() => dispatch(addCable())}
+          style={{ margin: '16px 0' }}
+        >
+          <PlusCircleOutlined /> 增加一种线材
+        </Button>
       </div>
     )
   }

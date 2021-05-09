@@ -1,8 +1,15 @@
-import * as React from 'react'
-import { Popconfirm, Card, Icon, Menu, Dropdown } from 'antd'
+import React from 'react'
+import { Popconfirm, Card, Col, Row } from 'antd'
+import {
+  AccountBookOutlined,
+  CalculatorOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
 import { copyCable, deleteCable } from '../redux/cable/actions'
 import { Cable } from '../redux/cable/types'
-import { Dispatch } from '../redux'
+import { Dispatch, setMaterialDrawerVisible } from '../redux'
 import CableConfig from './cable-config'
 import PriceConfig from './cable-price-config'
 import Calculation from './cable-calculation'
@@ -16,38 +23,41 @@ export interface CableProps {
   index: number
   priceConfig: PriceConfigState
   model: ModelState
-  showMaterialSettingDrawer: () => void
+  mode?: 'default' | 'tab'
 }
 
 export default class CableComponent extends React.Component<CableProps> {
   state = { tab: 'cable' }
 
   render() {
-    const { cable, dispatch, index, showMaterialSettingDrawer } = this.props
+    const { cable, dispatch, index, mode = 'default' } = this.props
     const { tab } = this.state
     return (
       <Card
         title={`${index}. ${getCableKey(cable)}`}
         style={{ marginTop: 16 }}
-        tabList={[
-          {
-            key: 'cable',
-            tab: '规格',
-          },
-          {
-            key: 'price',
-            tab: '价格',
-          },
-          {
-            key: 'calculation',
-            tab: '计算',
-          },
-        ]}
+        tabList={
+          mode === 'tab'
+            ? [
+                {
+                  key: 'cable',
+                  tab: '规格',
+                },
+                {
+                  key: 'price',
+                  tab: '价格',
+                },
+                {
+                  key: 'calculation',
+                  tab: '计算',
+                },
+              ]
+            : undefined
+        }
         activeTabKey={tab}
-        onTabChange={key => this.setState({ tab: key })}
+        onTabChange={(key) => this.setState({ tab: key })}
         actions={[
-          <Icon
-            type="copy"
+          <CopyOutlined
             key="copy"
             title="复制"
             onClick={() => dispatch(copyCable(cable.id))}
@@ -57,31 +67,46 @@ export default class CableComponent extends React.Component<CableProps> {
             key="delete"
             onConfirm={() => dispatch(deleteCable(cable.id))}
           >
-            <Icon type="delete" title="删除" />
+            <DeleteOutlined title="删除" />
           </Popconfirm>,
-          <Icon
-            type="search"
+          <SearchOutlined
             key="search"
             title="显示材料价格"
-            onClick={showMaterialSettingDrawer}
+            onClick={() => dispatch(setMaterialDrawerVisible(true))}
           />,
-          <Icon
-            type="account-book"
+          <AccountBookOutlined
             key="account-book"
             title="价格"
             onClick={() => this.setState({ tab: 'price' })}
           />,
-          <Icon
-            type="calculator"
+          <CalculatorOutlined
             key="calculator"
             title="计算过程"
             onClick={() => this.setState({ tab: 'calculation' })}
           />,
         ]}
       >
-        {tab === 'cable' && <CableConfig {...this.props} />}
-        {tab === 'price' && <PriceConfig {...this.props} />}
-        {tab === 'calculation' && <Calculation {...this.props} />}
+        {mode === 'tab' ? (
+          tab === 'cable' ? (
+            <CableConfig {...this.props} />
+          ) : tab === 'price' ? (
+            <PriceConfig {...this.props} />
+          ) : tab === 'calculation' ? (
+            <Calculation {...this.props} />
+          ) : null
+        ) : (
+          <Row gutter={16}>
+            <Col span={8}>
+              <CableConfig {...this.props} />
+            </Col>
+            <Col span={8}>
+              <PriceConfig {...this.props} />
+            </Col>
+            <Col span={8}>
+              <Calculation {...this.props} />
+            </Col>
+          </Row>
+        )}
       </Card>
     )
   }

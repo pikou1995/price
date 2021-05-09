@@ -1,55 +1,63 @@
-const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+const { PUBLIC_PATH = '/' } = process.env
 
 module.exports = {
   entry: './resources/index.tsx',
-  output: {
-    filename: 'bundle.[hash:8].js',
-    publicPath: '/',
-    path: path.join(__dirname, './dist'),
-  },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(t|j)sx?$/,
         exclude: /node_modules/,
         use: [
+          'thread-loader',
           {
-            loader: 'ts-loader',
+            loader: 'babel-loader',
             options: {
-              transpileOnly: true,
-              experimentalWatchApi: true,
+              cacheDirectory: true,
             },
           },
         ],
       },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.PUBLIC_PATH': JSON.stringify(PUBLIC_PATH),
+    }),
     new CleanWebpackPlugin(),
     new ForkTsCheckerWebpackPlugin(),
-    new CopyPlugin([{ from: './resources/assets' }]),
+    new CopyWebpackPlugin([
+      {
+        from: './resources/assets/',
+      },
+    ]),
+    new HtmlWebpackPlugin({
+      template: './resources/index.html',
+      minify: true,
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/react-manifest.json'),
+    }),
+    new AddAssetHtmlPlugin([
+      {
+        filepath: './dll/*.js',
+      },
+    ]),
   ],
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-    'react-router-dom': 'ReactRouterDOM',
-    'react-redux': 'ReactRedux',
-    'redux-thunk': 'ReduxThunk',
-    antd: 'antd',
-    axios: 'axios',
-    moment: 'moment',
-    underscore: '_',
+  stats: {
+    modules: false,
+    children: false,
+    chunks: false,
+    chunkModules: false,
   },
 }

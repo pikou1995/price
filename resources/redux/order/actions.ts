@@ -7,10 +7,10 @@ import {
   Order,
   SaveOrderCallback,
 } from './types'
-import axios from 'axios'
+// import axios from 'axios'
 import { ThunkResult } from '..'
-import { setCables } from '../cable/actions'
-import { setPriceConfig } from '../price-config'
+// import { setCables } from '../cable/actions'
+// import { setPriceConfig } from '../price-config'
 
 /**
  * 保存清单
@@ -38,28 +38,28 @@ export function setOrder(): OrderActionTypes {
 }
 
 export function fetchOrders(): ThunkResult<Promise<void>> {
-  return async function(dispatch) {
-    const res = await axios.get('/api/orders')
-    dispatch(setOrders(res.data))
+  return async function (dispatch) {
+    // const res = await axios.get('/api/orders')
+    // dispatch(setOrders(res.data))
   }
 }
 
 export function requestDeleleOrder(id: number): ThunkResult<void> {
-  return function(dispatch) {
-    axios.delete('/api/orders/' + id)
-    dispatch(deleteOrder(id))
+  return function (dispatch) {
+    // axios.delete('/api/orders/' + id)
+    // dispatch(deleteOrder(id))
   }
 }
 
 export function fetchOrder(id: number): ThunkResult<Promise<void>> {
-  return async function(dispatch) {
-    const res = await axios.get('/api/orders/' + id)
-    const {
-      cable: { cables },
-      priceConfig: { priceConfig },
-    } = res.data
-    dispatch(setCables(cables))
-    dispatch(setPriceConfig(priceConfig))
-    dispatch(setOrder())
+  return async function (dispatch) {
+    // const res = await axios.get('/api/orders/' + id)
+    // const {
+    //   cable: { cables },
+    //   priceConfig: { priceConfig },
+    // } = res.data
+    // dispatch(setCables(cables))
+    // dispatch(setPriceConfig(priceConfig))
+    // dispatch(setOrder())
   }
 }
