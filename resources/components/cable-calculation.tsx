@@ -10,6 +10,8 @@ const columns: {
 }[] = [
   { title: '芯材价格', dataIndex: 'corePrice' },
   { title: '绝缘价格', dataIndex: 'insulationPrice' },
+  { title: '阻水带', dataIndex: 'waterBlockingTapePrice' },
+  { title: '编织带', dataIndex: 'braidedPrice' },
   { title: 'mica云母价格', dataIndex: 'micaPrice' },
   { title: 'iscr铝箔单屏价格', dataIndex: 'iscrPrice' },
   { title: 'oscr铝箔总屏价格', dataIndex: 'oscrPrice' },

@@ -27,7 +27,7 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         <Form.Item label="双绞线">
           <Switch
             checked={cable.pair}
-            onChange={checked => this.onChange('pair')(checked)}
+            onChange={(checked) => this.onChange('pair')(checked)}
           />
         </Form.Item>
         <Form.Item label="数量">
@@ -70,9 +70,28 @@ export default class CableConfigComponent extends React.Component<CableProps> {
             value={cable.insulation}
             onChange={this.onChange('insulation')}
           >
-            {INSULATION.map(i => (
+            {INSULATION.map((i) => (
               <Option value={i} key={i}>
                 {i}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="阻水带">
+          <Input
+            value={cable.waterBlockingTape}
+            onChange={this.onChange('waterBlockingTape')}
+            placeholder="阻水带重量"
+          />
+        </Form.Item>
+        <Form.Item label="编织带">
+          <Select value={cable.braided} onChange={this.onChange('braided')}>
+            <Option value={0} key="0">
+              无
+            </Option>
+            {Object.keys(CORE_TYPE).map((k) => (
+              <Option value={k} key={k}>
+                {CORE_TYPE[k as CoreType]}
               </Option>
             ))}
           </Select>
@@ -80,14 +99,14 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         <Form.Item label="铝箔单屏" key="iscr">
           <Switch
             checked={cable.iscr}
-            onChange={checked => this.onChange('iscr')(checked)}
+            onChange={(checked) => this.onChange('iscr')(checked)}
           />
         </Form.Item>
         {cable.iscr && (
           <Form.Item label="单排流线" key="iDrainWire">
             <Input
               value={cable.iDrainWire}
-              onChange={e => this.onChange('iDrainWire')(e.target.value)}
+              onChange={(e) => this.onChange('iDrainWire')(e.target.value)}
               placeholder="单排流线直径"
             />
           </Form.Item>
@@ -95,14 +114,14 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         <Form.Item label="铝箔总屏" key="oscr">
           <Switch
             checked={cable.oscr}
-            onChange={checked => this.onChange('oscr')(checked)}
+            onChange={(checked) => this.onChange('oscr')(checked)}
           />
         </Form.Item>
         {cable.oscr && (
           <Form.Item label="总排流线" key="drainWire">
             <Input
               value={cable.drainWire}
-              onChange={e => this.onChange('drainWire')(e.target.value)}
+              onChange={(e) => this.onChange('drainWire')(e.target.value)}
               placeholder="总排流线直径"
             />
           </Form.Item>
@@ -115,7 +134,7 @@ export default class CableConfigComponent extends React.Component<CableProps> {
             <Option value={0} key="0">
               无
             </Option>
-            {SHEATH.map(i => (
+            {SHEATH.map((i) => (
               <Option value={i} key={i}>
                 {i}
               </Option>
@@ -125,7 +144,7 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         <Form.Item label="SWA">
           <Select value={cable.swa} onChange={this.onChange('swa')}>
             <Option value={0}>无</Option>
-            {SWA.map(i => (
+            {SWA.map((i) => (
               <Option value={i} key={i}>
                 {i}MM
               </Option>
@@ -144,7 +163,7 @@ export default class CableConfigComponent extends React.Component<CableProps> {
         )}
         <Form.Item label="外护套">
           <Select value={cable.sheath} onChange={this.onChange('sheath')}>
-            {SHEATH.map(s => (
+            {SHEATH.map((s) => (
               <Option value={s} key={s}>
                 {s}
               </Option>

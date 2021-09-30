@@ -9,6 +9,7 @@ import { CableProps } from './cable'
 type PriceKeys =
   | 'coreWeights'
   | 'insulationWeights'
+  | 'braidedWeights'
   | 'sheathWeights'
   | 'innerSheathWeights'
   | 'iscrWeights'
@@ -19,12 +20,13 @@ type PriceFields = Record<PriceKeys, string[]>
 function genPriceFields(cable: Cable): PriceFields {
   const coreWeights: string[] = []
   const insulationWeights: string[] = []
+  const braidedWeights: string[] = []
   const sheathWeights: string[] = []
   const innerSheathWeights: string[] = []
   const iscrWeights: string[] = []
   const oscrWeights: string[] = []
 
-  const { coreNum, coreArea, innerSheath, iscr, oscr } = cable
+  const { coreNum, coreArea, braided, innerSheath, iscr, oscr } = cable
 
   if (coreNum && coreArea) {
     coreWeights.push(coreArea)
@@ -33,6 +35,10 @@ function genPriceFields(cable: Cable): PriceFields {
     // 外护套重量
     const key = getCableKey(cable)
     sheathWeights.push(key)
+
+    if (braided) {
+      braidedWeights.push(key)
+    }
 
     if (innerSheath) {
       innerSheathWeights.push(key)
@@ -45,6 +51,7 @@ function genPriceFields(cable: Cable): PriceFields {
   return {
     coreWeights,
     insulationWeights,
+    braidedWeights,
     iscrWeights,
     oscrWeights,
     innerSheathWeights,
@@ -61,6 +68,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
   const {
     coreWeights,
     insulationWeights,
+    braidedWeights,
     iscrWeights,
     oscrWeights,
     innerSheathWeights,
@@ -88,7 +96,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
       })}
       {insulationWeights.map((i) => {
         return (
-          <Form.Item label={`绝缘重量`} key={i}>
+          <Form.Item label={`绝缘重量`} key={'insulationWeights' + i}>
             <Input
               type="number"
               value={priceConfig.insulationWeight[i + '']}
@@ -109,9 +117,20 @@ export default function CablePriceConfigComponent(props: CableProps) {
           </Form.Item>
         )
       })}
+      {braidedWeights.map((i) => {
+        return (
+          <Form.Item label={`编织带重量`} key={'braidedWeights' + i}>
+            <Input
+              type="number"
+              value={priceConfig.braidedWeight[i]}
+              onChange={(e) => setPriceConfig('braidedWeight', i, e)}
+            />
+          </Form.Item>
+        )
+      })}
       {iscrWeights.map((i) => {
         return (
-          <Form.Item label={`铝箔单屏重量`} key={i}>
+          <Form.Item label={`铝箔单屏重量`} key={'iscrWeights' + i}>
             <Input
               type="number"
               value={priceConfig.iscrWeight[i]}
@@ -122,7 +141,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
       })}
       {oscrWeights.map((i) => {
         return (
-          <Form.Item label={`铝箔总屏重量`} key={i}>
+          <Form.Item label={`铝箔总屏重量`} key={'oscrWeights' + i}>
             <Input
               type="number"
               value={priceConfig.oscrWeight[i]}
@@ -145,7 +164,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
       })}
       {innerSheathWeights.map((i) => {
         return (
-          <Form.Item label={`内护套重量`} key={i}>
+          <Form.Item label={`内护套重量`} key={'innerSheathWeight' + i}>
             <Input
               type="number"
               value={priceConfig.innerSheathWeight[i]}
@@ -168,7 +187,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
       })}
       {sheathWeights.map((i) => {
         return (
-          <Form.Item label={`外护套重量`} key={i}>
+          <Form.Item label={`外护套重量`} key={'sheathWeight' + i}>
             <Input
               type="number"
               value={priceConfig.sheathWeight[i]}
@@ -191,6 +210,7 @@ export default function CablePriceConfigComponent(props: CableProps) {
       })}
       {Boolean(coreWeights.length) ||
         Boolean(insulationWeights.length) ||
+        Boolean(braidedWeights.length) ||
         Boolean(iscrWeights.length) ||
         Boolean(oscrWeights.length) ||
         Boolean(innerSheathWeights.length) ||

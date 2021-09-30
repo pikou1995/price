@@ -10,6 +10,8 @@ export interface CalculationFields<T> {
   corePrice: T
   micaPrice: T
   insulationPrice: T
+  waterBlockingTapePrice: T
+  braidedPrice: T
   iscrPrice: T
   iDrainWirePrice: T
   oscrPrice: T
@@ -26,6 +28,8 @@ export class CableReport {
     corePrice: [],
     micaPrice: [],
     insulationPrice: [],
+    waterBlockingTapePrice: [],
+    braidedPrice: [],
     iscrPrice: [],
     iDrainWirePrice: [],
     oscrPrice: [],
@@ -147,6 +151,54 @@ export class CableReport {
     return p
   }
 
+  get waterBlockingTapePrice(): string {
+    const { waterBlockingTape } = this.cable
+    const { material } = this.priceConfig
+    if (!waterBlockingTape) {
+      return '0'
+    }
+
+    const log: string[] = []
+
+    log.push(`阻水带单位重量 = ${waterBlockingTape}`)
+
+    const p = this.toFixed(
+      Number(waterBlockingTape) * material.waterBlockingTape
+    )
+
+    log.push(
+      `总价(${p}) = ↸(${[waterBlockingTape]}) * 阻水带单价(${
+        material.waterBlockingTape
+      })`
+    )
+
+    this.setLog('waterBlockingTapePrice', log)
+
+    return p
+  }
+
+  get braidedPrice(): string {
+    const { braided, coreNum, coreArea } = this.cable
+    const { material, braidedWeight = {} } = this.priceConfig
+
+    if (!braided || !coreNum || !coreArea) {
+      return '0'
+    }
+    const log: string[] = []
+
+    const weight = braidedWeight[this.type] || 0
+
+    log.push(`${braided}单位重量 = ${weight}`)
+
+    const p = this.toFixed(weight * material[braided])
+
+    log.push(`总价(${p}) = ↸(${weight}) * ${braided}单价(${material[braided]})`)
+
+    this.setLog('braidedPrice', log)
+
+    return p
+  }
+
   get iscrPrice(): string {
     const { coreNum, iscr } = this.cable
     const { material, iscrWeight } = this.priceConfig
@@ -177,6 +229,7 @@ export class CableReport {
   get oscrPrice(): string {
     const { oscr } = this.cable
     const { material, oscrWeight } = this.priceConfig
+
     if (!oscr) {
       return '0'
     }
@@ -225,10 +278,10 @@ export class CableReport {
   }
 
   get drainWirePrice(): string {
-    const { coreNum, iscr, drainWire } = this.cable
+    const { coreNum, oscr, drainWire } = this.cable
     const { material } = this.priceConfig
 
-    if (!(iscr && drainWire) || !coreNum) {
+    if (!(oscr && drainWire) || !coreNum) {
       return '0'
     }
 
@@ -325,6 +378,8 @@ export class CableReport {
       corePrice,
       micaPrice,
       insulationPrice,
+      waterBlockingTapePrice,
+      braidedPrice,
       iscrPrice,
       iDrainWirePrice,
       oscrPrice,
@@ -337,6 +392,8 @@ export class CableReport {
       corePrice,
       micaPrice,
       insulationPrice,
+      waterBlockingTapePrice,
+      braidedPrice,
       iscrPrice,
       iDrainWirePrice,
       oscrPrice,
@@ -420,6 +477,16 @@ const expandedColumns: {
     title: '绝缘',
     dataIndex: 'insulationPrice',
     key: 'insulationPrice',
+  },
+  {
+    title: '阻水带',
+    dataIndex: 'waterBlockingTapePrice',
+    key: 'waterBlockingTapePrice',
+  },
+  {
+    title: '编织带',
+    dataIndex: 'braidedPrice',
+    key: 'braidedPrice',
   },
   {
     title: 'ISCR铝箔单屏',
