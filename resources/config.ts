@@ -20,10 +20,10 @@ export const SWA: SWA_TYPE[] = ['0.9', '1.25', '1.6', '2']
 export const SWA_WASTE = 0.85
 
 // 绝缘材料
-export const INSULATION = ['XLPE', 'PVC', 'PE', 'WDZ']
+export const INSULATION = ['XLPE', 'PVC', 'PE', 'WDZ', 'BS7655']
 
 // 外护套材料
-export const SHEATH = ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料']
+export const SHEATH = ['WDZ', 'PVC', 'EPDM', 'AB隔氧层料', 'BS7655']
 
 export const trans: { [index in Material]: string } = {
   CU: '纯铜',
@@ -33,8 +33,10 @@ export const trans: { [index in Material]: string } = {
   mica: '云母带',
   EPDM: 'EPDM乙丙橡胶',
   XLPE: 'XLPE',
+  BS7655: 'BS7655',
   PVC: 'PVC',
   PE: 'PE',
   WDZ: 'WDZ',
   AB隔氧层料: 'AB隔氧层料',
+  waterBlockingTape: '阻水带',
 }

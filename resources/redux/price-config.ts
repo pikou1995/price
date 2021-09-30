@@ -25,6 +25,7 @@ export type PriceConfig = {
   exchangeRate: exchangeRateConfig
   material: materialConfig
   coreWeight: Weight
+  braidedWeight: Weight
   iscrWeight: Weight
   insulationWeight: Weight
   oscrWeight: Weight
@@ -85,6 +86,7 @@ const initialState: PriceConfigState = {
   priceConfig: {
     material: <materialConfig>{},
     coreWeight: {},
+    braidedWeight: {},
     insulationWeight: {},
     iscrWeight: {},
     oscrWeight: {},

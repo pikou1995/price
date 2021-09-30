@@ -1,7 +1,14 @@
-export type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料'
+export type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料' | 'BS7655'
 export type CoreType = 'CU' | 'TC'
-export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ'
-export type Material = Sheath | CoreType | Insulation | 'STEEL' | 'AL' | 'mica'
+export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ' | 'BS7655'
+export type Material =
+  | Sheath
+  | CoreType
+  | Insulation
+  | 'STEEL'
+  | 'AL'
+  | 'mica'
+  | 'waterBlockingTape'
 export type SWA = '0.9' | '1.25' | '1.6' | '2'
 
 export type Cable = {
@@ -9,6 +16,9 @@ export type Cable = {
   coreType: CoreType
   /** 绝缘材料 */
   insulation?: Insulation
+  /** 阻水带单位重量 */
+  waterBlockingTape?: string
+  braided?: CoreType
   iscr?: boolean
   oscr?: boolean
   iDrainWire?: string
@@ -32,6 +42,7 @@ export const defaultCable: Cable = {
   coreType: 'CU',
   mica: 0,
   insulation: 'XLPE',
+  braided: 'TC',
   swa: 0,
   innerSheath: 0,
   sheath: 'WDZ',
