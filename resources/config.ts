@@ -1,4 +1,4 @@
-import { CoreType, Material, SWA as SWA_TYPE } from './redux/cable/types'
+import { CoreType, Material, SWA as SWA_TYPE } from './store/cable'
 
 export const CORE_TYPE: { [index in CoreType]: string } = {
   CU: '铜',

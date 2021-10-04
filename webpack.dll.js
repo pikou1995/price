@@ -9,11 +9,10 @@ module.exports = {
     react: [
       'react',
       'react-dom',
-      'redux',
-      'react-redux',
       'react-router',
       'react-router-dom',
-      'moment',
+      'mobx',
+      'mobx-react',
     ],
   },
   output: {

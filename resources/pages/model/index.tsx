@@ -1,8 +1,9 @@
-import * as React from 'react'
+import React from 'react'
 import { Table } from 'antd'
-import { fetchModels, Model, ModelState } from '../redux/model'
-import { Dispatch } from '../redux'
 import { ColumnsType } from 'antd/es/table'
+import { observer } from 'mobx-react'
+import { Model } from '../../store/models'
+import rootStore from '../../store'
 
 const baseColumns: ColumnsType<Model> = [
   {
@@ -21,25 +22,25 @@ const baseColumns: ColumnsType<Model> = [
 ]
 
 export interface ModelProps {
-  dispatch: Dispatch
-  model: ModelState
   showInsulationWeight?: boolean
   showSheathWeight?: boolean
   showOscrWeight?: boolean
+  spec?: string
   style?: React.CSSProperties
 }
 
-export default function ModelComponent(props: ModelProps) {
+export default observer(function ModelComponent(props: ModelProps) {
   const {
-    model: { modelsLoaded, models },
-    dispatch,
     showInsulationWeight = true,
     showSheathWeight = true,
     showOscrWeight = true,
+    spec,
   } = props
 
-  if (!modelsLoaded) {
-    dispatch(fetchModels())
+  let { models } = rootStore.modelStore
+  const { modelsLoading } = rootStore.modelStore
+  if (!models) {
+    !modelsLoading && rootStore.modelStore.resetModels()
     return null
   }
 
@@ -58,6 +59,7 @@ export default function ModelComponent(props: ModelProps) {
       dataIndex: 'sw',
       key: 'sw',
     })
+
   showOscrWeight &&
     columns.push({
       title: '屏蔽重量',
@@ -65,7 +67,12 @@ export default function ModelComponent(props: ModelProps) {
       key: 'oscr',
     })
 
-  columns[0].filters = [...new Set(models.map((m) => m.model))].map((m) => ({
+  if (spec) {
+    models = models.filter(
+      (m) => m.spec === spec && (!showOscrWeight || m.oscr)
+    )
+  }
+  columns[0].filters = [...new Set(models!.map((m) => m.model))].map((m) => ({
     text: m,
     value: m,
   }))
@@ -75,4 +82,4 @@ export default function ModelComponent(props: ModelProps) {
       <Table columns={columns} dataSource={models} />
     </div>
   )
-}
+})

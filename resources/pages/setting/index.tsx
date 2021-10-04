@@ -1,8 +1,6 @@
 import React from 'react'
 import { Button, Modal, Row, Col } from 'antd'
 import MaterialSetting from './material-setting'
-import { PriceConfigState } from '../redux/price-config'
-import { Dispatch } from '../redux'
 
 function clearLocalStorage() {
   Modal.confirm({
@@ -15,19 +13,13 @@ function clearLocalStorage() {
   })
 }
 
-export interface SettingProps {
-  dispatch: Dispatch
-  priceConfig: PriceConfigState
-}
-
-export default function Setting(props: SettingProps) {
-  const { priceConfig, dispatch } = props
+export default function Setting() {
   return (
     <div style={{ padding: 15 }}>
       <Row>
         <Col xs={24} sm={12}>
           <h2>材料价格</h2>
-          <MaterialSetting priceConfig={priceConfig} dispatch={dispatch} />
+          <MaterialSetting />
           <h2>调试工具</h2>
           <Button danger block onClick={clearLocalStorage}>
             清空缓存
