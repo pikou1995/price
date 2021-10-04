@@ -1,70 +1,13 @@
 import * as React from 'react'
 import { Input, Form, Empty } from 'antd'
-import { getCableKey } from '../utils'
-import ModelReferenceDrawer from './model-reference-drawer'
-import { updatePriceConfig, PriceConfig } from '../redux/price-config'
-import { Cable } from '../redux/cable/types'
+import ModelReferenceDrawer from '../components/model-reference-drawer'
 import { CableProps } from './cable'
+import rootStore from '@/store'
+import { PriceConfig } from '@/store/price-config'
+import { observer } from 'mobx-react'
 
-type PriceKeys =
-  | 'coreWeights'
-  | 'insulationWeights'
-  | 'braidedWeights'
-  | 'sheathWeights'
-  | 'innerSheathWeights'
-  | 'iscrWeights'
-  | 'oscrWeights'
-
-type PriceFields = Record<PriceKeys, string[]>
-
-function genPriceFields(cable: Cable): PriceFields {
-  const coreWeights: string[] = []
-  const insulationWeights: string[] = []
-  const braidedWeights: string[] = []
-  const sheathWeights: string[] = []
-  const innerSheathWeights: string[] = []
-  const iscrWeights: string[] = []
-  const oscrWeights: string[] = []
-
-  const { coreNum, coreArea, braided, innerSheath, iscr, oscr } = cable
-
-  if (coreNum && coreArea) {
-    coreWeights.push(coreArea)
-    // 绝缘重量
-    insulationWeights.push(coreArea)
-    // 外护套重量
-    const key = getCableKey(cable)
-    sheathWeights.push(key)
-
-    if (braided) {
-      braidedWeights.push(key)
-    }
-
-    if (innerSheath) {
-      innerSheathWeights.push(key)
-    }
-
-    iscr && iscrWeights.push(key)
-    oscr && oscrWeights.push(key)
-  }
-
-  return {
-    coreWeights,
-    insulationWeights,
-    braidedWeights,
-    iscrWeights,
-    oscrWeights,
-    innerSheathWeights,
-    sheathWeights,
-  }
-}
-
-export default function CablePriceConfigComponent(props: CableProps) {
-  const {
-    priceConfig: { priceConfig },
-    cable,
-    dispatch,
-  } = props
+export default observer(function CablePriceConfigComponent(props: CableProps) {
+  const { cable } = props
   const {
     coreWeights,
     insulationWeights,
@@ -73,13 +16,17 @@ export default function CablePriceConfigComponent(props: CableProps) {
     oscrWeights,
     innerSheathWeights,
     sheathWeights,
-  } = genPriceFields(cable)
+  } = cable.genPriceFields()
+
+  const { priceConfig } = rootStore
+
+  if (!priceConfig) return null
 
   const setPriceConfig = <K extends keyof PriceConfig>(
     c: K,
     k: string,
     e: any
-  ) => dispatch(updatePriceConfig(c, k, e.target.value))
+  ) => rootStore.updatePriceConfig(c, k, e.target.value)
 
   return (
     <Form labelCol={{ xs: 6 }} wrapperCol={{ xs: 18 }}>
@@ -217,4 +164,4 @@ export default function CablePriceConfigComponent(props: CableProps) {
         Boolean(sheathWeights.length) || <Empty description="请先配置线材" />}
     </Form>
   )
-}
+})

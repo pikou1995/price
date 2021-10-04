@@ -1,21 +1,15 @@
 import React, { lazy, Suspense } from 'react'
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useLocation,
-} from 'react-router-dom'
+import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { message, Spin } from 'antd'
-import { Provider } from 'react-redux'
-import store from './redux'
-import Calculator from './containers/calculator'
+import TopMenu from './pages/components/top-menu'
+import Footer from './pages/components/footer'
+import Calculator from './pages/calculator'
 const Model = lazy(
   () =>
     import(
       /* webpackChunkName: "table" */
       /* webpackPrefetch: true */
-      './containers/model'
+      './pages/model'
     )
 )
 const Setting = lazy(
@@ -23,11 +17,9 @@ const Setting = lazy(
     import(
       /* webpackChunkName: "form" */
       /* webpackPrefetch: true */
-      './containers/setting'
+      './pages/setting'
     )
 )
-import TopMenu from './components/top-menu'
-import Footer from './components/footer'
 
 message.config({
   top: 100,
@@ -36,7 +28,7 @@ message.config({
 
 export default function App() {
   return (
-    <Provider store={store}>
+    <div>
       <Router>
         <TopMenu />
         <Switch>
@@ -56,6 +48,6 @@ export default function App() {
         </Switch>
       </Router>
       <Footer />
-    </Provider>
+    </div>
   )
 }

@@ -1,24 +1,24 @@
 import * as React from 'react'
 import { CableProps } from './cable'
-import { Cable, CoreType } from '../redux/cable/types'
-import { updateCable } from '../redux/cable/actions'
 import { Form, Switch, Input, Select } from 'antd'
-import { CORE_TYPE, INSULATION, SHEATH, SWA } from '../config'
+import { CORE_TYPE, INSULATION, SHEATH, SWA } from '@/config'
+import { runInAction } from 'mobx'
+import { Cable, CoreType } from '@/store/cable'
+import { observer } from 'mobx-react'
 const { Option } = Select
 
+@observer
 export default class CableConfigComponent extends React.Component<CableProps> {
-  onChange = <K extends keyof Cable>(k: K) => (v: any) => {
-    if (v.target) {
-      v = v.target.value
+  onChange =
+    <K extends keyof Cable>(k: K) =>
+    (v: any) => {
+      if (v.target) {
+        v = v.target.value
+      }
+      runInAction(() => {
+        this.props.cable[k] = v
+      })
     }
-
-    this.props.dispatch(
-      updateCable({
-        id: this.props.cable.id,
-        [k]: v,
-      } as Cable)
-    )
-  }
 
   render() {
     const { cable } = this.props
