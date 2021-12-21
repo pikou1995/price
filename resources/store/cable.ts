@@ -1,113 +1,39 @@
-import { makeAutoObservable, observable } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 import { RootStore } from '.'
-import { CableReport } from './report'
 
-export type CoreType = 'CU' | 'TC'
-export type Insulation = 'XLPE' | 'PVC' | 'PE' | 'WDZ' | 'BS7655'
-export type Sheath = 'WDZ' | 'PVC' | 'EPDM' | 'AB隔氧层料' | 'BS7655'
-export type SWA = '0.9' | '1.25' | '1.6' | '2'
-export type Material =
-  | Sheath
-  | CoreType
-  | Insulation
-  | 'STEEL'
-  | 'AL'
-  | 'mica'
-  | 'waterBlockingTape'
-
-type PriceKeys =
-  | 'coreWeights'
-  | 'insulationWeights'
-  | 'braidedWeights'
-  | 'sheathWeights'
-  | 'innerSheathWeights'
-  | 'iscrWeights'
-  | 'oscrWeights'
-
-type PriceFields = Record<PriceKeys, string[]>
+export interface Part {
+  label: string
+  formula: string
+  // 自动计算的值，仅供参考
+  computedValue: string
+  // 手动修正的值
+  inputValue: string
+}
 
 export class Cable {
   readonly id = Date.now()
 
-  coreType: CoreType = 'CU'
-  coreArea?: string = undefined
-  /** 绝缘材料 */
-  insulation: Insulation = 'XLPE'
-  /** 阻水带单位重量 */
-  waterBlockingTape?: string = undefined
-  /** 编织带 */
-  braided?: CoreType = undefined
-  iscr = false
-  oscr = false
-  iDrainWire?: string = undefined
-  drainWire?: string = undefined
-  /** 钢丝铠装直径 */
-  diameter?: string = undefined
-  sheath?: Sheath = 'WDZ'
-  pair = false
-  coreNum?: string = undefined
-  /** 云母带 */
-  mica: 0 | 1 | 2 = 0
-  /** 钢丝铠装 */
-  swa: 0 | SWA = 0
-  /** 内护套 */
-  innerSheath: 0 | Sheath = 0
+  spec = ''
+  parts: Part[] = []
 
-  readonly report: CableReport
+  setSpec(spec: string) {
+    this.spec = spec
+  }
+
+  addPart(part: Part) {
+    this.parts.push(part)
+  }
+
+  get value() {
+    return this.parts.reduce(
+      (v, { computedValue, inputValue }) =>
+        Number(inputValue || computedValue) + v,
+      0
+    )
+  }
 
   constructor(public rootStore: RootStore) {
     makeAutoObservable(this)
-    this.report = new CableReport(this, rootStore.priceConfig!)
-  }
-
-  /**
-   * 一般用作 priceConfig 中的 key
-   */
-  get key() {
-    return `${this.coreNum || ''}*${this.pair ? '2*' : ''}${
-      this.coreArea || ''
-    }`
-  }
-
-  genPriceFields(): PriceFields {
-    const coreWeights: string[] = []
-    const insulationWeights: string[] = []
-    const braidedWeights: string[] = []
-    const sheathWeights: string[] = []
-    const innerSheathWeights: string[] = []
-    const iscrWeights: string[] = []
-    const oscrWeights: string[] = []
-
-    const { coreNum, coreArea, braided, innerSheath, iscr, oscr, key } = this
-
-    if (coreNum && coreArea) {
-      coreWeights.push(coreArea)
-      // 绝缘重量
-      insulationWeights.push(coreArea)
-      // 外护套重量
-      sheathWeights.push(key)
-
-      if (braided) {
-        braidedWeights.push(key)
-      }
-
-      if (innerSheath) {
-        innerSheathWeights.push(key)
-      }
-
-      iscr && iscrWeights.push(key)
-      oscr && oscrWeights.push(key)
-    }
-
-    return {
-      coreWeights,
-      insulationWeights,
-      braidedWeights,
-      iscrWeights,
-      oscrWeights,
-      innerSheathWeights,
-      sheathWeights,
-    }
   }
 
   /**
