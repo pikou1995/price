@@ -36,29 +36,31 @@ const KEYBOARD = [
   '7',
   '8',
   '9',
-  '/',
+  '<-',
   '4',
   '5',
   '6',
-  '*',
+  'c',
   '1',
   '2',
   '3',
-  '<-',
+  '/',
   '0',
   '.',
   '/1000',
-  '000',
+  '*',
 ]
 
 interface PartEditorProps {
   formRef: RefObject<FormInstance>
+  onOk?: () => void
 }
 
-export default observer(function PartEditor({ formRef }: PartEditorProps) {
-  const [form] = Form.useForm<Part>()
-  const [showCustom, setShowCustom] = React.useState(false)
-  const [computedValue, setComputedValue] = React.useState('0')
+export default observer(function PartEditor({
+  formRef,
+  onOk,
+}: PartEditorProps) {
+  const [form] = Form.useForm<Part & { customLabel?: string }>()
 
   function handleInput(key: string) {
     let formula = form.getFieldValue('formula')
@@ -66,6 +68,10 @@ export default observer(function PartEditor({ formRef }: PartEditorProps) {
       case '<-': {
         formula = formula.slice(0, -1)
         break
+      }
+      case 'c': {
+        form.resetFields(['formula', 'computedValue', 'inputValue'])
+        return
       }
       default: {
         formula += key
@@ -77,7 +83,6 @@ export default observer(function PartEditor({ formRef }: PartEditorProps) {
     form.setFieldsValue({ formula })
     if (!/(\*|\/)$/.test(formula)) {
       const computedValue = String(eval(formula || 0))
-      setComputedValue(computedValue)
       form.setFieldsValue({ computedValue })
     }
   }
@@ -86,30 +91,54 @@ export default observer(function PartEditor({ formRef }: PartEditorProps) {
     <div>
       <Form form={form} ref={formRef}>
         <Form.Item name="label" rules={[{ required: true }]}>
-          <Radio.Group
-            onChange={(e) => {
-              setShowCustom(e.target.value === CUSTOM_LABEL_KEY)
-            }}
-          >
+          <Radio.Group>
             {PART_LABELS.map((value) => (
               <Radio value={value}>{value}</Radio>
             ))}
             <Radio value={CUSTOM_LABEL_KEY}>自定义</Radio>
           </Radio.Group>
         </Form.Item>
-        {showCustom && (
-          <Form.Item name="customLabel">
-            <Input size="large" placeholder="请输入自定义组件名" autoFocus />
-          </Form.Item>
-        )}
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.label !== currentValues.label
+          }
+        >
+          {({ getFieldValue }) =>
+            getFieldValue('label') === CUSTOM_LABEL_KEY ? (
+              <Form.Item name="customLabel">
+                <Input
+                  size="large"
+                  placeholder="请输入自定义组件名"
+                  autoFocus
+                />
+              </Form.Item>
+            ) : null
+          }
+        </Form.Item>
         <Form.Item name="formula" initialValue="" rules={[{ required: true }]}>
-          <Input size="large" placeholder="请输入计算公式" allowClear />
+          <Input size="large" placeholder="请输入计算公式" />
         </Form.Item>
         <Form.Item name="computedValue" hidden>
           <Input />
         </Form.Item>
-        <Form.Item name="inputValue">
-          <Input size="large" placeholder={`自动计算价格:${computedValue}`} />
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.formula !== currentValues.formula
+          }
+        >
+          {({ getFieldValue }) => (
+            <Form.Item name="inputValue">
+              <Input
+                size="large"
+                placeholder={`自动计算价格:${
+                  getFieldValue('computedValue') || '0'
+                }`}
+                onPressEnter={onOk}
+              />
+            </Form.Item>
+          )}
         </Form.Item>
       </Form>
       <Row>

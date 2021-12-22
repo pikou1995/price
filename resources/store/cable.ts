@@ -24,6 +24,10 @@ export class Cable {
     this.parts.push(part)
   }
 
+  delPart(part: Part) {
+    this.parts = this.parts.filter((p) => p !== part)
+  }
+
   get value() {
     return this.parts.reduce(
       (v, { computedValue, inputValue }) =>
