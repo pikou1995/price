@@ -9,25 +9,34 @@ function closeModal() {
   rootStore.cableStore.setCreatePartModalVisible(false)
 }
 
-export default observer(function CreateCableModal() {
+export default observer(function CreatePartModal() {
   const { cableStore } = rootStore
-  const formRef = React.createRef<FormInstance<Part>>()
+  const formRef =
+    React.createRef<FormInstance<Part & { customLabel?: string }>>()
+
+  async function onOk() {
+    const form = formRef.current
+    if (!form) return
+    await form.validateFields()
+    const { customLabel, ...part } = form.getFieldsValue()!
+    if (customLabel) {
+      part.label = customLabel
+    }
+    const cable = cableStore.cables.find((c) => c.id === cableStore.cableId)
+    cable?.addPart(part)
+    closeModal()
+    form.resetFields()
+  }
 
   return (
     <Modal
       title="创建组件"
       visible={cableStore.createPartModalVisible}
       style={{ top: 20 }}
-      onOk={async () => {
-        await formRef.current?.validateFields()
-        const part = formRef.current?.getFieldsValue()
-        const cable = cableStore.cables.find((c) => c.id === cableStore.cableId)
-        cable?.addPart(part!)
-        closeModal()
-      }}
-      onCancel={() => closeModal()}
+      onOk={onOk}
+      onCancel={closeModal}
     >
-      <PartEditor formRef={formRef} />
+      <PartEditor formRef={formRef} onOk={onOk} />
     </Modal>
   )
 })

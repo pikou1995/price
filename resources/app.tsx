@@ -1,11 +1,12 @@
 import React from 'react'
-import { message, Row, Col, Button, Popconfirm, Tag } from 'antd'
+import { message, Button, Popconfirm, Tag, Space } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import Footer from './pages/components/footer'
 import rootStore from './store'
 import { observer } from 'mobx-react'
 import CreateCableModal from './pages/components/create-cable-modal'
 import CreatePartModal from './pages/components/create-Part-modal'
+import Layout, { Content } from 'antd/lib/layout/layout'
 
 message.config({
   top: 100,
@@ -15,20 +16,21 @@ message.config({
 export default observer(function App() {
   const { cableStore } = rootStore
   return (
-    <div>
-      {cableStore.cables.map((cable) => {
-        return (
-          <Row key={cable.id} style={{ marginBottom: '16px' }}>
-            <Col span={3}>{cable.spec}</Col>
-            <Col span={12}>
+    <Layout>
+      <Content style={{ margin: 16 }}>
+        {cableStore.cables.map((cable) => {
+          return (
+            <Space
+              key={cable.id}
+              style={{ minWidth: '100%', marginBottom: 16 }}
+            >
+              <span>{cable.spec}</span>
               {cable.parts.map((p) => (
-                <Tag>
-                  {p.label}:{p.formula} = {p.inputValue || p.computedValue}
+                <Tag key={p.label} closable onClose={() => cable.delPart(p)}>
+                  {p.label}:{p.formula}={p.inputValue || p.computedValue}
                 </Tag>
               ))}
-            </Col>
-            <Col span={3}>总价:{cable.value}</Col>
-            <Col span={3}>
+              <span>总:{cable.value}</span>
               <Button
                 type="primary"
                 shape="circle"
@@ -38,8 +40,6 @@ export default observer(function App() {
                   cableStore.setCreatePartModalVisible(true)
                 }}
               ></Button>
-            </Col>
-            <Col span={3}>
               <Popconfirm
                 title="确认删除？"
                 key="delete"
@@ -52,26 +52,19 @@ export default observer(function App() {
                   icon={<DeleteOutlined />}
                 ></Button>
               </Popconfirm>
-            </Col>
-          </Row>
-        )
-      })}
-      <Row>
-        <Col>
-          <Button
-            type="primary"
-            onClick={() =>
-              rootStore.cableStore.setCreateCableModalVisible(true)
-            }
-          >
-            创建线缆
-          </Button>
-        </Col>
-      </Row>
-
-      <CreateCableModal />
-      <CreatePartModal />
+            </Space>
+          )
+        })}
+        <Button
+          type="primary"
+          onClick={() => rootStore.cableStore.setCreateCableModalVisible(true)}
+        >
+          创建线缆
+        </Button>
+        <CreateCableModal />
+        <CreatePartModal />
+      </Content>
       <Footer />
-    </div>
+    </Layout>
   )
 })
