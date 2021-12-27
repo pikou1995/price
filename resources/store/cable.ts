@@ -1,3 +1,4 @@
+import { accAdd } from '@/utils'
 import { makeAutoObservable } from 'mobx'
 import { RootStore } from '.'
 
@@ -31,7 +32,7 @@ export class Cable {
   get value() {
     return this.parts.reduce(
       (v, { computedValue, inputValue }) =>
-        Number(inputValue || computedValue) + v,
+        accAdd(Number(inputValue || computedValue), v),
       0
     )
   }
