@@ -1,7 +1,8 @@
 import { Form, Input, FormInstance, Radio, Row, Col, Button } from 'antd'
 import { observer } from 'mobx-react'
-import React, { RefObject } from 'react'
+import React, { RefObject, useState } from 'react'
 import { Part } from '@/store/cable'
+import Keyboard from './keyboard'
 import './part-editor.css'
 
 const PART_LABELS = [
@@ -32,24 +33,6 @@ const PART_LABELS = [
 ]
 
 const CUSTOM_LABEL_KEY = Symbol('custom')
-const KEYBOARD = [
-  '7',
-  '8',
-  '9',
-  '<-',
-  '4',
-  '5',
-  '6',
-  'c',
-  '1',
-  '2',
-  '3',
-  '/',
-  '0',
-  '.',
-  '/1000',
-  '*',
-]
 
 interface PartEditorProps {
   formRef: RefObject<FormInstance>
@@ -61,8 +44,9 @@ export default observer(function PartEditor({
   onOk,
 }: PartEditorProps) {
   const [form] = Form.useForm<Part & { customLabel?: string }>()
+  const [inputTarget, setTarget] = useState<'formula' | 'inputValue'>('formula')
 
-  function handleInput(key: string) {
+  function handleFormulaInput(key: string) {
     let formula = form.getFieldValue('formula')
     switch (key) {
       case '<-': {
@@ -80,11 +64,29 @@ export default observer(function PartEditor({
         }
       }
     }
+    formula = formula.replace(/\s/g, '')
     form.setFieldsValue({ formula })
     if (!/(\*|\/)$/.test(formula)) {
       const computedValue = String(eval(formula || 0))
       form.setFieldsValue({ computedValue })
     }
+  }
+  function handleInputValueInput(key: string) {
+    let inputValue = form.getFieldValue('inputValue')
+    switch (key) {
+      case '<-': {
+        inputValue = inputValue.slice(0, -1)
+        break
+      }
+      case 'c': {
+        form.resetFields(['inputValue'])
+        return
+      }
+      default: {
+        inputValue += key
+      }
+    }
+    form.setFieldsValue({ inputValue: inputValue.replace(/[^\d.]/g, '') })
   }
 
   return (
@@ -117,7 +119,11 @@ export default observer(function PartEditor({
           }
         </Form.Item>
         <Form.Item name="formula" initialValue="" rules={[{ required: true }]}>
-          <Input size="large" placeholder="请输入计算公式" />
+          <Input
+            size="large"
+            placeholder="请输入计算公式"
+            onFocus={() => setTarget('formula')}
+          />
         </Form.Item>
         <Form.Item name="computedValue" hidden>
           <Input />
@@ -131,25 +137,25 @@ export default observer(function PartEditor({
           {({ getFieldValue }) => (
             <Form.Item name="inputValue">
               <Input
+                autoComplete="off"
                 size="large"
                 placeholder={`自动计算价格:${
                   getFieldValue('computedValue') || '0'
                 }`}
+                onFocus={() => setTarget('inputValue')}
                 onPressEnter={onOk}
               />
             </Form.Item>
           )}
         </Form.Item>
       </Form>
-      <Row>
-        {KEYBOARD.map((key) => (
-          <Col span="6">
-            <Button className="key" onClick={() => handleInput(key)}>
-              {key}
-            </Button>
-          </Col>
-        ))}
-      </Row>
+      <Keyboard
+        onClick={(key) =>
+          inputTarget === 'formula'
+            ? handleFormulaInput(key)
+            : handleInputValueInput(key)
+        }
+      ></Keyboard>
     </div>
   )
 })
