@@ -8,6 +8,7 @@ import './part-editor.css'
 const PART_LABELS = [
   'CU',
   'TCU',
+  '镀银铜',
   '五类线半成品(屏蔽)',
   '五类线半成品(非屏蔽)',
   '六类线半成品(屏蔽)',
@@ -19,6 +20,7 @@ const PART_LABELS = [
   'PVC',
   'LSOH',
   'BS7655',
+  'PTFE聚四氟乙烯(11w/t)',
   '铝总',
   '铝单',
   '排流线',
@@ -64,13 +66,22 @@ export default observer(function PartEditor({
         }
       }
     }
-    formula = formula.replace(/\s/g, '')
+    formula = updateFormula(formula)
+    setTimeout(() => {
+      form.getFieldInstance('formula').focus({ cursor: 'end' })
+    })
+  }
+
+  function updateFormula(formula: string) {
+    formula = formula.replace(/[^\d.*/]/g, '')
     form.setFieldsValue({ formula })
     if (!/(\*|\/)$/.test(formula)) {
-      const computedValue = String(eval(formula || 0))
+      const computedValue = String(eval(formula || '0'))
       form.setFieldsValue({ computedValue })
     }
+    return formula
   }
+
   function handleInputValueInput(key: string) {
     let inputValue = form.getFieldValue('inputValue')
     switch (key) {
@@ -87,6 +98,9 @@ export default observer(function PartEditor({
       }
     }
     form.setFieldsValue({ inputValue: inputValue.replace(/[^\d.]/g, '') })
+    setTimeout(() => {
+      form.getFieldInstance('inputValue').focus({ cursor: 'end' })
+    })
   }
 
   return (
@@ -123,6 +137,9 @@ export default observer(function PartEditor({
             size="large"
             placeholder="请输入计算公式"
             onFocus={() => setTarget('formula')}
+            onChange={(e) => {
+              updateFormula(e.target.value)
+            }}
           />
         </Form.Item>
         <Form.Item name="computedValue" hidden>
