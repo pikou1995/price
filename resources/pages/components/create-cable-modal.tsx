@@ -25,7 +25,7 @@ export default observer(function CreateCableModal() {
         break
       }
       case 'c': {
-        form.resetFields(['inputValue'])
+        form.resetFields(['spec'])
         return
       }
       default: {
@@ -33,6 +33,9 @@ export default observer(function CreateCableModal() {
       }
     }
     form.setFieldsValue({ spec: spec.replace(/\s/g, '') })
+    setTimeout(() => {
+      form.getFieldInstance('spec').focus({ cursor: 'end' })
+    })
   }
 
   return (

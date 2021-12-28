@@ -1,9 +1,11 @@
 #!/bin/sh
 
+WORKSPACE=$PWD
 yarn build
-mv dist price
-tar zcvf price.tgz price
-scp price.tgz pi:~
-ssh pi "cd /var/www/html && sudo mv ~/price.tgz . && sudo tar zxvf price.tgz && sudo rm price.tgz"
-rm price.tgz
-rm -rf price
+cd ../pikou1995.github.io/price
+rm -rf *
+cp $WORKSPACE/dist/* .
+rm -rf $WORKSPACE/dist
+git add .
+git commit -m 'update price'
+git push
