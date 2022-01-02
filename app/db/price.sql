@@ -1,0 +1,19 @@
+CREATE DATABASE price;
+
+USE price;
+
+CREATE TABLE cables (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    spec VARCHAR(255),
+    createdAt DATETIME
+);
+
+CREATE TABLE parts (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cid INT,
+    label VARCHAR(255),
+    formula VARCHAR(255),
+    computedValue VARCHAR(255),
+    inputValue VARCHAR(255),
+    FOREIGN KEY (cid) REFERENCES cables(id) ON DELETE CASCADE ON UPDATE CASCADE
+);

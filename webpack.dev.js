@@ -24,6 +24,11 @@ module.exports = merge(common, {
       }
     },
     historyApiFallback: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:7001',
+      },
+    },
     compress: true,
     watchOptions: {
       poll: 1000,

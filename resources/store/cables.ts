@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable } from 'mobx'
+import { autorun, flow, makeAutoObservable } from 'mobx'
 import { RootStore } from '.'
 import { Cable } from './cable'
 
@@ -13,9 +13,6 @@ export class CableStore {
   constructor(public rootStore: RootStore) {
     makeAutoObservable(this)
     this.loadCables()
-    autorun(() => {
-      this.saveCables()
-    })
   }
 
   setCreateCableModalVisible(visible: boolean) {
@@ -34,37 +31,36 @@ export class CableStore {
     this.showUSD = show
   }
 
-  create(spec: string) {
-    const c = new Cable(this.rootStore)
+  create = flow(function* (this: CableStore, spec: string) {
+    const { id } = yield fetch('/api/cables', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ spec }),
+    })
+    const c = new Cable(id)
     c.setSpec(spec)
     this.cables.push(c)
-  }
+  })
 
-  copy(id: number) {
-    const cable = this.cables.find((c: Cable) => c.id === id)
-    if (cable) {
-      this.cables.push(cable.clone())
-    }
-  }
-
-  delete(id: number) {
+  delete = flow(function* (this: CableStore, id: number) {
+    yield fetch(`/api/cables/${id}`, { method: 'DELETE' })
     this.cables = this.cables.filter((c: Cable) => c.id !== id)
-  }
+  })
 
-  loadCables() {
-    const cables = localStorage.getItem('cables')
+  loadCables = flow(function* (this: CableStore) {
+    const cables = yield fetch('/api/cables', {
+      headers: {
+        Accept: 'application/json',
+      },
+    }).then((res) => res.json())
+    // const cables = localStorage.getItem('cables')
     if (cables) {
-      this.cables = JSON.parse(cables).map((cable: Cable) =>
-        new Cable(this.rootStore).restore(cable)
+      this.cables = cables.map((cable: Cable) =>
+        new Cable(cable.id).restore(cable)
       )
     }
-  }
-
-  saveCables() {
-    const cables = this.cables.map((cable) => {
-      const { rootStore, ...c } = cable
-      return c
-    })
-    localStorage.setItem('cables', JSON.stringify(cables))
-  }
+  })
 }

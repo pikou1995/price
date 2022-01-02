@@ -1,8 +1,8 @@
 import { accAdd } from '@/utils'
-import { makeAutoObservable } from 'mobx'
-import { RootStore } from '.'
+import { flow, makeAutoObservable } from 'mobx'
 
 export interface Part {
+  id: number
   label: string
   formula: string
   // 自动计算的值，仅供参考
@@ -12,7 +12,9 @@ export interface Part {
 }
 
 export class Cable {
-  readonly id = Date.now()
+  constructor(public readonly id: number) {
+    makeAutoObservable(this)
+  }
 
   spec = ''
   parts: Part[] = []
@@ -21,13 +23,26 @@ export class Cable {
     this.spec = spec
   }
 
-  addPart(part: Part) {
+  addPart = flow(function* (this: Cable, part: Part) {
+    const { id } = yield fetch('/api/parts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        ...part,
+        cid: this.id,
+      }),
+    })
+    part.id = id
     this.parts.push(part)
-  }
+  })
 
-  delPart(part: Part) {
+  delPart = flow(function* (this: Cable, part: Part) {
+    yield fetch(`/api/parts/${part.id}`, { method: 'DELETE' })
     this.parts = this.parts.filter((p) => p !== part)
-  }
+  })
 
   get value() {
     return this.parts.reduce(
@@ -35,18 +50,6 @@ export class Cable {
         accAdd(Number(inputValue || computedValue), v),
       0
     )
-  }
-
-  constructor(public rootStore: RootStore) {
-    makeAutoObservable(this)
-  }
-
-  /**
-   * 复制一样的属性，id 除外
-   */
-  clone() {
-    const { id, ...cable } = this
-    return Object.assign(new Cable(this.rootStore), cable)
   }
 
   /**

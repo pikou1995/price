@@ -3,8 +3,12 @@ module.exports = {
     enable: true,
     package: 'egg-validate',
   },
-  redis: {
+  // redis: {
+  //   enable: true,
+  //   package: 'egg-redis',
+  // },
+  mysql: {
     enable: true,
-    package: 'egg-redis',
+    package: 'egg-mysql',
   },
 }

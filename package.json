@@ -4,11 +4,12 @@
   "description": "Calculate cable price",
   "private": true,
   "dependencies": {
-    "egg": "^2.15.1",
+    "egg": "^2.33.1",
+    "egg-mysql": "^3.0.0",
     "egg-redis": "^2.4.0",
-    "egg-scripts": "^2.11.0",
+    "egg-scripts": "^2.15.2",
     "egg-validate": "^2.0.2",
-    "node-xlsx": "^0.15.0"
+    "node-xlsx": "^0.20.0"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -40,7 +41,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
     "css-minimizer-webpack-plugin": "^1.1.5",
-    "egg-bin": "^4.11.0",
+    "egg-bin": "^4.16.4",
     "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-friendly-formatter": "^4.0.1",

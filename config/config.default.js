@@ -17,40 +17,28 @@ module.exports = (appInfo) => {
         db: 0,
       },
     },
-    multipart: {
-      mode: 'file',
-      fileExtensions: ['.xls', '.xlsx'],
+    mysql: {
+      // database configuration
+      client: {
+        // host
+        host: process.env.DB_HOST || '127.0.0.1',
+        // port
+        port: process.env.DB_PORT || '3306',
+        // username
+        user: process.env.DB_USER || 'root',
+        // password
+        password: process.env.DB_PASSWORD || '',
+        // database
+        database: 'price',
+      },
+      // load into app, default is open
+      app: true,
+      // load into agent, default is close
+      agent: false,
     },
-    defaultPriceConfig: {
-      material: {
-        CU: 0.072,
-        TC: 0.074,
-        STEEL: 0.006,
-        AL: 0.027,
-        mica: 0.2,
-        XLPE: 0.014,
-        PVC: 0.007,
-        BS7655: 0.028,
-        PE: 0.014,
-        WDZ: 0.012,
-        EPDM: 0.03,
-        AB隔氧层料: 0.0104,
-        waterBlockingTape: 0.028,
-      },
-      insulationWeight: {},
-      iscrWeight: {},
-      oscrWeight: {},
-      sheathWeight: {},
-      innerSheathWeight: {},
-      exchangeRate: {
-        USD: 0.15,
-      },
-      swaWeight: {
-        0.9: 5,
-        1.25: 10,
-        1.6: 15,
-        2: 25,
-      },
-    },
+    // multipart: {
+    //   mode: 'file',
+    //   fileExtensions: ['.xls', '.xlsx'],
+    // },
   }
 }
