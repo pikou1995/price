@@ -3,17 +3,15 @@ const Controller = require('egg').Controller
 class CablesController extends Controller {
   async index() {
     const { ctx, app } = this
-    const cables = await app.mysql.select('cables', {
-      orders: [['id', 'desc']],
-    })
+    const cables = await app.mysql.select('cables')
     const parts = await app.mysql.select('parts', {
-      orders: [['cid', 'desc']],
+      orders: [['cid', 'asc']],
     })
     for (const cable of cables) {
       cable.parts = []
       let pLen = parts.length
-      while (pLen && cable.id === parts[pLen - 1].cid) {
-        cable.parts.push(parts.pop())
+      while (pLen && cable.id === parts[0].cid) {
+        cable.parts.push(parts.shift())
         pLen--
       }
     }

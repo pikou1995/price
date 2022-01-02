@@ -5,7 +5,7 @@ import Footer from './pages/components/footer'
 import rootStore from './store'
 import { observer } from 'mobx-react'
 import CreateCableModal from './pages/components/create-cable-modal'
-import CreatePartModal from './pages/components/create-Part-modal'
+import CreatePartModal from './pages/components/create-part-modal'
 import Layout, { Content } from 'antd/lib/layout/layout'
 
 message.config({
