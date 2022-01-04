@@ -49,9 +49,6 @@ module.exports = {
       template: './resources/index.html',
       minify: true,
     }),
-    new webpack.DllReferencePlugin({
-      manifest: require('./dll/react-manifest.json'),
-    }),
     new AddAssetHtmlPlugin([
       {
         filepath: './dll/*.js',

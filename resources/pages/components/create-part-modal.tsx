@@ -35,6 +35,7 @@ export default observer(function CreatePartModal() {
       style={{ top: 20 }}
       onOk={onOk}
       onCancel={closeModal}
+      destroyOnClose
     >
       <PartEditor formRef={formRef} onOk={onOk} />
     </Modal>

@@ -1,5 +1,6 @@
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
+const webpack = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
@@ -39,6 +40,9 @@ module.exports = merge(common, {
       filename: '[name].[hash].css',
       ignoreOrder: true,
     }),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/react-manifest.json'),
+    }),
     new WorkboxPlugin.GenerateSW({
       // these options encourage the ServiceWorkers to get in there fast
       // and not allow any straggling "old" SWs to hang around
@@ -49,7 +53,7 @@ module.exports = merge(common, {
 })
 
 if (process.env.analyze) {
-  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-    .BundleAnalyzerPlugin
+  const BundleAnalyzerPlugin =
+    require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   module.exports.plugins.push(new BundleAnalyzerPlugin())
 }

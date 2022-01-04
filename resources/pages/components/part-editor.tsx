@@ -34,7 +34,7 @@ const PART_LABELS = [
   '阻燃带',
 ]
 
-const CUSTOM_LABEL_KEY = Symbol('custom')
+const CUSTOM_LABEL_KEY = 'CUSTOM_LABEL_KEY'
 
 interface PartEditorProps {
   formRef: RefObject<FormInstance>
@@ -58,6 +58,10 @@ export default observer(function PartEditor({
       case 'c': {
         form.resetFields(['formula', 'computedValue', 'inputValue'])
         return
+      }
+      case '.': {
+        formula += /\d$/.test(formula) ? '.' : '0.'
+        break
       }
       default: {
         formula += key
@@ -109,7 +113,9 @@ export default observer(function PartEditor({
         <Form.Item name="label" rules={[{ required: true }]}>
           <Radio.Group>
             {PART_LABELS.map((value) => (
-              <Radio value={value}>{value}</Radio>
+              <Radio key={value} value={value}>
+                {value}
+              </Radio>
             ))}
             <Radio value={CUSTOM_LABEL_KEY}>自定义</Radio>
           </Radio.Group>
@@ -167,11 +173,15 @@ export default observer(function PartEditor({
         </Form.Item>
       </Form>
       <Keyboard
-        onClick={(key) =>
+        onClick={(key) => {
+          if (key === '切换') {
+            setTarget(inputTarget === 'formula' ? 'inputValue' : 'formula')
+            return
+          }
           inputTarget === 'formula'
             ? handleFormulaInput(key)
             : handleInputValueInput(key)
-        }
+        }}
       ></Keyboard>
     </div>
   )
