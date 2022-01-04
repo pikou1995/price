@@ -39,7 +39,8 @@ export class CableStore {
         Accept: 'application/json',
       },
       body: JSON.stringify({ spec }),
-    })
+    }).then((res) => res.json())
+
     const c = new Cable(id)
     c.setSpec(spec)
     this.cables.push(c)
