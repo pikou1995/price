@@ -12,7 +12,7 @@ export class CableStore {
 
   constructor(public rootStore: RootStore) {
     makeAutoObservable(this)
-    this.loadCables()
+    this.fetchCables()
   }
 
   setCreateCableModalVisible(visible: boolean) {
@@ -51,8 +51,8 @@ export class CableStore {
     this.cables = this.cables.filter((c: Cable) => c.id !== id)
   })
 
-  loadCables = flow(function* (this: CableStore) {
-    const cables = yield fetch('/api/cables', {
+  fetchCables = flow(function* (this: CableStore, spec?: string) {
+    const cables = yield fetch(`/api/cables${spec ? `?spec=${spec}` : ''}`, {
       headers: {
         Accept: 'application/json',
       },

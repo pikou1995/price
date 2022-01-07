@@ -3,10 +3,16 @@ const Controller = require('egg').Controller
 class CablesController extends Controller {
   async index() {
     const { ctx, app } = this
-    const cables = await app.mysql.select('cables')
-    const parts = await app.mysql.select('parts', {
-      orders: [['cid', 'asc']],
-    })
+    const { spec } = ctx.query
+    const cables = await app.mysql.query(
+      `SELECT * FROM cables${spec ? ' WHERE spec LIKE ?' : ''}`,
+      `%${spec}%`
+    )
+    const parts = await app.mysql.query(
+      `SELECT * FROM parts WHERE cid IN (${cables.map(
+        (c) => c.id
+      )}) ORDER BY cid ASC`
+    )
     for (const cable of cables) {
       cable.parts = []
       let pLen = parts.length

@@ -1,5 +1,5 @@
 import React from 'react'
-import { message, Button, Popconfirm, Tag, Space } from 'antd'
+import { message, Button, Popconfirm, Tag, Space, Input } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import Footer from './pages/components/footer'
 import rootStore from './store'
@@ -18,12 +18,17 @@ export default observer(function App() {
   return (
     <Layout>
       <Content style={{ margin: 16 }}>
+        <Space className="cable-line">
+          <Input.Search
+            placeholder="搜索规格，如 2.5"
+            onSearch={(spec) => cableStore.fetchCables(spec)}
+            style={{ width: 300 }}
+            enterButton
+          />
+        </Space>
         {cableStore.cables.map((cable) => {
           return (
-            <Space
-              key={cable.id}
-              style={{ minWidth: '100%', marginBottom: 16 }}
-            >
+            <Space className="cable-line" key={cable.id}>
               <span>{cable.spec}</span>
               {cable.parts.map((p) => (
                 <Tag key={p.label} closable onClose={() => cable.delPart(p)}>

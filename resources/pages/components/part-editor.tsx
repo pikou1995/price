@@ -3,7 +3,6 @@ import { observer } from 'mobx-react'
 import React, { RefObject, useState } from 'react'
 import { Part } from '@/store/cable'
 import Keyboard from './keyboard'
-import './part-editor.css'
 
 const PART_LABELS = [
   'CU',
