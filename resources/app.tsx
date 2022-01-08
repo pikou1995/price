@@ -29,13 +29,14 @@ export default observer(function App() {
         {cableStore.cables.map((cable) => {
           return (
             <Space className="cable-line" key={cable.id}>
-              <span>{cable.spec}</span>
+              <span className="spec">{cable.spec}</span>
               {cable.parts.map((p) => (
                 <Tag key={p.label} closable onClose={() => cable.delPart(p)}>
-                  {p.label}:{p.formula}={p.inputValue || p.computedValue}
+                  <span className="label">{p.label}</span>:{p.formula}=
+                  {p.inputValue || p.computedValue}
                 </Tag>
               ))}
-              <span>总:{cable.value}</span>
+              <span className="sum">总:{cable.value}</span>
               <Button
                 type="primary"
                 shape="circle"

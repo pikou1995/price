@@ -28,6 +28,9 @@ export default observer(function CreateCableModal() {
         form.resetFields(['spec'])
         return
       }
+      case '切换': {
+        return
+      }
       default: {
         spec += key
       }
