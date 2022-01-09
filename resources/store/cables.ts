@@ -57,7 +57,6 @@ export class CableStore {
         Accept: 'application/json',
       },
     }).then((res) => res.json())
-    // const cables = localStorage.getItem('cables')
     if (cables) {
       this.cables = cables.map((cable: Cable) =>
         new Cable(cable.id).restore(cable)

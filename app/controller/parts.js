@@ -42,7 +42,7 @@ class PartsController extends Controller {
       label,
       formula,
       computedValue,
-      inputValue: inputValue,
+      inputValue,
     })
     ctx.body = {
       id: insertId,
@@ -51,9 +51,22 @@ class PartsController extends Controller {
 
   async update() {
     const { ctx, app } = this
+    const updateRule = {
+      label: 'string',
+      formula: 'string',
+      // 自动计算的值，仅供参考
+      computedValue: 'string',
+      // 手动修正的值
+      inputValue: 'string?',
+    }
+    ctx.validate(updateRule)
+    const { label, formula, computedValue, inputValue = '' } = ctx.request.body
     await app.mysql.update('parts', {
       id: ctx.params.id,
-      ...ctx.request.body,
+      label,
+      formula,
+      computedValue,
+      inputValue,
     })
     ctx.status = 204
   }

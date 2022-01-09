@@ -8,17 +8,19 @@ class CablesController extends Controller {
       `SELECT * FROM cables${spec ? ' WHERE spec LIKE ?' : ''}`,
       `%${spec}%`
     )
-    const parts = await app.mysql.query(
-      `SELECT * FROM parts WHERE cid IN (${cables.map(
-        (c) => c.id
-      )}) ORDER BY cid ASC`
-    )
-    for (const cable of cables) {
-      cable.parts = []
-      let pLen = parts.length
-      while (pLen && cable.id === parts[0].cid) {
-        cable.parts.push(parts.shift())
-        pLen--
+    if (cables.length) {
+      const parts = await app.mysql.select('parts', {
+        where: { cid: cables.map((c) => c.id) },
+        orders: [['cid', 'asc']],
+      })
+
+      for (const cable of cables) {
+        cable.parts = []
+        let pLen = parts.length
+        while (pLen && cable.id === parts[0].cid) {
+          cable.parts.push(parts.shift())
+          pLen--
+        }
       }
     }
     ctx.body = cables
@@ -51,9 +53,14 @@ class CablesController extends Controller {
 
   async update() {
     const { ctx, app } = this
+    const updateRule = {
+      spec: 'string',
+    }
+    ctx.validate(updateRule)
+    const { spec } = ctx.request.body
     await app.mysql.update('cables', {
       id: ctx.params.id,
-      ...ctx.request.body,
+      spec,
     })
     ctx.status = 204
   }

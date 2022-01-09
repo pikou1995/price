@@ -53,7 +53,6 @@ export default observer(function CreateCableModal() {
           <Input
             size="large"
             placeholder="请输入规格, 如 2*1.5"
-            autoFocus
             onPressEnter={onOk}
             // onChange={(e) => {
             //   // 输入两个空格转 *

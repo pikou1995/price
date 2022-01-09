@@ -9,13 +9,12 @@ module.exports = (appInfo) => {
         enable: false,
       },
     },
-    redis: {
-      client: {
-        port: 6379, // Redis port
-        host: '127.0.0.1', // Redis host
-        password: '',
-        db: 0,
-      },
+    middleware: ['auth'],
+    session: {
+      key: 'PRICE_SESS',
+      maxAge: 30 * 24 * 3600 * 1000, // 30 天
+      httpOnly: true,
+      encrypt: true,
     },
     mysql: {
       // database configuration
@@ -36,9 +35,5 @@ module.exports = (appInfo) => {
       // load into agent, default is close
       agent: false,
     },
-    // multipart: {
-    //   mode: 'file',
-    //   fileExtensions: ['.xls', '.xlsx'],
-    // },
   }
 }
