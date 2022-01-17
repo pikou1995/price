@@ -1,0 +1,13 @@
+[Unit]
+Description=price
+
+[Service]
+ExecStart=/var/www/price/start.sh
+TimeoutSec=45s
+Restart=always
+WorkingDirectory=/var/www/price
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target

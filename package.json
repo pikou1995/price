@@ -71,7 +71,7 @@
     "workbox-webpack-plugin": "^5.1.4"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=price",
+    "start": "egg-scripts start --title=price",
     "stop": "egg-scripts stop --title=price",
     "dev": "egg-bin dev",
     "test": "egg-bin test",
